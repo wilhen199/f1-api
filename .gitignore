@@ -1,0 +1,6 @@
+.venv-f1/
+
+__pycache__/
+*.pyc
+backend/cache/
+*.log

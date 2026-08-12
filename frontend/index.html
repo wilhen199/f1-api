@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="logo.png">
+  <title>F1 Stats</title>
+</head>
+<body>
+
+  <header>
+    <div class="header-logo" onclick="go('#/standings/drivers')">
+      <img src="logo-f1.png" alt="F1 Logo" class="logo-icon">
+      <span class="logo-text">F1 STATS</span>
+    </div>
+    <nav class="header-nav">
+      <a class="nav-link" data-section="standings" onclick="go('#/standings/drivers')">STANDINGS</a>
+      <a class="nav-link" data-section="results" onclick="go('#/results')">RESULTS</a>
+    </nav>
+  </header>
+
+  <div class="controls">
+    <label class="control-label" for="seasonSelect">Season:</label>
+    <select id="seasonSelect">
+      <option>Cargando...</option>
+    </select>
+  </div>
+
+  <div id="tabsBar"></div>
+
+  <div class="container">
+    <div id="content"><div class="loading">Cargando datos...</div></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
