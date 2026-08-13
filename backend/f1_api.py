@@ -84,10 +84,92 @@ async def season_results(season):
 
     return ordered_races
 
+async def season_qualifying(season):
+    races_by_round = {}
+    collected = 0
+    offset = 0
+    while True:
+        data = await _fetch(f"{season}/qualifying?limit=100&offset={offset}")
+        total = int(data["MRData"]["total"])
+        page_count = 0
+        races = data["MRData"]["RaceTable"]["Races"]
+        if not races: break
+        for race in races:
+            round_number = race["round"]
+            if round_number not in races_by_round: races_by_round[round_number] = {} 
+            weekend = races_by_round[round_number]
+            if "QualifyingResults" not in weekend:
+                weekend["QualifyingResults"] = []
+            if "QualifyingResults" in race:
+                drivers = race["QualifyingResults"]
+            else: 
+                drivers = []
+            page_count += len(drivers)
+            
+            weekend["QualifyingResults"].extend(drivers)
+
+            for key, value in race.items():
+                if key != "QualifyingResults" and key != "season":
+                    weekend[key] = value
+
+        collected += page_count
+        if collected >= total or page_count == 0:
+            break
+        offset += page_count
+
+    sorted_round_keys = sorted(races_by_round.keys(), key=int)
+    ordered_races = []
+    for r in sorted_round_keys:
+        ordered_races.append(races_by_round[r])
+
+    return ordered_races
+
+async def season_sprint(season):
+    races_by_round = {}
+    collected = 0
+    offset = 0
+    while True:
+        data = await _fetch(f"{season}/sprint?limit=100&offset={offset}")
+        total = int(data["MRData"]["total"])
+        page_count = 0
+        races = data["MRData"]["RaceTable"]["Races"]
+        if not races: break
+        for race in races:
+            round_number = race["round"]
+            if round_number not in races_by_round: races_by_round[round_number] = {} 
+            weekend = races_by_round[round_number]
+            if "SprintResults" not in weekend:
+                weekend["SprintResults"] = []
+            if "SprintResults" in race:
+                drivers = race["SprintResults"]
+            else: 
+                drivers = []
+            page_count += len(drivers)
+            
+            weekend["SprintResults"].extend(drivers)
+
+            for key, value in race.items():
+                if key != "SprintResults" and key != "season":
+                    weekend[key] = value
+
+        collected += page_count
+        if collected >= total or page_count == 0:
+            break
+        offset += page_count
+
+    sorted_round_keys = sorted(races_by_round.keys(), key=int)
+    ordered_races = []
+    for r in sorted_round_keys:
+        ordered_races.append(races_by_round[r])
+
+    return ordered_races
+
 if __name__ == "__main__":
     #pprint(asyncio.run(seasons()))
     #pprint(asyncio.run(races(2022)))
     #pprint(asyncio.run(driver_standings(2026)))
     #pprint(asyncio.run(constructor_standings(2026)))
     #pprint(asyncio.run(fastest_lap(2026)))
-    pprint(asyncio.run(season_results(2026)))
+    #pprint(asyncio.run(season_results(2026)))
+    #pprint(asyncio.run(season_qualifying(2026)))
+    pprint(asyncio.run(season_sprint(2026)))
