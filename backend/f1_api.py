@@ -174,10 +174,6 @@ async def pit_stops(season, race):
     data = await _fetch(f"{season}/{race}/pitstops")
     return data["MRData"]["RaceTable"]["Races"][0]["PitStops"]
 
-async def driver_info(driverId):
-    data = await _fetch(f"drivers/{driverId}")
-    return data["MRData"]["DriverTable"]["Drivers"][0]
-
 async def driver_race_results(driverId):
     data = await _fetch(f"drivers/{driverId}/results?limit=1000")
     return data["MRData"]["RaceTable"]["Races"]
@@ -232,7 +228,7 @@ async def driver_of_the_day(season):
 
     return rows
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
     #pprint(asyncio.run(seasons()))
     #pprint(asyncio.run(races(2022)))
     #pprint(asyncio.run(driver_standings(2026)))
@@ -244,4 +240,4 @@ if __name__ == "__main__":
     #pprint(asyncio.run(driver_race_results("hamilton")))
     #pprint((asyncio.run(fastest_pit_stops(2026))))
     #pprint(asyncio.run(race_info(2026, 1)))
-    pprint(asyncio.run(driver_of_the_day(2019)))
+    #pprint(asyncio.run(driver_of_the_day(2019)))
