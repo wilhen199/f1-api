@@ -1,11 +1,17 @@
 import asyncio
-from pprint import pprint
+from rich.pretty import pprint
 import httpx
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_URL = "https://api.jolpi.ca/ergast/f1"
-USER_AGENT = "f1-stats/1.0 (Learning project by F1 Stats)"
+USER_AGENT = "f1-stats/1.0 (F1 Stats learning project)"
 HEADERS = {"User-Agent": USER_AGENT}
 
+F1COM_BASE_URL = os.getenv("F1COM_BASE_URL")
+F1COM_APIKEY = os.getenv("F1COM_APIKEY")
 
 async def _fetch(suffix):
     url = f"{BASE_URL}/{suffix}"
@@ -164,6 +170,68 @@ async def season_sprint(season):
 
     return ordered_races
 
+async def pit_stops(season, race):
+    data = await _fetch(f"{season}/{race}/pitstops")
+    return data["MRData"]["RaceTable"]["Races"][0]["PitStops"]
+
+async def driver_info(driverId):
+    data = await _fetch(f"drivers/{driverId}")
+    return data["MRData"]["DriverTable"]["Drivers"][0]
+
+async def driver_race_results(driverId):
+    data = await _fetch(f"drivers/{driverId}/results?limit=1000")
+    return data["MRData"]["RaceTable"]["Races"]
+
+async def fastest_pit_stops(season):
+    #Fastest Pit Stops (DHL Awards, ~2 s). Publish Official F1 website at /en/results/{season}/awards/fastest-pit-stops.
+
+    url = f"{F1COM_BASE_URL}/v2/fom-results/fastest-pit-stops?season={season}"
+    try:
+        async with httpx.AsyncClient(timeout=20, headers={"User-Agent": USER_AGENT, "apikey": F1COM_APIKEY},) as client:
+            resp = await client.get(url)
+            resp.raise_for_status()
+            rows = (resp.json() or {}).get("fastestPitStops", [])
+    except httpx.HTTPError:
+        rows = []
+
+    return rows
+
+async def race_info(season, round_):
+    #A specific race (results + qualifying + sprint combined).
+    async def _one(endpoint): # results / qualifying / sprint
+        try:
+            data = await _fetch(f"{season}/{round_}/{endpoint}")
+            races = data["MRData"]["RaceTable"]["Races"]
+            return races[0] if races else None
+        except httpx.HTTPError:
+            return None
+
+    results, qualifying, sprint = await asyncio.gather(
+        _one("results"), _one("qualifying"), _one("sprint")
+    )
+    return {
+        "race": results,
+        "results": results.get("Results", []) if results else [],
+        "qualifying": qualifying.get("QualifyingResults", []) if qualifying else [],
+        "sprint": sprint.get("SprintResults", []) if sprint else [],
+    }
+
+async def driver_of_the_day(season):
+
+    url = f"{F1COM_BASE_URL}/v2/fom-results/driver-of-the-day?season={season}"
+    try:
+        async with httpx.AsyncClient(
+            timeout=20,
+            headers={"User-Agent": USER_AGENT, "apikey": F1COM_APIKEY},
+        ) as client:
+            resp = await client.get(url)
+            resp.raise_for_status()
+            rows = (resp.json() or {}).get("driverOfTheDay", [])
+    except httpx.HTTPError:
+        rows = []
+
+    return rows
+
 if __name__ == "__main__":
     #pprint(asyncio.run(seasons()))
     #pprint(asyncio.run(races(2022)))
@@ -172,4 +240,8 @@ if __name__ == "__main__":
     #pprint(asyncio.run(fastest_lap(2026)))
     #pprint(asyncio.run(season_results(2026)))
     #pprint(asyncio.run(season_qualifying(2026)))
-    pprint(asyncio.run(season_sprint(2026)))
+    #pprint(asyncio.run(season_sprint(2026)))
+    #pprint(asyncio.run(driver_race_results("hamilton")))
+    #pprint((asyncio.run(fastest_pit_stops(2026))))
+    #pprint(asyncio.run(race_info(2026, 1)))
+    pprint(asyncio.run(driver_of_the_day(2019)))
