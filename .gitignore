@@ -1,5 +1,5 @@
 .venv-f1/
-
+.env
 __pycache__/
 *.pyc
 backend/cache/
