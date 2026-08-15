@@ -22,15 +22,46 @@ async def get_races(season: int = Query(default=current_season, ge=1950)):
     races = await f1_api.races(season)
     return races
 
-@app.get("/api/driverstandings")
+@app.get("/api/standings/drivers")
 async def standings_drivers(season: int = Query(default=current_season, ge=1950)):
     standings = await f1_api.driver_standings(season)
-    return standings
+    rows = [
+        {
+            "position": s.get("position") or s.get("positionText"),
+            "driver": helpers._driver(s.get("Driver") or {}),
+            "nationality": (helpers._driver(s.get("Driver") or {})).get("nationality"),
+            "points": s.get("points", "0"),
+            "wins": s.get("wins", "0"),
+            "team": helpers._team(helpers._constructor(s)),
+        }
+        for s in standings
+    ]
+    
+    await asyncio.gather(
+        helpers._resolve_fotos([r["driver"] for r in rows], "driver"),
+        helpers._resolve_fotos([r["team"] for r in rows], "team"),
+    )
+    
+    return {"season": season, "rows": rows}
 
-@app.get("/api/constructorstandings")
-async def standings_constructors(season: int = Query(default=current_season, ge=1950)):
+@app.get("/api/standings/teams")
+async def standings_teams(season: int = Query(default=current_season, ge=1950)):
     standings = await f1_api.constructor_standings(season)
-    return standings
+    rows = [
+        {
+            "position": s.get("position") or s.get("positionText"),
+            "team": helpers._team(s.get("Constructor") or {}),
+            "country" : (helpers._team(s.get("Constructor") or {})).get("country"),
+            "points": s.get("points", "0"),
+            "wins": s.get("wins", "0"),
+        }
+        for s in standings
+    ]
+    
+    await asyncio.gather(
+    helpers._resolve_fotos([r["team"] for r in rows], "team")
+    )
+    return {"season": season, "rows": rows}
 
 @app.get("/api/fastestlap")
 async def fastest_lap(season: int = Query(default=current_season, ge=1950)):
