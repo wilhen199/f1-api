@@ -68,17 +68,17 @@ async def fastest_lap(season: int = Query(default=current_season, ge=1950)):
     fastest = await f1_api.fastest_lap(season)
     return fastest
 
-@app.get("/api/seasonresults")
+@app.get("/api/results/season")
 async def season_results(season: int = Query(default=current_season, ge=1950)):
     results = await f1_api.season_results(season)
     return results
 
-@app.get("/api/seasonqualifying")
+@app.get("/api/results/qualifying")
 async def season_qualifying(season: int = Query(default=current_season, ge=1950)):
     qualifying = await f1_api.season_qualifying(season)
     return qualifying
 
-@app.get("/api/seasonsprint")
+@app.get("/api/results/sprint")
 async def season_sprint(season: int = Query(default=current_season, ge=1950)):
     sprint = await f1_api.season_sprint(season)
     return sprint
@@ -153,12 +153,5 @@ async def fastest_pit_stops(season: int = Query(default=current_season, ge=1950)
 async def driver_of_the_day(season: int = Query(default=current_season, ge=2019)):
     dotd = await f1_api.driver_of_the_day(season)
     return dotd
-
-#async def season_info(
-#    season: int = Query(default=current_season, ge=1950),
-#    round_: int = Query(default=1, ge=1)
-#    ):
-#    race_info = await f1_api.race_info(season, round_)
-#    return race_info
 
 app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
