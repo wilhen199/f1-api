@@ -7,7 +7,6 @@ from datetime import datetime
 import images
 import helpers
 
-
 current_season = datetime.now().year
 
 app = FastAPI()
@@ -174,5 +173,93 @@ async def results_list(
         rows.append(row)
     return {"season": season, "rows": rows}
 
+@app.get("/api/results/race/{round}")
+async def race_detail(
+    round: int,
+    season: int = Query(default=current_season, ge=1950)
+    ):
+    info = await f1_api.race_info(season, round)
+    if not info: raise HTTPException(404, "Race is not found")
+    
+    results_rows = []
+    for result in info.get("results", []):
+        driver = helpers._driver(result.get("Driver") or {})
+        team = helpers._team(result.get("Constructor") or {})
+        row = {
+            "position": result.get("position"),
+            "grid": result.get("grid"),
+            "laps": result.get("laps"),
+            "time": (result.get("Time") or {}).get("time"),
+            "points": result.get("points"),
+            "status": result.get("status"),
+            "fastestLap": (result.get("FastestLap") or {}).get("Time", {}).get("time"),
+            "driver": driver,
+            "team": team,
+            #"fastestLap": (result.get("FastestLap") or {}).get("Time", {}).get("time"),
+        }
+        results_rows.append(row)
+
+    quali_rows = []
+    for quali in info.get("qualifying", []):
+        driver = helpers._driver(quali.get("Driver") or {})
+        team = helpers._team(quali.get("Constructor") or {})
+        quali_raw  = sorted(info.get("qualifying", []), key=lambda x: x.get("position"))
+        if quali_raw:
+            p1 = quali_raw[0]
+            pole = {
+                "driver": driver,
+                "team": team,
+                "time": p1.get("Q3") or p1.get("Q2") or p1.get("Q1"),
+            }
+#            driver_items.append(pole["driver"])
+#            team_items.append(pole["team"])
+        row = {
+            "position": quali.get("position"),
+            "q1": quali.get("Q1"),
+            "q2": quali.get("Q2"),
+            "q3": quali.get("Q3"),
+            "driver": driver,
+            "team": team,
+            "pole": pole if pole else {}
+        }
+        quali_rows.append(row)
+
+    sprint_rows = []
+    for sprint in info.get("sprint", []):
+        driver = helpers._driver(sprint.get("Driver") or {})
+        team = helpers._team(sprint.get("Constructor") or {})
+        row = {
+            "position": sprint.get("position"),
+            "grid": sprint.get("grid"),
+            "laps": sprint.get("laps"),
+            "time": (sprint.get("Time") or {}).get("time"),
+            "status": sprint.get("status"),
+            "points": sprint.get("points"),
+            "fastestLap": (sprint.get("FastestLap") or {}).get("Time", {}).get("time"),
+            "driver": driver,
+            "team": team,
+        }
+        sprint_rows.append(row)
+
+    driver_items = [driver]
+    team_items = [team]
+
+    fastest_pit_stops = await f1_api.fastest_pit_stops(season)
+
+#    await asyncio.gather(
+#        helpers._resolve_photos(driver_items, "driver"),
+#        helpers._resolve_photos(team_items, "team"),
+#    )
+    return {
+        "season": season,
+        "has_sprint?": bool(info["sprint"]),
+        "race": helpers._race(info.get("race", {}), results_rows),
+        "results": results_rows,
+        "qualifying": quali_rows,
+        "sprint": sprint_rows,
+        "pole": pole,
+#        "fastest_pit_stops": fastest_pit_stops,
+#        "driver_of_the_day": driver_of_the_day
+    }
 
 app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
