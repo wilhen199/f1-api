@@ -28,10 +28,9 @@ async def standings_drivers(season: int = Query(default=current_season, ge=1950)
     rows = [
         {
             "position": s.get("position") or s.get("positionText"),
-            "driver": helpers._driver(s.get("Driver") or {}),
-            "nationality": (helpers._driver(s.get("Driver") or {})).get("nationality"),
             "points": s.get("points", "0"),
             "wins": s.get("wins", "0"),
+            "driver": helpers._driver(s.get("Driver") or {}),
             "team": helpers._team(helpers._constructor(s)),
         }
         for s in standings
@@ -50,10 +49,9 @@ async def standings_teams(season: int = Query(default=current_season, ge=1950)):
     rows = [
         {
             "position": s.get("position") or s.get("positionText"),
-            "team": helpers._team(s.get("Constructor") or {}),
-            "country" : (helpers._team(s.get("Constructor") or {})).get("country"),
             "points": s.get("points", "0"),
             "wins": s.get("wins", "0"),
+            "team": helpers._team(s.get("Constructor") or {}),
         }
         for s in standings
     ]
