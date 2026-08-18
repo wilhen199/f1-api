@@ -32,26 +32,16 @@ def _team(team):
         "info": team.get("url")
     }
 
-def _race(race):
+def _race(race, rows):
     return {
-        "raceId": race.get("raceId"),
-        "season": race.get("season"),
         "round": race.get("round"),
-        "url": race.get("url"),
         "raceName": race.get("raceName"),
         "date": race.get("date"),
         "time": race.get("time"),
-        "Circuit": {
-            "circuitId": race.get("Circuit", {}).get("circuitId"),
-            "url": race.get("Circuit", {}).get("url"),
-            "circuitName": race.get("Circuit", {}).get("circuitName"),
-            "Location": {
-                "lat": race.get("Circuit", {}).get("Location", {}).get("lat"),
-                "long": race.get("Circuit", {}).get("Location", {}).get("long"),
-                "locality": race.get("Circuit", {}).get("Location", {}).get("locality"),
-                "country": race.get("Circuit", {}).get("Location", {}).get("country"),
-            },
-        },
+        "circuit": race.get("Circuit", {}).get("circuitName"),
+        "country": race.get("Circuit", {}).get("Location", {}).get("country"),
+        "flag": images.flag_url(race.get("Circuit", {}).get("Location", {}).get("country")),
+        "laps": (rows[0].get("laps") if rows else None)
     }
 
 async def _resolve_fotos(items, kind):
