@@ -154,4 +154,25 @@ async def driver_of_the_day(season: int = Query(default=current_season, ge=2019)
     dotd = await f1_api.driver_of_the_day(season)
     return dotd
 
+@app.get("/api/results") # Circuit list
+async def results_list(
+    season: int = Query(default=current_season, ge=1950)):
+    races = await f1_api.season_results(season)
+    rows = []
+    for race in races:
+        raw = race.get("Results", [])
+        if not raw: continue
+        row = {
+            "round": race.get("round"),
+            "raceName": race.get("raceName"),
+            "circuit": race.get("Circuit", {}).get("circuitName"),
+            "date": race.get("date"),
+            "country": race.get(("Circuit") or {}).get("Location", {}).get("country"),
+            "laps": race.get("Results")[0].get("laps"),
+            "flag": images.flag_url((race.get("Circuit") or {}).get("Location", {}).get("country")),
+        }
+        rows.append(row)
+    return {"season": season, "rows": rows}
+
+
 app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
