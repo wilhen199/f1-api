@@ -266,8 +266,15 @@ async def race_detail(
             driver_items.append(dotd_row[0]["driver"])
             team_items.append(dotd_row[0]["team"])
 
-    driver_items = [i["driver"] for i in results_rows]
-    team_items = [t["team"] for t in results_rows]
+#    driver_items = [i["driver"] for i in results_rows]
+#    team_items = [t["team"] for t in results_rows]
+    driver_items.extend([row["driver"] for row in results_rows])
+    team_items.extend([row["team"] for row in results_rows])
+    driver_items.extend([row["driver"] for row in quali_rows])
+    team_items.extend([row["team"] for row in quali_rows])
+    driver_items.extend([row["driver"] for row in sprint_rows])
+    team_items.extend([row["team"] for row in sprint_rows])
+
 
     await asyncio.gather(
         helpers._resolve_photos(driver_items, "driver"),
