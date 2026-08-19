@@ -155,11 +155,9 @@ async def driver_of_the_day(season: int = Query(default=current_season, ge=2019)
 async def results_list(
     season: int = Query(default=current_season, ge=1950)):
     races = await f1_api.season_results(season)
-    rows = []
-    for race in races:
-        raw = race.get("Results", [])
-        if not raw: continue
-        row = {
+    if not races: raise HTTPException(404, "Season not found")
+    rows = [
+        {
             "round": race.get("round"),
             "raceName": race.get("raceName"),
             "circuit": race.get("Circuit", {}).get("circuitName"),
@@ -168,7 +166,9 @@ async def results_list(
             "laps": race.get("Results")[0].get("laps"),
             "flag": images.flag_url((race.get("Circuit") or {}).get("Location", {}).get("country")),
         }
-        rows.append(row)
+        for race in races
+        if race.get("Results")
+    ]
     return {"season": season, "rows": rows}
 
 @app.get("/api/results/race/{round}")
@@ -183,43 +183,33 @@ async def race_detail(
     team_items = []
     
     # RACE RESULT
-    results_rows = []
-    for result in info.get("results", []):
-        driver = helpers._driver(result.get("Driver") or {})
-        team = helpers._team(result.get("Constructor") or {})
-        row = {
-            "position": result.get("position"),
-            "grid": result.get("grid"),
-            "laps": result.get("laps"),
-            "time": (result.get("Time") or {}).get("time"),
-            "points": result.get("points"),
-            "status": result.get("status"),
-            "fastestLap": (result.get("FastestLap") or {}).get("Time", {}).get("time"),
-            "driver": driver,
-            "team": team,
-        }
-        results_rows.append(row)
+    results_rows = [{
+        "position": result.get("position"),
+        "grid": result.get("grid"),
+        "laps": result.get("laps"),
+        "time": (result.get("Time") or {}).get("time"),
+        "points": result.get("points"),
+        "status": result.get("status"),
+        "fastestLap": (result.get("FastestLap") or {}).get("Time", {}).get("time"),
+        "driver": helpers._driver(result.get("Driver") or {}),
+        "team": helpers._team(result.get("Constructor") or {}),
+    }
+    for result in info.get("results", [])]
 
     # QUALI RESULT
-    quali_rows = []
-    for quali in info.get("qualifying", []):
-        driver = helpers._driver(quali.get("Driver") or {})
-        team = helpers._team(quali.get("Constructor") or {})
-
-        row = {
-            "position": quali.get("position"),
-            "q1": quali.get("Q1"),
-            "q2": quali.get("Q2"),
-            "q3": quali.get("Q3"),
-            "driver": driver,
-            "team": team,
-        }
-        quali_rows.append(row)
+    quali_rows = [{
+        "position": quali.get("position"),
+        "q1": quali.get("Q1"),
+        "q2": quali.get("Q2"),
+        "q3": quali.get("Q3"),
+        "driver": helpers._driver(quali.get("Driver") or {}),
+        "team": helpers._team(quali.get("Constructor") or {}),
+    } 
+    for quali in info.get("qualifying", [])]
     
     # POLE POTITION
     pole = None
-    position = int(quali.get("position"))
-    quali_raw = sorted(info.get("qualifying", []), key=lambda x: position)
+    quali_raw = sorted(info.get("qualifying", []), key=lambda x: int(x.get("position", 0)))
     if quali_raw:
         p1 = quali_raw[0]
         pole = {
@@ -231,22 +221,19 @@ async def race_detail(
         team_items.append(pole["team"])
 
     # SPRINT RESULT
-    sprint_rows = []
-    for sprint in info.get("sprint", []):
-        driver = helpers._driver(sprint.get("Driver") or {})
-        team = helpers._team(sprint.get("Constructor") or {})
-        row = {
-            "position": sprint.get("position"),
-            "grid": sprint.get("grid"),
-            "laps": sprint.get("laps"),
-            "time": (sprint.get("Time") or {}).get("time"),
-            "status": sprint.get("status"),
-            "points": sprint.get("points"),
-            "fastestLap": (sprint.get("FastestLap") or {}).get("Time", {}).get("time"),
-            "driver": driver,
-            "team": team,
-        }
-        sprint_rows.append(row)
+    sprint_rows = [{
+        "position": sprint.get("position"),
+        "grid": sprint.get("grid"),
+        "laps": sprint.get("laps"),
+        "time": (sprint.get("Time") or {}).get("time"),
+        "status": sprint.get("status"),
+        "points": sprint.get("points"),
+        "fastestLap": (sprint.get("FastestLap") or {}).get("Time", {}).get("time"),
+        "driver": helpers._driver(sprint.get("Driver") or {}),
+        "team": helpers._team(sprint.get("Constructor") or {}),
+    }
+    for sprint in info.get("sprint", [])]
+    
 
     # FASTEST PIT STOP
     fps_data = await f1_api.fastest_pit_stops(season)
@@ -268,17 +255,16 @@ async def race_detail(
     dotd_row = None
     if dotd_entry:
         search_lastname = dotd_entry.get("driverLastName", "").lower()
-        for r in info.get("results", []):
-            driver_raw = r.get("Driver") or {}
-            if driver_raw.get("familyName", "").lower() == search_lastname:
-                dotd_row = {
-                    "driver": helpers._driver(driver_raw),
-                    "team": helpers._team(r.get("Constructor") or {}),
-                    "percentage": dotd_entry.get("votePercentage"),
-                }
-                driver_items.append(dotd_row["driver"])
-                team_items.append(dotd_row["team"])
-                break
+        dotd_row = [{
+            "driver": helpers._driver(r.get("Driver") or {}),
+            "team": helpers._team(r.get("Constructor") or {}),
+            "percentage": dotd_entry.get("votePercentage"),
+        }
+        for r in info.get("results", [])
+        if (r.get("Driver") or {}).get("familyName", "").lower() == search_lastname]
+        if dotd_row:
+            driver_items.append(dotd_row[0]["driver"])
+            team_items.append(dotd_row[0]["team"])
 
     driver_items = [i["driver"] for i in results_rows]
     team_items = [t["team"] for t in results_rows]
