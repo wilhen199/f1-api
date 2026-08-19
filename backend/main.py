@@ -36,8 +36,8 @@ async def standings_drivers(season: int = Query(default=current_season, ge=1950)
     ]
     
     await asyncio.gather(
-        helpers._resolve_fotos([r["driver"] for r in rows], "driver"),
-        helpers._resolve_fotos([r["team"] for r in rows], "team"),
+        helpers._resolve_photos([r["driver"] for r in rows], "driver"),
+        helpers._resolve_photos([r["team"] for r in rows], "team"),
     )
     
     return {"season": season, "rows": rows}
@@ -56,7 +56,7 @@ async def standings_teams(season: int = Query(default=current_season, ge=1950)):
     ]
     
     await asyncio.gather(
-    helpers._resolve_fotos([r["team"] for r in rows], "team")
+    helpers._resolve_photos([r["team"] for r in rows], "team")
     )
     return {"season": season, "rows": rows}
 
@@ -128,8 +128,8 @@ async def driver_info(
         team_items.append(row_team)
 
     await asyncio.gather(
-        helpers._resolve_fotos(driver_items, "driver"),
-        helpers._resolve_fotos(team_items, "team"),
+        helpers._resolve_photos(driver_items, "driver"),
+        helpers._resolve_photos(team_items, "team"),
     )
     return {
         "season": season,
@@ -284,8 +284,8 @@ async def race_detail(
     team_items = [t["team"] for t in results_rows]
 
     await asyncio.gather(
-        helpers._resolve_fotos(driver_items, "driver"),
-        helpers._resolve_fotos(team_items, "team"),
+        helpers._resolve_photos(driver_items, "driver"),
+        helpers._resolve_photos(team_items, "team"),
     )
 
     return {
@@ -380,8 +380,8 @@ async def awards(season: int = Query(default=current_season, ge=1950)):
         })
 
     await asyncio.gather(
-        helpers._resolve_fotos(driver_items, "driver"),
-        helpers._resolve_fotos(team_items, "team"),
+        helpers._resolve_photos(driver_items, "driver"),
+        helpers._resolve_photos(team_items, "team"),
     )
     return {"season": season, "rows": rows}
 

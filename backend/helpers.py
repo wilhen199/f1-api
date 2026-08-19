@@ -11,7 +11,7 @@ def _driver(driver):
         "dateOfBirth": driver.get("dateOfBirth"),
         "nationality": driver.get("nationality"),
         "flag": images.flag_url(driver.get("nationality")),
-        "url": driver.get("url"),
+        "info": driver.get("url"),
     
     }
 
@@ -44,7 +44,7 @@ def _race(race, rows):
         "laps": (rows[0].get("laps") if rows else None)
     }
 
-async def _resolve_fotos(items, kind):
+async def _resolve_photos(items, kind):
     # Official F1
     for i in items:
         i["photo"] = (
