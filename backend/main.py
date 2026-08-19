@@ -27,10 +27,9 @@ async def standings_drivers(season: int = Query(default=current_season, ge=1950)
     rows = [
         {
             "position": s.get("position") or s.get("positionText"),
-            "driver": helpers._driver(s.get("Driver") or {}),
-            "nationality": (helpers._driver(s.get("Driver") or {})).get("nationality"),
             "points": s.get("points", "0"),
             "wins": s.get("wins", "0"),
+            "driver": helpers._driver(s.get("Driver") or {}),
             "team": helpers._team(helpers._constructor(s)),
         }
         for s in standings
@@ -49,10 +48,9 @@ async def standings_teams(season: int = Query(default=current_season, ge=1950)):
     rows = [
         {
             "position": s.get("position") or s.get("positionText"),
-            "team": helpers._team(s.get("Constructor") or {}),
-            "country" : (helpers._team(s.get("Constructor") or {})).get("country"),
             "points": s.get("points", "0"),
             "wins": s.get("wins", "0"),
+            "team": helpers._team(s.get("Constructor") or {}),
         }
         for s in standings
     ]
@@ -261,5 +259,85 @@ async def race_detail(
 #        "fastest_pit_stops": fastest_pit_stops,
 #        "driver_of_the_day": driver_of_the_day
     }
+
+@app.get("/api/awards")
+async def awards(season: int = Query(default=current_season, ge=1950)):
+    season_data, quali_data, fps_data, dotd_data = await asyncio.gather(
+        f1_api.season_results(season), 
+        f1_api.season_qualifying(season), 
+        f1_api.fastest_pit_stops(season), 
+        f1_api.driver_of_the_day(season),)
+        
+    rows = []
+    driver_items = []
+    team_items = []
+
+    for race in season_data:
+        round_num = race.get("round")
+        round_date = race.get("date")
+        country = race.get("Circuit", {}).get("Location", {}).get("country")
+        races_results = race.get("Results", [])
+        laps = races_results[0].get("laps") if races_results else None
+        quali_results = next((r for r in quali_data if r.get("round") == round_num), {}).get("QualifyingResults", [])
+
+        top5_drivers = [helpers._driver(races_results[i].get("Driver") or {}) for i in range(5)]
+        driver_items.extend(top5_drivers)
+
+        row_team = helpers._team(races_results[0].get("Constructor") or {})
+        team_items.append(row_team)
+
+        fps_item = {}
+        for f in fps_data:
+            if f.get("meetingEndDate") == round_date or f.get("meetingIsoCountryName") == country:
+                fps_item = f
+                break
+
+        dotd_entry = {}
+        for d in dotd_data:
+            if d.get("meetingEndDate") == round_date:
+                dotd_entry = d
+                break
+            
+        dotd_row = None
+        if dotd_entry:
+            search_lastname = dotd_entry.get("driverLastName", "").lower()
+            for r in races_results:
+                driver_raw = r.get("Driver") or {}
+                if driver_raw.get("familyName", "").lower() == search_lastname:
+                    dotd_row = {
+                        "driver": helpers._driver(driver_raw),
+                        "team": helpers._team(r.get("Constructor") or {}),
+                        "percentage": dotd_entry.get("votePercentage"),
+                    }
+                    driver_items.append(dotd_row["driver"])
+                    team_items.append(dotd_row["team"])
+                    break
+
+        rows.append({
+            "round" : round_num,
+            "raceName": race.get("raceName"),
+            "circuit": race.get("Circuit", {}).get("circuitName"),
+            "date": race.get("date"),
+            "country": race.get("Circuit", {}).get("Location", {}).get("country"),
+            "flag_circuit": images.flag_url((race.get("Circuit") or {}).get("Location", {}).get("country")),
+            "laps": laps,
+            "winner": top5_drivers[0],
+            "team": row_team,
+            "top_5": top5_drivers,
+            "pole": quali_results[0] if quali_results else None,
+            "driver_of_the_day": dotd_row,
+            "fastest_pit_stop": {
+                "team": fps_item.get("teamName"),
+                "time": fps_item.get("displayTime"),  # e.g. "2.17s"
+                "pit_box_time": fps_item.get("pitBoxTime"),  # e.g. "2.170"
+                "colour": fps_item.get("teamColourCode"),
+            } if fps_item else None,
+        })
+
+    await asyncio.gather(
+        helpers._resolve_fotos(driver_items, "driver"),
+        helpers._resolve_fotos(team_items, "team"),
+    )
+    return {"season": season, "rows": rows}
 
 app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
