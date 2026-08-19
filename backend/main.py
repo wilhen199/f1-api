@@ -179,6 +179,10 @@ async def race_detail(
     info = await f1_api.race_info(season, round)
     if not info: raise HTTPException(404, "Race is not found")
     
+    driver_items = []
+    team_items = []
+    
+    # RACE RESULT
     results_rows = []
     for result in info.get("results", []):
         driver = helpers._driver(result.get("Driver") or {})
@@ -193,24 +197,15 @@ async def race_detail(
             "fastestLap": (result.get("FastestLap") or {}).get("Time", {}).get("time"),
             "driver": driver,
             "team": team,
-            #"fastestLap": (result.get("FastestLap") or {}).get("Time", {}).get("time"),
         }
         results_rows.append(row)
 
+    # QUALI RESULT
     quali_rows = []
     for quali in info.get("qualifying", []):
         driver = helpers._driver(quali.get("Driver") or {})
         team = helpers._team(quali.get("Constructor") or {})
-        quali_raw  = sorted(info.get("qualifying", []), key=lambda x: x.get("position"))
-        if quali_raw:
-            p1 = quali_raw[0]
-            pole = {
-                "driver": driver,
-                "team": team,
-                "time": p1.get("Q3") or p1.get("Q2") or p1.get("Q1"),
-            }
-#            driver_items.append(pole["driver"])
-#            team_items.append(pole["team"])
+
         row = {
             "position": quali.get("position"),
             "q1": quali.get("Q1"),
@@ -218,10 +213,24 @@ async def race_detail(
             "q3": quali.get("Q3"),
             "driver": driver,
             "team": team,
-            "pole": pole if pole else {}
         }
         quali_rows.append(row)
+    
+    # POLE POTITION
+    pole = None
+    position = int(quali.get("position"))
+    quali_raw = sorted(info.get("qualifying", []), key=lambda x: position)
+    if quali_raw:
+        p1 = quali_raw[0]
+        pole = {
+            "driver": helpers._driver(p1.get("Driver") or {}),
+            "team": helpers._team(p1.get("Constructor") or {}),
+            "time": p1.get("Q3") or p1.get("Q2") or p1.get("Q1"),
+        }
+        driver_items.append(pole["driver"])
+        team_items.append(pole["team"])
 
+    # SPRINT RESULT
     sprint_rows = []
     for sprint in info.get("sprint", []):
         driver = helpers._driver(sprint.get("Driver") or {})
@@ -239,15 +248,46 @@ async def race_detail(
         }
         sprint_rows.append(row)
 
-    driver_items = [driver]
-    team_items = [team]
+    # FASTEST PIT STOP
+    fps_data = await f1_api.fastest_pit_stops(season)
+    fps_item = {}
+    round_date = info.get("race", []).get("date")
+    country = info.get("Circuit", {}).get("Location", {}).get("country")
+    for f in fps_data:
+        if f.get("meetingEndDate") == round_date or f.get("meetingIsoCountryName") == country:
+            fps_item = f
+            break
 
-    fastest_pit_stops = await f1_api.fastest_pit_stops(season)
+    # DRIVER OF THE DAY
+    dotd_data = await f1_api.driver_of_the_day(season)
+    dotd_entry = {}
+    for d in dotd_data:
+        if d.get("meetingEndDate") == round_date:
+            dotd_entry = d
+            break
+    dotd_row = None
+    if dotd_entry:
+        search_lastname = dotd_entry.get("driverLastName", "").lower()
+        for r in info.get("results", []):
+            driver_raw = r.get("Driver") or {}
+            if driver_raw.get("familyName", "").lower() == search_lastname:
+                dotd_row = {
+                    "driver": helpers._driver(driver_raw),
+                    "team": helpers._team(r.get("Constructor") or {}),
+                    "percentage": dotd_entry.get("votePercentage"),
+                }
+                driver_items.append(dotd_row["driver"])
+                team_items.append(dotd_row["team"])
+                break
 
-#    await asyncio.gather(
-#        helpers._resolve_photos(driver_items, "driver"),
-#        helpers._resolve_photos(team_items, "team"),
-#    )
+    driver_items = [i["driver"] for i in results_rows]
+    team_items = [t["team"] for t in results_rows]
+
+    await asyncio.gather(
+        helpers._resolve_fotos(driver_items, "driver"),
+        helpers._resolve_fotos(team_items, "team"),
+    )
+
     return {
         "season": season,
         "has_sprint?": bool(info["sprint"]),
@@ -256,8 +296,13 @@ async def race_detail(
         "qualifying": quali_rows,
         "sprint": sprint_rows,
         "pole": pole,
-#        "fastest_pit_stops": fastest_pit_stops,
-#        "driver_of_the_day": driver_of_the_day
+        "fastest_pit_stops": {
+                "team": fps_item.get("teamName"),
+                "time": fps_item.get("displayTime"),  # e.g. "2.17s"
+                "pit_box_time": fps_item.get("pitBoxTime"),  # e.g. "2.170"
+                "colour": fps_item.get("teamColourCode"),
+            } if fps_item else None,
+        "driver_of_the_day": dotd_row
     }
 
 @app.get("/api/awards")
