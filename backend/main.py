@@ -6,6 +6,7 @@ import f1_api
 from datetime import datetime
 import images
 import helpers
+from rich.pretty import pprint
 
 current_season = datetime.now().year
 
@@ -138,6 +139,64 @@ async def driver_info(
         "position": result_driver.get("position") or result_driver.get("positionText"),
         "points": result_driver.get("points", "0"),
         "wins": result_driver.get("wins", "0"),
+        "races": races_rows,
+    }
+
+@app.get("/api/team/{teamId}")
+async def driver_info(
+    teamId: str, season: int = Query(default=current_season, ge=1950)
+    ):
+    standings = await f1_api.constructor_standings(season)
+    result_team = next((row for row in standings if (row.get("Constructor") or {}).get("constructorId", "").lower() == teamId.lower()), None)
+    if not result_team:
+        raise HTTPException(404, "Team not found on that season")
+    
+    team = helpers._team(result_team.get("Constructor") or {})
+    races = await f1_api.season_results(season)
+    races_rows = []
+    team_items = [team]
+    driver_items = [
+        helpers._driver(d.get("Driver") or {})
+        for d in await f1_api.driver_standings(season)
+        if (d.get("Constructors") or [{}])[0].get("constructorId", "").lower() == teamId.lower()]
+    for race in races:
+        result_race = [
+            row 
+            for row in race.get("Results", []) 
+            if (row.get("Constructor") or {}).get("constructorId", "").lower() == teamId.lower()
+            ]
+        if not result_race:
+            continue
+
+        row_driver = [{
+            "driver": helpers._driver(r.get("Driver") or {}),
+            "position": r.get("position"),
+            "points": r.get("points"),
+            "status": r.get("status"),
+        } 
+        for r in result_race
+        ]
+        
+        races_rows.append(
+            {
+                "round": race.get("round"),
+                "raceName": race.get("raceName"),
+                "flag": images.flag_url((race.get("Circuit") or {}).get("Location", {}).get("country")),
+                "date": race.get("date"),
+                "drivers": row_driver,
+            })
+
+    await asyncio.gather(
+        helpers._resolve_photos(driver_items, "driver"),
+        helpers._resolve_photos(team_items, "team"),
+    )
+    return {
+        "season": season,
+        "team": team,
+        "driver": driver_items,
+        "position": int(result_team.get("position") or result_team.get("positionText")),
+        "points": result_team.get("points", "0"),
+        "wins": result_team.get("wins", "0"),
         "races": races_rows,
     }
 
