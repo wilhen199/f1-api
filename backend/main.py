@@ -12,14 +12,18 @@ current_season = datetime.now().year
 app = FastAPI()
 FRONTEND_DIR = pathlib.Path(__file__).resolve().parent.parent / "frontend"
 
+
+#######################
+#------ GENERAL ------#
+#######################
+
 @app.get("/api/seasons")
 async def get_seasons():
     return await f1_api.seasons()
 
-@app.get("/api/races")
-async def get_races(season: int = Query(default=current_season, ge=1950)):
-    races = await f1_api.races(season)
-    return races
+#########################
+#------ STANDINGS ------#
+#########################
 
 @app.get("/api/standings/drivers")
 async def standings_drivers(season: int = Query(default=current_season, ge=1950)):
@@ -60,10 +64,14 @@ async def standings_teams(season: int = Query(default=current_season, ge=1950)):
     )
     return {"season": season, "rows": rows}
 
-@app.get("/api/fastestlap")
-async def fastest_lap(season: int = Query(default=current_season, ge=1950)):
-    fastest = await f1_api.fastest_lap(season)
-    return fastest
+#######################
+#------ RESULTS ------#
+#######################
+
+@app.get("/api/races")
+async def get_races(season: int = Query(default=current_season, ge=1950)):
+    races = await f1_api.races(season)
+    return races
 
 @app.get("/api/results/season")
 async def season_results(season: int = Query(default=current_season, ge=1950)):
@@ -79,14 +87,6 @@ async def season_qualifying(season: int = Query(default=current_season, ge=1950)
 async def season_sprint(season: int = Query(default=current_season, ge=1950)):
     sprint = await f1_api.season_sprint(season)
     return sprint
-
-@app.get("/api/pitstop")
-async def pit_stops(
-    season: int = Query(default=current_season, ge=1950),
-    race: int = Query(..., ge=1)
-    ):
-    stops = await f1_api.pit_stops(season, race)
-    return stops
 
 @app.get("/api/driver/{driverId}")
 async def driver_info(
@@ -140,16 +140,6 @@ async def driver_info(
         "wins": result_driver.get("wins", "0"),
         "races": races_rows,
     }
-
-@app.get("/api/fastestpitstops")
-async def fastest_pit_stops(season: int = Query(default=current_season, ge=1950)):
-    fastest = await f1_api.fastest_pit_stops(season)
-    return fastest
-
-@app.get("/api/dotd")
-async def driver_of_the_day(season: int = Query(default=current_season, ge=2019)):
-    dotd = await f1_api.driver_of_the_day(season)
-    return dotd
 
 @app.get("/api/results") # Circuit list
 async def results_list(
@@ -297,6 +287,34 @@ async def race_detail(
             } if fps_item else None,
         "driver_of_the_day": dotd_row
     }
+
+
+######################
+#------ AWARDS ------#
+######################
+
+@app.get("/api/fastestlap")
+async def fastest_lap(season: int = Query(default=current_season, ge=1950)):
+    fastest = await f1_api.fastest_lap(season)
+    return fastest
+
+@app.get("/api/fastestpitstops")
+async def fastest_pit_stops(season: int = Query(default=current_season, ge=1950)):
+    fastest = await f1_api.fastest_pit_stops(season)
+    return fastest
+
+@app.get("/api/dotd")
+async def driver_of_the_day(season: int = Query(default=current_season, ge=2019)):
+    dotd = await f1_api.driver_of_the_day(season)
+    return dotd
+
+@app.get("/api/pitstop")
+async def pit_stops(
+    season: int = Query(default=current_season, ge=1950),
+    race: int = Query(..., ge=1)
+    ):
+    stops = await f1_api.pit_stops(season, race)
+    return stops
 
 @app.get("/api/awards")
 async def awards(season: int = Query(default=current_season, ge=1950)):
