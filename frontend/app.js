@@ -35,7 +35,7 @@ async function renderTabsBar() {
     tab.className = "tab"
     tabBar.appendChild(tab)
     tab.addEventListener("click", () => {
-      currentTab = i
+    currentTab = i
     const season = document.getElementById("seasonSelect").value
     console.log(i)
     if (i === "Drivers") {loadStandingsDrivers(season);}
@@ -75,8 +75,7 @@ async function loadStandingsDrivers(season) {
     content.innerHTML += `
     <p>
     ${row.position} -
-    ${row.driver.givenName} 
-    ${row.driver.familyName} -
+    <a href="/driver/${row.driver.id}?season=${season}"> ${row.driver.givenName} ${row.driver.familyName} </a> -
     ${row.driver.nationality} -
     ${row.team.name} -
     ${row.points} pts -
@@ -95,7 +94,7 @@ async function loadStandingsTeams(season) {
     content.innerHTML += `
     <p>
     ${row.position} -
-    ${row.team.name} -
+    <a href="/team/${row.team.id}?season=${season}"> ${row.team.name} </a> -
     ${row.team.nationality} -
     ${row.points} pts -
     ${row.wins} pts
