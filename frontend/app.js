@@ -2,112 +2,167 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("F1 app loaded!");
-  loadSeason()
-  renderTabsBar()
+  loadSeason();
+  renderTabsBar();
+  document.getElementById("navStandings").classList.add("active");
 
   document.getElementById("navStandings").addEventListener("click", () => {
-    document.getElementById("tabsBar").style.display = "flex"
-    const season = document.getElementById("seasonSelect").value
-    if (currentTab === "Drivers") {loadStandingsDrivers(season);}
-    else {loadStandingsTeams(season)}
-  })
+    document.getElementById("tabsBar").style.display = "flex";
+    const allNavs = document.querySelectorAll(".nav-link");
+    for (const n of allNavs) {
+      n.classList.remove("active");
+    }
+    document.getElementById("navStandings").classList.add("active");
+    const season = document.getElementById("seasonSelect").value;
+    if (currentTab === "Drivers") {
+      loadStandingsDrivers(season);
+    } else {
+      loadStandingsTeams(season);
+    }
+  });
 
-    document.getElementById("navResults").addEventListener("click", () => {
-    document.getElementById("tabsBar").style.display = "none"
-    const season = document.getElementById("seasonSelect").value
-    document.getElementById("content").innerHTML = "<h1>Round Results Soon</h1>"
-  })
-})
+  document.getElementById("navResults").addEventListener("click", () => {
+    document.getElementById("tabsBar").style.display = "none";
+    const allNavs = document.querySelectorAll(".nav-link");
+    for (const n of allNavs) {
+      n.classList.remove("active");
+    }
+    document.getElementById("navResults").classList.add("active");
+    const season = document.getElementById("seasonSelect").value;
+    document.getElementById("content").innerHTML = "<h1>Round Results Soon</h1>";
+  });
+});
 
 /* ##### VARIABLES ##### */
-let currentTab = "Drivers"
-
+let currentTab = "Drivers";
 
 /* ##### MENU - TABS ##### */
 
 async function renderTabsBar() {
-  const tabBar = document.getElementById("tabsBar")
-  const tabs = ["Drivers", "Teams"]
+  const tabBar = document.getElementById("tabsBar");
+  const tabs = ["Drivers", "Teams"];
   for (const i of tabs) {
-
-    const tab = document.createElement("div")
-    tab.textContent = i
-    tab.className = "tab"
-    tabBar.appendChild(tab)
-    if (i === currentTab ) {
-      tab.classList.add("active")
+    const tab = document.createElement("div");
+    tab.textContent = i;
+    tab.className = "tab";
+    tabBar.appendChild(tab);
+    if (i === currentTab) {
+      tab.classList.add("active");
     }
     tab.addEventListener("click", () => {
-      const allTabs = document.querySelectorAll(".tab")
+      const allTabs = document.querySelectorAll(".tab");
       for (const t of allTabs) {
-        t.classList.remove("active")
+        t.classList.remove("active");
       }
-      tab.classList.add("active")
-      currentTab = i
-      const season = document.getElementById("seasonSelect").value
-      console.log(i)
-      if (i === "Drivers") {loadStandingsDrivers(season);}
-      else 
-      {loadStandingsTeams(season);}
-  })
+      tab.classList.add("active");
+      currentTab = i;
+      const season = document.getElementById("seasonSelect").value;
+      console.log(i);
+      if (i === "Drivers") {
+        loadStandingsDrivers(season);
+      } else {
+        loadStandingsTeams(season);
+      }
+    });
   }
 }
 
 async function loadSeason() {
-  const response = await fetch("/api/seasons")
-  const seasons = await response.json()
+  const response = await fetch("/api/seasons");
+  const seasons = await response.json();
 
-  const select = document.getElementById("seasonSelect")
-  select.innerHTML = ''
+  const select = document.getElementById("seasonSelect");
+  select.innerHTML = "";
 
   for (const season of seasons) {
-    const option = document.createElement("option")
-    option.value = season
-    option.textContent = season
-    select.appendChild(option)
+    const option = document.createElement("option");
+    option.value = season;
+    option.textContent = season;
+    select.appendChild(option);
   }
   select.addEventListener("change", () => {
-    if (currentTab === "Drivers") {loadStandingsDrivers(select.value);}
-    else {loadStandingsTeams(select.value);}
-    })
+    if (currentTab === "Drivers") {
+      loadStandingsDrivers(select.value);
+    } else {
+      loadStandingsTeams(select.value);
+    }
+  });
 
-  loadStandingsDrivers(select.value)
+  loadStandingsDrivers(select.value);
 }
 
 async function loadStandingsDrivers(season) {
-  const response = await fetch(`/api/standings/drivers?season=${season}`)
-  const data = await response.json()
-  const content = document.getElementById('content')
-  content.innerHTML = ''
+  const response = await fetch(`/api/standings/drivers?season=${season}`);
+  const data = await response.json();
+  const content = document.getElementById("content");
+  let rowsHTML = "";
+  content.innerHTML = "";
   for (const row of data.rows) {
-    content.innerHTML += `
-    <p>
-    ${row.position} -
-    <img class="avatar" src="${row.driver.photo}"> <a href="/driver/${row.driver.id}?season=${season}"> ${row.driver.givenName} ${row.driver.familyName} </a> -
-    <img class="flagimg" src="${row.driver.flag}"> -
-    <img class="avatar" src="${row.team.photo}"> <a href="/team/${row.team.id}?season=${season}"> ${row.team.name} </a> -
-    ${row.points} pts -
-    ${row.wins} pts
-    </p>`
+    rowsHTML += `
+    <tr>
+      <td>${row.position}</td>
+      <td><img class="avatar" src="${row.driver.photo}"> <a href="/driver/${row.driver.id}?season=${season}">${row.driver.givenName}${row.driver.familyName}</a></td>
+      <td><img class="flagimg" src="${row.driver.flag}"></td>
+      <td><img class="avatar" src="${row.team.photo}"> <a href="/team/${row.team.id}?season=${season}"> ${row.team.name}</a></td>
+      <td>${row.points}</td>
+      <td>${row.wins}</td>
+    </tr>`;
   }
-  console.log(data)
+  content.innerHTML += `
+    <h2 class="view-title"> ${season} Driver Standing</h2>
+    <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>POS</th>
+          <th>DRIVER</th>
+          <th>NAT</th>
+          <th>TEAM</th>
+          <th>PTS</th>
+          <th>WINS</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rowsHTML}
+      </tbody>
+    </table>
+    </div>`;
+  console.log(data);
 }
 
 async function loadStandingsTeams(season) {
-  const response = await fetch(`/api/standings/teams?season=${season}`)
-  const data = await response.json()
-  const content = document.getElementById('content')
-  content.innerHTML = ''
+  const response = await fetch(`/api/standings/teams?season=${season}`);
+  const data = await response.json();
+  const content = document.getElementById("content");
+  let rowsHTML = "";
+  content.innerHTML = "";
   for (const row of data.rows) {
-    content.innerHTML += `
-    <p>
-    ${row.position} -
-    <img class="avatar" src="${row.team.photo}"> <a href="/team/${row.team.id}?season=${season}"> ${row.team.name} </a> -
-    <img class="flagimg" src="${row.team.flag}"> -
-    ${row.points} pts -
-    ${row.wins} pts
-    </p>`
+    rowsHTML += `
+    <tr>
+      <td>${row.position}</td>
+      <td><img class="avatar" src="${row.team.photo}"><a href="/team/${row.team.id}?season=${season}">${row.team.name}</a></td>
+      <td><img class="flagimg" src="${row.team.flag}"></td>
+      <td>${row.points}</td>
+      <td>${row.wins}</td>
+    </tr>`;
   }
-  console.log(data)
+  content.innerHTML += `
+    <h2 class="view-title"> ${season} Team Standing</h2>
+    <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>POS</th>
+          <th>TEAM</th>
+          <th>NAT</th>
+          <th>PTS</th>
+          <th>WINS</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rowsHTML}
+      </tbody>
+    </table>
+    </div>`;
+  console.log(data);
 }
-
