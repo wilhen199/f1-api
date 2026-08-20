@@ -1,5 +1,5 @@
-/* { box-sizing: border-box; margin: 0; padding: 0; }*/
-/* .body { font-family: 'Segoe UI', sans-serif; background: #000; color: #eee; } */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #000; color: #eee; }
 header {
   background-color: #15151e;
   padding: 0.75rem 2rem;
@@ -57,3 +57,30 @@ select {
   font-size: 0.9rem;
 }
 
+
+.tab {
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #aaa;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+}
+.tab.active { color: #fff; border-bottom-color: #e10600; }
+.tab:hover:not(.active) { color: #fff; background: #1a1a2e; }
+
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.flagimg { height: 18px; width: auto; border-radius: 2px; vertical-align: middle; }
