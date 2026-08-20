@@ -34,13 +34,21 @@ async function renderTabsBar() {
     tab.textContent = i
     tab.className = "tab"
     tabBar.appendChild(tab)
+    if (i === currentTab ) {
+      tab.classList.add("active")
+    }
     tab.addEventListener("click", () => {
-    currentTab = i
-    const season = document.getElementById("seasonSelect").value
-    console.log(i)
-    if (i === "Drivers") {loadStandingsDrivers(season);}
-    else 
-    {loadStandingsTeams(season);}
+      const allTabs = document.querySelectorAll(".tab")
+      for (const t of allTabs) {
+        t.classList.remove("active")
+      }
+      tab.classList.add("active")
+      currentTab = i
+      const season = document.getElementById("seasonSelect").value
+      console.log(i)
+      if (i === "Drivers") {loadStandingsDrivers(season);}
+      else 
+      {loadStandingsTeams(season);}
   })
   }
 }
@@ -75,9 +83,9 @@ async function loadStandingsDrivers(season) {
     content.innerHTML += `
     <p>
     ${row.position} -
-    <a href="/driver/${row.driver.id}?season=${season}"> ${row.driver.givenName} ${row.driver.familyName} </a> -
-    ${row.driver.nationality} -
-    ${row.team.name} -
+    <img class="avatar" src="${row.driver.photo}"> <a href="/driver/${row.driver.id}?season=${season}"> ${row.driver.givenName} ${row.driver.familyName} </a> -
+    <img class="flagimg" src="${row.driver.flag}"> -
+    <img class="avatar" src="${row.team.photo}"> <a href="/team/${row.team.id}?season=${season}"> ${row.team.name} </a> -
     ${row.points} pts -
     ${row.wins} pts
     </p>`
@@ -94,8 +102,8 @@ async function loadStandingsTeams(season) {
     content.innerHTML += `
     <p>
     ${row.position} -
-    <a href="/team/${row.team.id}?season=${season}"> ${row.team.name} </a> -
-    ${row.team.nationality} -
+    <img class="avatar" src="${row.team.photo}"> <a href="/team/${row.team.id}?season=${season}"> ${row.team.name} </a> -
+    <img class="flagimg" src="${row.team.flag}"> -
     ${row.points} pts -
     ${row.wins} pts
     </p>`
