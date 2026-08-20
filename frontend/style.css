@@ -135,7 +135,7 @@ select {
 table {
   width: 100%;
   border-collapse: collapse;
-  background: #16213e;
+  background: #0d152c;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -164,10 +164,31 @@ tr:hover td {
 }
 
 a {
-  color: #ccc;
+  color: #ffffff;
   text-decoration: none;
 }
 a:hover {
   color: #ccc;
   text-decoration: underline;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.pos-1 {
+  background: #ffd700;
+  color: #000;
+}
+.pos-2 {
+  background: #c0c0c0;
+  color: #000;
+}
+.pos-3 {
+  background: #cd7f32;
+  color: #000;
 }

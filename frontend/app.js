@@ -33,8 +33,20 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-/* ##### VARIABLES ##### */
+/* ##### VARIABLES AND UTILITIES ##### */
 let currentTab = "Drivers";
+
+function badge(position) {
+  const pos = Number(position);
+  if (pos === 1) {
+    return '<span class="badge pos-1">1</span>';
+  } else if (pos === 2) {
+    return '<span class="badge pos-2">2</span>';
+  } else if (pos === 3) {
+    return '<span class="badge pos-3">3</span>';
+  }
+  return `<span class="badge">${pos}</span>`;
+}
 
 /* ##### MENU - TABS ##### */
 
@@ -100,7 +112,7 @@ async function loadStandingsDrivers(season) {
   for (const row of data.rows) {
     rowsHTML += `
     <tr>
-      <td>${row.position}</td>
+      <td>${badge(row.position)}</td>
       <td><img class="avatar" src="${row.driver.photo}"> <a href="/driver/${row.driver.id}?season=${season}">${row.driver.givenName}${row.driver.familyName}</a></td>
       <td><img class="flagimg" src="${row.driver.flag}"></td>
       <td><img class="avatar" src="${row.team.photo}"> <a href="/team/${row.team.id}?season=${season}"> ${row.team.name}</a></td>
@@ -139,7 +151,7 @@ async function loadStandingsTeams(season) {
   for (const row of data.rows) {
     rowsHTML += `
     <tr>
-      <td>${row.position}</td>
+      <td>${badge(row.position)}</td>
       <td><img class="avatar" src="${row.team.photo}"><a href="/team/${row.team.id}?season=${season}">${row.team.name}</a></td>
       <td><img class="flagimg" src="${row.team.flag}"></td>
       <td>${row.points}</td>
