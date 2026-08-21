@@ -24,30 +24,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("navResults").addEventListener("click", () => {
     document.getElementById("tabsBar").style.display = "flex";
-
+    currentTabResults = "Races";
     renderTabsBar("results");
-
     const allNavs = document.querySelectorAll(".nav-link");
     for (const n of allNavs) {
       n.classList.remove("active");
     }
     document.getElementById("navResults").classList.add("active");
     const season = document.getElementById("seasonSelect").value;
-    if (currentTabResults === "Races") {
-      loadRaces(season);
-    } else if (currentTabResults === "Driver") {
-      loadDriverResults(season);
-    } else if (currentTabResults === "Team") {
-      loadTeamResults(season);
-    } else {
-      loadAwards(season);
-    }
+    loadRaces(season);
   });
 });
 
 /* ##### VARIABLES AND UTILITIES ##### */
 let currentTabStandigs = "Drivers";
 let currentTabResults = "Races";
+let currentDriverId = null;
+let currentTeamId = null;
 
 function badge(position) {
   const pos = Number(position);
@@ -79,7 +72,7 @@ async function renderTabsBar(view = "standings") {
   if (view === "standings") {
     tabToDisplay = ["Drivers", "Teams"];
   } else if (view === "results") {
-    tabToDisplay = ["Races", "Driver", "Team", "Awards"];
+    tabToDisplay = ["Races", "Awards"];
   }
 
   for (const i of tabToDisplay) {
@@ -111,10 +104,6 @@ async function renderTabsBar(view = "standings") {
         currentTabResults = i;
         if (i === "Races") {
           loadRaces(season);
-        } else if (i === "Driver") {
-          loadDriverResults(season);
-        } else if (i === "Team") {
-          loadTeamResults(season);
         } else {
           loadAwards(season);
         }
@@ -147,13 +136,12 @@ async function loadSeason() {
         loadStandingsTeams(select.value);
       }
     } else if (currentView === "results") {
-      const currentTab = document.querySelector("#tabsBar .tab.active").textContent;
-      if (currentTab === "Races") {
+      if (currentTabResults === "Races") {
         loadRaces(select.value);
-      } else if (currentTab === "Driver") {
-        loadDriverResults(select.value);
-      } else if (currentTab === "Team") {
-        loadTeamResults(select.value);
+      } else if (currentTabResults === "Driver") {
+        loadDriverResults(currentDriverId, select.value);
+      } else if (currentTabResults === "Team") {
+        loadTeamResults(currentTeamId, select.value);
       } else {
         loadAwards(select.value);
       }
@@ -175,11 +163,11 @@ async function loadStandingsDrivers(season) {
     rowsHTML += `
     <tr>
       <td>${badge(row.position)}</td>
-      <td><img class="avatar" src="${row.driver.photo}"> <a href="/driver/${row.driver.id}?season=${season}">${row.driver.givenName} ${row.driver.familyName}</a></td>
+      <td><img class="avatar" src="${row.driver.photo}"> <a href="#" onclick="goToDriver('${row.driver.id}', '${season}')">${row.driver.givenName} ${row.driver.familyName}</a></td>
       <td><img class="flagimg" src="${row.driver.flag}"></td>
       <td>
         ${row.team.photo ? `<img class="avatar" src="${row.team.photo}">` : `<span class="avatar-fallback">${initials(row.team.name)}</span>`}
-        <a href="/team/${row.team.id}?season=${season}">${row.team.name}</a>
+        <a href="#" onclick="goToTeam('${row.team.id}', '${season}')">${row.team.name}</a>
       </td>
       <td>${row.points}</td>
       <td>${row.wins}</td>
@@ -218,7 +206,7 @@ async function loadStandingsTeams(season) {
       <td>${badge(row.position)}</td>
       <td>
         ${row.team.photo ? `<img class="avatar" src="${row.team.photo}">` : `<span class="avatar-fallback">${initials(row.team.name)}</span>`}
-        <a href="/team/${row.team.id}?season=${season}">${row.team.name}</a>
+        <a href="#" onclick="goToTeam('${row.team.id}', '${season}')">${row.team.name}</a>
     </td>
       <td><img class="flagimg" src="${row.team.flag}"></td>
       <td>${row.points}</td>
@@ -312,10 +300,10 @@ async function loadDriverResults(driverId, season) {
     rowsHTML += `
     <tr>
       <td>${round}</td>
-      <td><img src="${flagRace}"> <a href="/race/${round}?season=${season}">${raceName}</a></td>
-      <td><img src="${teamPhoto}"> <a href="/team/${teamId}?season=${season}">${teamName}</a></td>
-      <td><span class"badge">${grid}</span></td>
-      <td<span class"badge">${result}</span></td>
+      <td><img src="${flagRace}" class="flagimg"> <a href="/race/${round}?season=${season}">${raceName}</a></td>
+      <td><img src="${teamPhoto}" class="avatar"> <a href="#" onclick="goToTeam('${teamId}', '${season}')">${teamName}</a></td>
+      <td>${badge(grid)}</td>
+      <td>${badge(result)}</td>
       <td>${ptsRace}</td>
       <td>${status}</td>
     </tr>`;
@@ -323,15 +311,25 @@ async function loadDriverResults(driverId, season) {
   content.innerHTML += `
     <div class="profile">
       <img class="avatar" src="${driverPhoto}">
-      <div class="profile-info">
-        <h2>${driverName}  <img class="flagimg" src="${driverFlag}">
-        </h2>
-      <div class="profile-stats">
-        <div>Position: ${pos}</div>
-        <div>Points: ${pts}</div>
-        <div>Wins: ${wins}</div>
+      <div class="profile-info"> 
+        <h2>${driverName}  <img class="flagimg" src="${driverFlag}"> </h2>
+        <div class="profile-stats">
+          <div>
+          <span class="stat-num">${badge(pos)}</span>
+          <span class="stat-label">POS</span>
+          </div>
+          <div>
+          
+          <span class="stat-num">${pts}</span>
+          <span class="stat-label">OTS</span>
+          </div>
+          <div>
+          <span class="stat-num">${wins}</span>
+          <span class="stat-label">WINS</span>
+          </div>
+        </div>
+        <a href="${info}"><p>Info 🌐</p></a>
       </div>
-      <a href="${info}"><p>Info 🌐</p></a>
     </div>
     <h3> ${season} SEASON RESULTS</h3>
     <div class="tablewrap">
@@ -475,4 +473,34 @@ async function loadAwards(season) {
       </tbody>
     </table>
     </div>`;
+}
+
+function goToDriver(driverId, season) {
+  currentDriverId = driverId;
+  currentTabResults = "Driver";
+  document.getElementById("tabsBar").style.display = "flex";
+  renderTabsBar("results");
+
+  const allNavs = document.querySelectorAll(".nav-link");
+  for (const n of allNavs) {
+    n.classList.remove("active");
+  }
+  document.getElementById("navResults").classList.add("active");
+
+  loadDriverResults(driverId, season);
+}
+
+function goToTeam(teamId, season) {
+  currentTeamId = teamId;
+  currentTabResults = "Team";
+  document.getElementById("tabsBar").style.display = "flex";
+  renderTabsBar("results");
+
+  const allNavs = document.querySelectorAll(".nav-link");
+  for (const n of allNavs) {
+    n.classList.remove("active");
+  }
+  document.getElementById("navResults").classList.add("active");
+
+  loadTeamResults(teamId, season);
 }
