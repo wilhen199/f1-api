@@ -176,12 +176,13 @@ def photo_driver(driver_id):
     if not entry:
         return None
     team, code = entry
+    slug = TEAMS.get(team, team)
     return (
         "https://media.formula1.com/image/upload/"
         f"c_fill,g_north,w_440,h_440/q_auto/" # images properties crop to fill a frame, w_440,h_440 = 440×440 square, g_north = anchor at the top (keeps the head, not the chest), q_auto = automatic quality.
         f"d_common:f1:{SEASON}:fallback:driver:{SEASON}fallbackdriverright.webp/"
-        f"{VERSION}/common/f1/{SEASON}/{team}/{code}/"
-        f"{SEASON}{team}{code}right.webp"
+        f"{VERSION}/common/f1/{SEASON}/{slug}/{code}/"
+        f"{SEASON}{slug}{code}right.webp"
     )
 
 def logo_team(constructor_id):
@@ -242,7 +243,7 @@ class PhotoService:
         
         path = urllib.parse.urlparse(wikipedia_url).path  # "/wiki/Ayrton_Senna"
         title = path.split("/wiki/")[-1] # Ayrton_Senna
-        return title
+        return urllib.parse.unquote(title)
 
     async def photo_for(self, title):
         #""Return {'url': photo, 'canonical': real_title} or None.

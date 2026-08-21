@@ -1,5 +1,7 @@
 import images
 
+photo_service = images.PhotoService()
+
 def _driver(driver):
     return {
         "id": driver.get("driverId"),
@@ -45,8 +47,17 @@ def _race(race, rows):
     }
 
 async def _resolve_photos(items, kind):
-    # Official F1
     for i in items:
-        i["photo"] = (
-            images.photo_driver(i.get("id")) if kind == "driver" else images.logo_team(i.get("id"))
-        )
+        # Official F1
+        official = (images.photo_driver(i.get("id")) if kind == "driver" else images.logo_team(i.get("id")))
+        if official:
+            i["photo"] = official
+            continue
+        
+        # Wikipedia
+        wikipedia = i.get("info")
+        if wikipedia:
+            result = await photo_service.photo_for_wikipedia_url(wikipedia)
+            i["photo"] = result["url"] if result else None
+        else:
+            i["photo"] = None
