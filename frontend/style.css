@@ -119,9 +119,23 @@ select {
   display: inline-block;
 }
 
+.avatar-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #33333b;
+  color: #ccc;
+  font-size: 0.75rem;
+  font-weight: bold;
+  vertical-align: middle;
+}
+
 .flagimg {
   height: 18px;
-  width: auto;
+  width: 32px;
   border-radius: 2px;
   vertical-align: middle;
 }

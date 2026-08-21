@@ -48,6 +48,15 @@ function badge(position) {
   return `<span class="badge">${pos}</span>`;
 }
 
+function initials(name) {
+  const words = name.split(" ");
+  let result = "";
+  for (const word of words) {
+    result += word[0];
+  }
+  return result;
+}
+
 /* ##### MENU - TABS ##### */
 
 async function renderTabsBar() {
@@ -113,9 +122,12 @@ async function loadStandingsDrivers(season) {
     rowsHTML += `
     <tr>
       <td>${badge(row.position)}</td>
-      <td><img class="avatar" src="${row.driver.photo}"> <a href="/driver/${row.driver.id}?season=${season}">${row.driver.givenName}${row.driver.familyName}</a></td>
+      <td><img class="avatar" src="${row.driver.photo}"> <a href="/driver/${row.driver.id}?season=${season}">${row.driver.givenName} ${row.driver.familyName}</a></td>
       <td><img class="flagimg" src="${row.driver.flag}"></td>
-      <td><img class="avatar" src="${row.team.photo}"> <a href="/team/${row.team.id}?season=${season}"> ${row.team.name}</a></td>
+      <td>
+        ${row.team.photo ? `<img class="avatar" src="${row.team.photo}">` : `<span class="avatar-fallback">${initials(row.team.name)}</span>`}
+        <a href="/team/${row.team.id}?season=${season}">${row.team.name}</a>
+      </td>
       <td>${row.points}</td>
       <td>${row.wins}</td>
     </tr>`;
@@ -152,7 +164,10 @@ async function loadStandingsTeams(season) {
     rowsHTML += `
     <tr>
       <td>${badge(row.position)}</td>
-      <td><img class="avatar" src="${row.team.photo}"><a href="/team/${row.team.id}?season=${season}">${row.team.name}</a></td>
+      <td>
+        ${row.team.photo ? `<img class="avatar" src="${row.team.photo}">` : `<span class="avatar-fallback">${initials(row.team.name)}</span>`}
+        <a href="/team/${row.team.id}?season=${season}">${row.team.name}</a>
+    </td>
       <td><img class="flagimg" src="${row.team.flag}"></td>
       <td>${row.points}</td>
       <td>${row.wins}</td>
