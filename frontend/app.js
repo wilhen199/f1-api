@@ -283,40 +283,68 @@ async function loadRaces(season) {
     </div>`;
 }
 
-async function loadDriverResults(season) {
-  const response = await fetch(`/api/races?season=${season}`);
+async function loadDriverResults(driverId, season) {
+  const response = await fetch(`/api/driver/${driverId}?season=${season}`);
   const data = await response.json();
   const content = document.getElementById("content");
   let rowsHTML = "";
   content.innerHTML = "";
-  for (const race of data) {
+  const driverName = `${data.driver.givenName} ${data.driver.familyName}`;
+  const driverPhoto = data.driver.photo;
+  const driverFlag = data.driver.flag;
+  const info = data.driver.info;
+  const pos = data.position;
+  const pts = data.points;
+  const wins = data.wins;
+
+  for (const race of data.races) {
     const round = race.round;
     const raceName = race.raceName;
-    const circuit = race.Circuit.circuitName;
-    const date = race.date;
-    const laps = race.laps;
-    const country = race.Circuit.Location.country;
+    const flagRace = race.flag;
+    const teamName = race.team.name;
+    const teamPhoto = race.team.photo;
+    const teamId = race.team.id;
+    const grid = race.grid;
+    const result = race.position;
+    const ptsRace = race.points;
+    const status = race.status;
 
     rowsHTML += `
     <tr>
-      <td>${country}</td>
-      <td><a href="/race/${round}?season=${season}">${raceName}</a></td>
-      <td>${circuit}</td>
-      <td>${date}</td>
-      <td>${laps}</td>
+      <td>${round}</td>
+      <td><img src="${flagRace}"> <a href="/race/${round}?season=${season}">${raceName}</a></td>
+      <td><img src="${teamPhoto}"> <a href="/team/${teamId}?season=${season}">${teamName}</a></td>
+      <td><span class"badge">${grid}</span></td>
+      <td<span class"badge">${result}</span></td>
+      <td>${ptsRace}</td>
+      <td>${status}</td>
     </tr>`;
   }
   content.innerHTML += `
-    <h2 class="view-title"> ${season} Driver Results</h2>
+    <div class="profile">
+      <img class="avatar" src="${driverPhoto}">
+      <div class="profile-info">
+        <h2>${driverName}  <img class="flagimg" src="${driverFlag}">
+        </h2>
+      <div class="profile-stats">
+        <div>Position: ${pos}</div>
+        <div>Points: ${pts}</div>
+        <div>Wins: ${wins}</div>
+      </div>
+      <a href="${info}"><p>Info 🌐</p></a>
+    </div>
+    <h3> ${season} SEASON RESULTS</h3>
     <div class="tablewrap">
     <table>
       <thead>
         <tr>
-          <th></th>
+          <th>ROUND</th>
           <th>GRAND PRIX</th>
-          <th>CIRCUIT</th>
-          <th>DATE</th>
-          <th>LAPS</th>
+          <th>TEAM</th>
+          <th>GRID</th>
+          <th>RESULT</th>
+          <th>PTS</th>
+          <th>STATUS</th>
         </tr>
       </thead>
       <tbody>
@@ -326,40 +354,77 @@ async function loadDriverResults(season) {
     </div>`;
 }
 
-async function loadTeamResults(season) {
-  const response = await fetch(`/api/races?season=${season}`);
+async function loadTeamResults(teamId, season) {
+  const response = await fetch(`/api/team/${teamId}?season=${season}`);
   const data = await response.json();
   const content = document.getElementById("content");
   let rowsHTML = "";
   content.innerHTML = "";
-  for (const race of data) {
+  const teamName = data.team.name;
+  const teamPhoto = data.team.photo;
+  const teamFlag = data.team.flag;
+  const info = data.team.info;
+  const pos = data.position;
+  const pts = data.points;
+  const wins = data.wins;
+  const driverOne = data.drivers[0].driver;
+  const driverTwo = data.drivers[1].driver;
+
+  for (const race of data.races) {
     const round = race.round;
     const raceName = race.raceName;
-    const circuit = race.Circuit.circuitName;
-    const date = race.date;
-    const laps = race.laps;
-    const country = race.Circuit.Location.country;
+    const flagRace = race.flag;
+    for (item of race.drivers) {
+      const driverId = item.driver.id;
+      const driverName = `${item.driver.givenName} ${item.driver.familyName}`;
+      const driverPos = item.position;
+      const driverPts = item.points;
+      const driverStatus = item.status;
+
+      return [driverId, driverName, driverPos, driverPts, driverStatus];
+    }
 
     rowsHTML += `
     <tr>
-      <td>${country}</td>
-      <td><a href="/race/${round}?season=${season}">${raceName}</a></td>
-      <td>${circuit}</td>
-      <td>${date}</td>
-      <td>${laps}</td>
+      <td>${round}</td>
+      <td><img src="${flagRace}"> <a href="/race/${round}?season=${season}">${raceName}</a></td>
+      <td>
+        <div> 
+          <a href="#/driver/${driverId}?season=${season}">${driverName}</a>
+          <span class="badge">${driverPos}</span>
+          ${driverPts} pts
+          ${driverStatus}
+        </div>
+      </td>
     </tr>`;
   }
   content.innerHTML += `
-    <h2 class="view-title"> ${season} Team Results</h2>
+    <div class="profile">
+      <img class="avatar" src="${teamPhoto}">
+      <div class="profile-info">
+        <h2>${teamName}  <img class="flagimg" src="${teamFlag}">
+        </h2>
+      <div>
+        <a href="/driver/${driverOne.id}?season=${season}"><img class="avatar-small" src="${driverOne.photo}">${driverOne.givenName} ${driverOne.familyName}</a>
+      </div>
+      <div>
+        <a href="/driver/${driverTwo.id}?season=${season}"><img class="avatar-small" src="${driverTwo.photo}">${drivertwo.givenName} ${driverTwo.familyName}</a>
+      </div>
+      <div class="profile-stats">
+        <div>Position: ${pos}</div>
+        <div>Points: ${pts}</div>
+        <div>Wins: ${wins}</div>
+      </div>
+      <a href="${info}"><p>Info 🌐</p></a>
+    </div>
+    <h3> ${season} GP RESULTS</h3>
     <div class="tablewrap">
     <table>
       <thead>
         <tr>
-          <th></th>
+          <th>ROUND</th>
           <th>GRAND PRIX</th>
-          <th>CIRCUIT</th>
-          <th>DATE</th>
-          <th>LAPS</th>
+          <th>DRIVERS</th>
         </tr>
       </thead>
       <tbody>
@@ -370,7 +435,7 @@ async function loadTeamResults(season) {
 }
 
 async function loadAwards(season) {
-  const response = await fetch(`/api/races?season=${season}`);
+  const response = await fetch(`/api/awards?season=${season}`);
   const data = await response.json();
   const content = document.getElementById("content");
   let rowsHTML = "";
