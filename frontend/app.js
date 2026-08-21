@@ -204,7 +204,6 @@ async function loadStandingsDrivers(season) {
       </tbody>
     </table>
     </div>`;
-  console.log(data);
 }
 
 async function loadStandingsTeams(season) {
@@ -244,37 +243,28 @@ async function loadStandingsTeams(season) {
       </tbody>
     </table>
     </div>`;
-  console.log(data);
 }
 
 /* ##### RESULTS ##### */
 
 async function loadRaces(season) {
-  const response = await fetch(`/api/races?season=${season}`);
+  const response = await fetch(`/api/results?season=${season}`);
   const data = await response.json();
   const content = document.getElementById("content");
   let rowsHTML = "";
-  console.log(data);
   content.innerHTML = "";
-  for (const race of data) {
-    const round = race.round;
-    const raceName = race.raceName;
-    const circuit = race.Circuit.circuitName;
-    const date = race.date;
-    const laps = race.laps;
-    const country = race.Circuit.Location.country;
-
+  for (const row of data.rows) {
     rowsHTML += `
     <tr>
-      <td>${country}</td>
-      <td><a href="/race/${round}?season=${season}">${raceName}</a></td>
-      <td>${circuit}</td>
-      <td>${date}</td>
-      <td>${laps}</td>
+      <td><img class="flagimg" src="${row.flag}"></td>
+      <td><a href="/race/${row.round}?season=${season}">${row.raceName}</a></td>
+      <td>${row.circuit}</td>
+      <td>${row.date}</td>
+      <td>${row.laps}</td>
     </tr>`;
   }
   content.innerHTML += `
-    <h2 class="view-title"> ${season} Races Result</h2>
+    <h2 class="view-title"> ${season} Races List</h2>
     <div class="tablewrap">
     <table>
       <thead>
@@ -291,7 +281,6 @@ async function loadRaces(season) {
       </tbody>
     </table>
     </div>`;
-  console.log(data);
 }
 
 async function loadDriverResults(season) {
@@ -299,7 +288,6 @@ async function loadDriverResults(season) {
   const data = await response.json();
   const content = document.getElementById("content");
   let rowsHTML = "";
-  console.log(data);
   content.innerHTML = "";
   for (const race of data) {
     const round = race.round;
@@ -336,7 +324,6 @@ async function loadDriverResults(season) {
       </tbody>
     </table>
     </div>`;
-  console.log(data);
 }
 
 async function loadTeamResults(season) {
@@ -344,7 +331,6 @@ async function loadTeamResults(season) {
   const data = await response.json();
   const content = document.getElementById("content");
   let rowsHTML = "";
-  console.log(data);
   content.innerHTML = "";
   for (const race of data) {
     const round = race.round;
@@ -381,7 +367,6 @@ async function loadTeamResults(season) {
       </tbody>
     </table>
     </div>`;
-  console.log(data);
 }
 
 async function loadAwards(season) {
@@ -389,7 +374,6 @@ async function loadAwards(season) {
   const data = await response.json();
   const content = document.getElementById("content");
   let rowsHTML = "";
-  console.log(data);
   content.innerHTML = "";
   for (const race of data) {
     const round = race.round;
@@ -426,5 +410,4 @@ async function loadAwards(season) {
       </tbody>
     </table>
     </div>`;
-  console.log(data);
 }
