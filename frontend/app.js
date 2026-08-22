@@ -67,6 +67,41 @@ function initials(name) {
   return result;
 }
 
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.remove("hidden");
+
+  setTimeout(() => {
+    toast.classList.add("hidden");
+  }, 5000);
+}
+
+function handleRateLimit(response) {
+  const retryAfter = response.headers.get("Retry-After") || "60";
+  showToast(`Too many requests. Please wait ${retryAfter} seconds and try again.`);
+}
+
+async function fetchApi(url) {
+  const response = await fetch(url, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (response.status === 429) {
+    handleRateLimit(response);
+    return null;
+  }
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    document.getElementById("content").innerHTML = `<p class="empty-state">${errorData.detail}</p>`;
+    return null;
+  }
+
+  return await response.json();
+}
+
 /* ##### MENU - TABS ##### */
 
 async function renderTabsBar(view = "standings") {
@@ -118,8 +153,8 @@ async function renderTabsBar(view = "standings") {
 }
 
 async function loadSeason() {
-  const response = await fetch("/api/seasons");
-  const seasons = await response.json();
+  const seasons = await fetchApi("/api/seasons");
+  if (!seasons) return;
 
   const select = document.getElementById("seasonSelect");
   select.innerHTML = "";
@@ -158,8 +193,8 @@ async function loadSeason() {
 /* ##### STANDIGS ##### */
 
 async function loadStandingsDrivers(season) {
-  const response = await fetch(`/api/standings/drivers?season=${season}`);
-  const data = await response.json();
+  const data = await fetchApi(`/api/standings/drivers?season=${season}`);
+  if (!data) return;
   const content = document.getElementById("content");
   let rowsHTML = "";
   content.innerHTML = "";
@@ -199,8 +234,8 @@ async function loadStandingsDrivers(season) {
 }
 
 async function loadStandingsTeams(season) {
-  const response = await fetch(`/api/standings/teams?season=${season}`);
-  const data = await response.json();
+  const data = await fetchApi(`/api/standings/teams?season=${season}`);
+  if (!data) return;
   const content = document.getElementById("content");
   let rowsHTML = "";
   content.innerHTML = "";
@@ -240,8 +275,8 @@ async function loadStandingsTeams(season) {
 /* ##### RESULTS ##### */
 
 async function loadRaces(season) {
-  const response = await fetch(`/api/results?season=${season}`);
-  const data = await response.json();
+  const data = await fetchApi(`/api/results?season=${season}`);
+  if (!data) return;
   const content = document.getElementById("content");
   let rowsHTML = "";
   content.innerHTML = "";
@@ -276,14 +311,9 @@ async function loadRaces(season) {
 }
 
 async function loadDriverResults(driverId, season) {
-  const response = await fetch(`/api/driver/${driverId}?season=${season}`);
+  const data = await fetchApi(`/api/driver/${driverId}?season=${season}`);
+  if (!data) return;
   const content = document.getElementById("content");
-  if (!response.ok) {
-    const errorData = await response.json();
-    content.innerHTML = `<p class="empty-state">${errorData.detail}</p>`;
-    return;
-  }
-  const data = await response.json();
   let rowsHTML = "";
   content.innerHTML = "";
   const driverName = `${data.driver.givenName} ${data.driver.familyName}`;
@@ -330,7 +360,7 @@ async function loadDriverResults(driverId, season) {
           <div>
           
           <span class="stat-num">${pts}</span>
-          <span class="stat-label">OTS</span>
+          <span class="stat-label">PTS</span>
           </div>
           <div>
           <span class="stat-num">${wins}</span>
@@ -362,14 +392,9 @@ async function loadDriverResults(driverId, season) {
 }
 
 async function loadTeamResults(teamId, season) {
-  const response = await fetch(`/api/team/${teamId}?season=${season}`);
+  const data = await fetchApi(`/api/team/${teamId}?season=${season}`);
+  if (!data) return;
   const content = document.getElementById("content");
-  if (!response.ok) {
-    const errorData = await response.json();
-    content.innerHTML = `<p class="empty-state">${errorData.detail}</p>`;
-    return;
-  }
-  const data = await response.json();
   let rowsHTML = "";
   content.innerHTML = "";
   const teamName = data.team.name;
@@ -459,8 +484,8 @@ async function loadTeamResults(teamId, season) {
 }
 
 async function loadAwards(season) {
-  const response = await fetch(`/api/awards?season=${season}`);
-  const data = await response.json();
+  const data = await fetchApi(`/api/awards?season=${season}`);
+  if (!data) return;
   const content = document.getElementById("content");
   let rowsHTML = "";
   content.innerHTML = "";

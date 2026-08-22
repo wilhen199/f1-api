@@ -272,3 +272,27 @@ a:hover {
   color: #e10600;
   font-size: 1rem;
 }
+
+.toast {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  max-width: 320px;
+  background: #1a1a2e;
+  border-left: 4px solid #e10600;
+  padding: 1rem 1.2rem;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  color: #eee;
+  font-size: 0.9rem;
+  z-index: 1000;
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+}
+
+.toast.hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}

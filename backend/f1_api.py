@@ -1,4 +1,5 @@
 import asyncio
+from fastapi import HTTPException
 from rich.pretty import pprint
 import httpx
 import os
@@ -18,6 +19,13 @@ async def _fetch(suffix):
     data = None
     async with httpx.AsyncClient(headers=HEADERS, follow_redirects=True) as client:
         resp = await client.get(url)
+    if resp.status_code == 429:
+        retry_after = resp.headers.get("Retry-After", "60")
+        raise HTTPException(
+            status_code=429, 
+            detail=f"Too many requests to the F1 data provider. Please try again after {retry_after} seconds",
+            headers={"Retry-After": retry_after}
+        )
     resp.raise_for_status()
     data = resp.json()
     return data
