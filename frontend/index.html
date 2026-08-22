@@ -1,37 +1,36 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="https://www.formula1.com/assets/result/_next/static/media/f1-logo.43a01c6b.svg" sizes="32x32">
-  <title>F1 Stats</title>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="https://www.formula1.com/assets/result/_next/static/media/f1-logo.43a01c6b.svg" sizes="32x32" />
+    <title>F1 Stats</title>
+  </head>
+  <body>
+    <header>
+      <div class="header-logo" id="headerLogo">
+        <img src="logo-f1.png" alt="F1 Logo" class="logo-icon" />
+      </div>
+      <nav class="header-nav">
+        <a class="nav-link" data-section="standings" id="navStandings">STANDINGS</a>
+        <a class="nav-link" data-section="results" id="navResults">RESULTS</a>
+      </nav>
+    </header>
 
-  <header>
-    <div class="header-logo" onclick="go('#/standings/drivers')">
-      <img src="logo-f1.png" alt="F1 Logo" class="logo-icon">
+    <div class="controls">
+      <label class="control-label" for="seasonSelect">Season:</label>
+      <select id="seasonSelect">
+        <option>Loading...</option>
+      </select>
     </div>
-    <nav class="header-nav">
-      <a class="nav-link" data-section="standings" id="navStandings">STANDINGS</a>
-      <a class="nav-link" data-section="results" id="navResults">RESULTS</a>
-    </nav>
-  </header>
 
-  <div class="controls">
-    <label class="control-label" for="seasonSelect">Season:</label>
-    <select id="seasonSelect">
-      <option>Loading...</option>
-    </select>
-  </div>
+    <div id="tabsBar"></div>
 
-  <div id="tabsBar"></div>
+    <div class="container">
+      <div id="content"><div class="loading">Loading data...</div></div>
+    </div>
 
-  <div class="container">
-    <div id="content"><div class="loading">Loading data...</div></div>
-  </div>
-
-  <script src="app.js"></script>
-</body>
+    <script src="app.js"></script>
+  </body>
 </html>

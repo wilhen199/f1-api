@@ -34,6 +34,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const season = document.getElementById("seasonSelect").value;
     loadRaces(season);
   });
+
+  document.getElementById("headerLogo").addEventListener("click", () => {
+    document.getElementById("navStandings").click();
+  });
 });
 
 /* ##### VARIABLES AND UTILITIES ##### */
