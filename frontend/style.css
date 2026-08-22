@@ -265,3 +265,10 @@ a:hover {
   align-items: center;
   gap: 0.5rem;
 }
+
+.empty-state {
+  padding: 2rem;
+  text-align: center;
+  color: #e10600;
+  font-size: 1rem;
+}

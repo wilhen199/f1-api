@@ -277,8 +277,13 @@ async function loadRaces(season) {
 
 async function loadDriverResults(driverId, season) {
   const response = await fetch(`/api/driver/${driverId}?season=${season}`);
-  const data = await response.json();
   const content = document.getElementById("content");
+  if (!response.ok) {
+    const errorData = await response.json();
+    content.innerHTML = `<p class="empty-state">${errorData.detail}</p>`;
+    return;
+  }
+  const data = await response.json();
   let rowsHTML = "";
   content.innerHTML = "";
   const driverName = `${data.driver.givenName} ${data.driver.familyName}`;
@@ -358,8 +363,13 @@ async function loadDriverResults(driverId, season) {
 
 async function loadTeamResults(teamId, season) {
   const response = await fetch(`/api/team/${teamId}?season=${season}`);
-  const data = await response.json();
   const content = document.getElementById("content");
+  if (!response.ok) {
+    const errorData = await response.json();
+    content.innerHTML = `<p class="empty-state">${errorData.detail}</p>`;
+    return;
+  }
+  const data = await response.json();
   let rowsHTML = "";
   content.innerHTML = "";
   const teamName = data.team.name;
