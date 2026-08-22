@@ -369,57 +369,69 @@ async function loadTeamResults(teamId, season) {
   const pos = data.position;
   const pts = data.points;
   const wins = data.wins;
-  const driverOne = data.drivers[0].driver;
-  const driverTwo = data.drivers[1].driver;
+  const driverOne = data.driver[0];
+  const driverTwo = data.driver[1];
 
   for (const race of data.races) {
     const round = race.round;
     const raceName = race.raceName;
     const flagRace = race.flag;
-    for (item of race.drivers) {
+
+    let driversHtml = "";
+    for (const item of race.drivers) {
       const driverId = item.driver.id;
       const driverName = `${item.driver.givenName} ${item.driver.familyName}`;
       const driverPos = item.position;
       const driverPts = item.points;
       const driverStatus = item.status;
 
-      return [driverId, driverName, driverPos, driverPts, driverStatus];
+      driversHtml += `
+      <div class="driver-row">
+        <a href="#" onclick="goToDriver('${driverId}', '${season}')">${driverName}</a>
+        ${badge(driverPos)}
+        <span>${driverPts} pts</span>
+        <span>${driverStatus}</span>
+  </div>`;
     }
 
     rowsHTML += `
     <tr>
       <td>${round}</td>
-      <td><img src="${flagRace}"> <a href="/race/${round}?season=${season}">${raceName}</a></td>
-      <td>
-        <div> 
-          <a href="#/driver/${driverId}?season=${season}">${driverName}</a>
-          <span class="badge">${driverPos}</span>
-          ${driverPts} pts
-          ${driverStatus}
-        </div>
-      </td>
+      <td><img class="flagimg"src="${flagRace}"> <a href="/race/${round}?season=${season}">${raceName}</a></td>
+      <td>${driversHtml}</td>
     </tr>`;
   }
   content.innerHTML += `
-    <div class="profile">
-      <img class="avatar" src="${teamPhoto}">
-      <div class="profile-info">
-        <h2>${teamName}  <img class="flagimg" src="${teamFlag}">
-        </h2>
-      <div>
-        <a href="/driver/${driverOne.id}?season=${season}"><img class="avatar-small" src="${driverOne.photo}">${driverOne.givenName} ${driverOne.familyName}</a>
-      </div>
-      <div>
-        <a href="/driver/${driverTwo.id}?season=${season}"><img class="avatar-small" src="${driverTwo.photo}">${drivertwo.givenName} ${driverTwo.familyName}</a>
-      </div>
+  <div class="profile">
+    <img class="avatar" src="${teamPhoto}">
+    <div class="profile-info">
+      <h2>${teamName} <img class="flagimg" src="${teamFlag}"></h2>
       <div class="profile-stats">
-        <div>Position: ${pos}</div>
-        <div>Points: ${pts}</div>
-        <div>Wins: ${wins}</div>
+        <div>
+          <span class="stat-num">${badge(pos)}</span>
+          <span class="stat-label">POS</span>
+        </div>
+        <div>
+          <span class="stat-num">${pts}</span>
+          <span class="stat-label">PTS</span>
+        </div>
+        <div>
+          <span class="stat-num">${wins}</span>
+          <span class="stat-label">WINS</span>
+        </div>
       </div>
       <a href="${info}"><p>Info 🌐</p></a>
     </div>
-    <h3> ${season} GP RESULTS</h3>
+    <a class="profile-driver" href="#" onclick="goToDriver('${driverOne.id}', '${season}')">
+      <img class="avatar" src="${driverOne.photo}">
+      <span>${driverOne.givenName} ${driverOne.familyName}</span>
+    </a>
+    <a class="profile-driver" href="#" onclick="goToDriver('${driverTwo.id}', '${season}')">
+      <img class="avatar" src="${driverTwo.photo}">
+      <span>${driverTwo.givenName} ${driverTwo.familyName}</span>
+    </a>
+  </div>
+  <h3> ${season} GP RESULTS</h3>
     <div class="tablewrap">
     <table>
       <thead>

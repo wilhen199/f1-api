@@ -243,3 +243,25 @@ a:hover {
   letter-spacing: 1px;
   color: #aaa;
 }
+
+.profile-driver {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  text-align: center;
+  color: #eee;
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.profile-driver:hover {
+  color: #fff;
+}
+
+.driver-row {
+  display: grid;
+  grid-template-columns: 140px 30px 70px 90px;
+  align-items: center;
+  gap: 0.5rem;
+}
