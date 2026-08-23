@@ -296,3 +296,23 @@ a:hover {
   transform: translateY(-10px);
   pointer-events: none;
 }
+
+.gp-round {
+  background: #e10600;
+  color: #fff;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.race-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin: 0.2rem 0 0.8rem;
+}
+.race-header h2 {
+  font-size: 1.3rem;
+}

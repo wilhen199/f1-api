@@ -45,6 +45,7 @@ let currentTabStandigs = "Drivers";
 let currentTabResults = "Races";
 let currentDriverId = null;
 let currentTeamId = null;
+let currentRound = null;
 
 function badge(position) {
   const pos = Number(position);
@@ -100,6 +101,49 @@ async function fetchApi(url) {
   }
 
   return await response.json();
+}
+
+function goToDriver(driverId, season) {
+  currentDriverId = driverId;
+  currentTabResults = "Driver";
+  document.getElementById("tabsBar").style.display = "flex";
+  renderTabsBar("results");
+
+  const allNavs = document.querySelectorAll(".nav-link");
+  for (const n of allNavs) {
+    n.classList.remove("active");
+  }
+  document.getElementById("navResults").classList.add("active");
+
+  loadDriverResults(driverId, season);
+}
+
+function goToTeam(teamId, season) {
+  currentTeamId = teamId;
+  currentTabResults = "Team";
+  document.getElementById("tabsBar").style.display = "flex";
+  renderTabsBar("results");
+
+  const allNavs = document.querySelectorAll(".nav-link");
+  for (const n of allNavs) {
+    n.classList.remove("active");
+  }
+  document.getElementById("navResults").classList.add("active");
+
+  loadTeamResults(teamId, season);
+}
+
+function goToRace(round, season) {
+  currentRound = round;
+  currentTabResults = "Races";
+  document.getElementById("tabsBar").style.display = "flex";
+  /* renderTabsBar("results"); */
+  const allNavs = document.querySelectorAll(".nav-link");
+  for (const n of allNavs) {
+    n.classList.remove("active");
+  }
+  document.getElementById("navResults").classList.add("active");
+  loadRaceDetail(round, season);
 }
 
 /* ##### MENU - TABS ##### */
@@ -284,7 +328,7 @@ async function loadRaces(season) {
     rowsHTML += `
     <tr>
       <td><img class="flagimg" src="${row.flag}"></td>
-      <td><a href="/race/${row.round}?season=${season}">${row.raceName}</a></td>
+      <td><a href="#" onclick="goToRace('${row.round}', '${season}')">${row.raceName}</a></td>
       <td>${row.circuit}</td>
       <td>${row.date}</td>
       <td>${row.laps}</td>
@@ -339,7 +383,7 @@ async function loadDriverResults(driverId, season) {
     rowsHTML += `
     <tr>
       <td>${round}</td>
-      <td><img src="${flagRace}" class="flagimg"> <a href="/race/${round}?season=${season}">${raceName}</a></td>
+      <td><img src="${flagRace}" class="flagimg"> <a href="#" onclick=PRace('${round}', '${season}')">${raceName}</a></td>
       <td><img src="${teamPhoto}" class="avatar"> <a href="#" onclick="goToTeam('${teamId}', '${season}')">${teamName}</a></td>
       <td>${badge(grid)}</td>
       <td>${badge(result)}</td>
@@ -483,6 +527,67 @@ async function loadTeamResults(teamId, season) {
     </div>`;
 }
 
+async function loadRaceDetail(round, season) {
+  const data = await fetchApi(`/api/results/race/${round}?season=${season}`);
+  if (!data) return;
+  const content = document.getElementById("content");
+  content.innerHTML = "";
+  let rowsHTML = "";
+  /* console.log(data); */
+  for (const item of data.results) {
+    rowsHTML += `
+    <tr>
+      <td><span class="badge">${badge(item.position)}</span></td>
+      <td>
+        <div>
+          <img class="avatar" src="${item.driver.photo}">
+          <a href="#" onclick="goToDriver('${item.driver.id}', '${season}')">${item.driver.givenName} ${item.driver.familyName}</a>
+        </div>
+      </td>
+      <td>
+        <div>
+          <img class="avatar" src="${item.team.photo}">
+          <a href="#" onclick="goToDriver('${item.team.id}', '${season}')">${item.team.name}</a>
+        </div>
+      </td>
+      <td>${badge(item.grid)}</td>
+      <td>${item.laps}</td>
+      <td>${item.time}</td>
+      <td>${item.fastestLap}</td>
+      <td>${item.points}</td>
+      <td>${item.status}</td>
+    </tr>`;
+  }
+
+  content.innerHTML += `
+  <div class="race-header">
+    <span class="gp-round">${round}</span>
+    <img class="flagimg" src="${data.race.flag}">
+    <h2>${data.race.raceName}</h2>
+    <div>${data.race.circuit}   -   ${data.race.date}</div>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>POS</th>
+          <th>DRIVER</th>
+          <th>TEAM</th>
+          <th>GRID</th>
+          <th>LAPS</th>
+          <th>TIME</th>
+          <th>FASTEST LAP</th>
+          <th>PTS</th>
+          <th>STATUS</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rowsHTML}
+      </tbody>
+    </table>
+    </div>`;
+}
+
 async function loadAwards(season) {
   const data = await fetchApi(`/api/awards?season=${season}`);
   if (!data) return;
@@ -524,34 +629,4 @@ async function loadAwards(season) {
       </tbody>
     </table>
     </div>`;
-}
-
-function goToDriver(driverId, season) {
-  currentDriverId = driverId;
-  currentTabResults = "Driver";
-  document.getElementById("tabsBar").style.display = "flex";
-  renderTabsBar("results");
-
-  const allNavs = document.querySelectorAll(".nav-link");
-  for (const n of allNavs) {
-    n.classList.remove("active");
-  }
-  document.getElementById("navResults").classList.add("active");
-
-  loadDriverResults(driverId, season);
-}
-
-function goToTeam(teamId, season) {
-  currentTeamId = teamId;
-  currentTabResults = "Team";
-  document.getElementById("tabsBar").style.display = "flex";
-  renderTabsBar("results");
-
-  const allNavs = document.querySelectorAll(".nav-link");
-  for (const n of allNavs) {
-    n.classList.remove("active");
-  }
-  document.getElementById("navResults").classList.add("active");
-
-  loadTeamResults(teamId, season);
 }
