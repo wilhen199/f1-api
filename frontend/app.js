@@ -137,7 +137,6 @@ function goToRace(round, season) {
   currentRound = round;
   currentTabResults = "Races";
   document.getElementById("tabsBar").style.display = "flex";
-  /* renderTabsBar("results"); */
   const allNavs = document.querySelectorAll(".nav-link");
   for (const n of allNavs) {
     n.classList.remove("active");
@@ -240,22 +239,24 @@ async function loadStandingsDrivers(season) {
   const data = await fetchApi(`/api/standings/drivers?season=${season}`);
   if (!data) return;
   const content = document.getElementById("content");
-  let rowsHTML = "";
   content.innerHTML = "";
-  for (const row of data.rows) {
-    rowsHTML += `
-    <tr>
-      <td>${badge(row.position)}</td>
-      <td><img class="avatar" src="${row.driver.photo}"> <a href="#" onclick="goToDriver('${row.driver.id}', '${season}')">${row.driver.givenName} ${row.driver.familyName}</a></td>
-      <td><img class="flagimg" src="${row.driver.flag}"></td>
-      <td>
-        ${row.team.photo ? `<img class="avatar" src="${row.team.photo}">` : `<span class="avatar-fallback">${initials(row.team.name)}</span>`}
-        <a href="#" onclick="goToTeam('${row.team.id}', '${season}')">${row.team.name}</a>
-      </td>
-      <td>${row.points}</td>
-      <td>${row.wins}</td>
-    </tr>`;
-  }
+  const rowsHTML = data.rows
+    .map(
+      (row) => `
+      <tr>
+        <td>${badge(row.position)}</td>
+        <td><img class="avatar" src="${row.driver.photo}"> <a href="#" onclick="goToDriver('${row.driver.id}', '${season}')">${row.driver.givenName} ${row.driver.familyName}</a></td>
+        <td><img class="flagimg" src="${row.driver.flag}"></td>
+        <td>
+          ${row.team.photo ? `<img class="avatar" src="${row.team.photo}">` : `<span class="avatar-fallback">${initials(row.team.name)}</span>`}
+          <a href="#" onclick="goToTeam('${row.team.id}', '${season}')">${row.team.name}</a>
+        </td>
+        <td>${row.points}</td>
+        <td>${row.wins}</td>
+    </tr>`,
+    )
+    .join("");
+
   content.innerHTML += `
     <h2 class="view-title"> ${season} Driver Standing</h2>
     <div class="tablewrap">
@@ -281,10 +282,10 @@ async function loadStandingsTeams(season) {
   const data = await fetchApi(`/api/standings/teams?season=${season}`);
   if (!data) return;
   const content = document.getElementById("content");
-  let rowsHTML = "";
   content.innerHTML = "";
-  for (const row of data.rows) {
-    rowsHTML += `
+  const rowsHTML = data.rows
+    .map(
+      (row) => `
     <tr>
       <td>${badge(row.position)}</td>
       <td>
@@ -294,8 +295,10 @@ async function loadStandingsTeams(season) {
       <td><img class="flagimg" src="${row.team.flag}"></td>
       <td>${row.points}</td>
       <td>${row.wins}</td>
-    </tr>`;
-  }
+    </tr>`,
+    )
+    .join("");
+
   content.innerHTML += `
     <h2 class="view-title"> ${season} Team Standing</h2>
     <div class="tablewrap">
@@ -322,18 +325,19 @@ async function loadRaces(season) {
   const data = await fetchApi(`/api/results?season=${season}`);
   if (!data) return;
   const content = document.getElementById("content");
-  let rowsHTML = "";
   content.innerHTML = "";
-  for (const row of data.rows) {
-    rowsHTML += `
+  const rowsHTML = data.rows
+    .map(
+      (row) => `
     <tr>
       <td><img class="flagimg" src="${row.flag}"></td>
       <td><a href="#" onclick="goToRace('${row.round}', '${season}')">${row.raceName}</a></td>
       <td>${row.circuit}</td>
       <td>${row.date}</td>
       <td>${row.laps}</td>
-    </tr>`;
-  }
+    </tr>`,
+    )
+    .join("");
   content.innerHTML += `
     <h2 class="view-title"> ${season} Races List</h2>
     <div class="tablewrap">
@@ -358,60 +362,42 @@ async function loadDriverResults(driverId, season) {
   const data = await fetchApi(`/api/driver/${driverId}?season=${season}`);
   if (!data) return;
   const content = document.getElementById("content");
-  let rowsHTML = "";
   content.innerHTML = "";
-  const driverName = `${data.driver.givenName} ${data.driver.familyName}`;
-  const driverPhoto = data.driver.photo;
-  const driverFlag = data.driver.flag;
-  const info = data.driver.info;
-  const pos = data.position;
-  const pts = data.points;
-  const wins = data.wins;
-
-  for (const race of data.races) {
-    const round = race.round;
-    const raceName = race.raceName;
-    const flagRace = race.flag;
-    const teamName = race.team.name;
-    const teamPhoto = race.team.photo;
-    const teamId = race.team.id;
-    const grid = race.grid;
-    const result = race.position;
-    const ptsRace = race.points;
-    const status = race.status;
-
-    rowsHTML += `
-    <tr>
-      <td>${round}</td>
-      <td><img src="${flagRace}" class="flagimg"> <a href="#" onclick=PRace('${round}', '${season}')">${raceName}</a></td>
-      <td><img src="${teamPhoto}" class="avatar"> <a href="#" onclick="goToTeam('${teamId}', '${season}')">${teamName}</a></td>
-      <td>${badge(grid)}</td>
-      <td>${badge(result)}</td>
-      <td>${ptsRace}</td>
-      <td>${status}</td>
-    </tr>`;
-  }
+  const rowsHTML = data.races
+    .map(
+      (race) =>
+        `<tr>
+      <td>${race.round}</td>
+      <td><img src="${race.flag}" class="flagimg"> <a href="#" onclick=PRace('${race.round}', '${season}')">${race.raceName}</a></td>
+      <td><img src="${race.team.photo}" class="avatar"> <a href="#" onclick="goToTeam('${race.team.id}', '${season}')">${race.team.name}</a></td>
+      <td>${badge(race.grid)}</td>
+      <td>${badge(race.position)}</td>
+      <td>${race.points}</td>
+      <td>${race.status}</td>
+    </tr>`,
+    )
+    .join("");
   content.innerHTML += `
     <div class="profile">
-      <img class="avatar" src="${driverPhoto}">
-      <div class="profile-info"> 
-        <h2>${driverName}  <img class="flagimg" src="${driverFlag}"> </h2>
+      <img class="avatar" src="${data.driver.photo}">
+      <div class="profile-info">
+        <h2>${data.driver.givenName} ${data.driver.familyName}  <img class="flagimg" src="${data.driver.flag}"> </h2>
         <div class="profile-stats">
           <div>
-          <span class="stat-num">${badge(pos)}</span>
+          <span class="stat-num">${badge(data.position)}</span>
           <span class="stat-label">POS</span>
           </div>
           <div>
-          
-          <span class="stat-num">${pts}</span>
+
+          <span class="stat-num">${data.points}</span>
           <span class="stat-label">PTS</span>
           </div>
           <div>
-          <span class="stat-num">${wins}</span>
+          <span class="stat-num">${data.wins}</span>
           <span class="stat-label">WINS</span>
           </div>
         </div>
-        <a href="${info}"><p>Info 🌐</p></a>
+        <a href="${data.driver.info}"><p>Info 🌐</p></a>
       </div>
     </div>
     <h3> ${season} SEASON RESULTS</h3>
@@ -439,75 +425,59 @@ async function loadTeamResults(teamId, season) {
   const data = await fetchApi(`/api/team/${teamId}?season=${season}`);
   if (!data) return;
   const content = document.getElementById("content");
-  let rowsHTML = "";
   content.innerHTML = "";
-  const teamName = data.team.name;
-  const teamPhoto = data.team.photo;
-  const teamFlag = data.team.flag;
-  const info = data.team.info;
-  const pos = data.position;
-  const pts = data.points;
-  const wins = data.wins;
-  const driverOne = data.driver[0];
-  const driverTwo = data.driver[1];
 
-  for (const race of data.races) {
-    const round = race.round;
-    const raceName = race.raceName;
-    const flagRace = race.flag;
+  const rowsHTML = data.races
+    .map((race) => {
+      const driversHtml = race.drivers
+        .map(
+          (item) =>
+            `
+        <div class="driver-row">
+          <a href="#" onclick="goToDriver('${item.driver.id}', '${season}')">${item.driver.givenName} ${item.driver.familyName}</a>
+          ${badge(item.position)}
+          <span>${item.points} pts</span>
+          <span>${item.status}</span>
+        </div>`,
+        )
+        .join("");
 
-    let driversHtml = "";
-    for (const item of race.drivers) {
-      const driverId = item.driver.id;
-      const driverName = `${item.driver.givenName} ${item.driver.familyName}`;
-      const driverPos = item.position;
-      const driverPts = item.points;
-      const driverStatus = item.status;
-
-      driversHtml += `
-      <div class="driver-row">
-        <a href="#" onclick="goToDriver('${driverId}', '${season}')">${driverName}</a>
-        ${badge(driverPos)}
-        <span>${driverPts} pts</span>
-        <span>${driverStatus}</span>
-  </div>`;
-    }
-
-    rowsHTML += `
+      return `
     <tr>
-      <td>${round}</td>
-      <td><img class="flagimg"src="${flagRace}"> <a href="/race/${round}?season=${season}">${raceName}</a></td>
+      <td>${race.round}</td>
+      <td><img class="flagimg"src="${race.flag}"> <a href="/race/${race.round}?season=${season}">${race.raceName}</a></td>
       <td>${driversHtml}</td>
     </tr>`;
-  }
+    })
+    .join("");
   content.innerHTML += `
   <div class="profile">
-    <img class="avatar" src="${teamPhoto}">
+    <img class="avatar" src="${data.team.photo}">
     <div class="profile-info">
-      <h2>${teamName} <img class="flagimg" src="${teamFlag}"></h2>
+      <h2>${data.team.name} <img class="flagimg" src="${data.team.flag}"></h2>
       <div class="profile-stats">
         <div>
-          <span class="stat-num">${badge(pos)}</span>
+          <span class="stat-num">${badge(data.position)}</span>
           <span class="stat-label">POS</span>
         </div>
         <div>
-          <span class="stat-num">${pts}</span>
+          <span class="stat-num">${data.points}</span>
           <span class="stat-label">PTS</span>
         </div>
         <div>
-          <span class="stat-num">${wins}</span>
+          <span class="stat-num">${data.wins}</span>
           <span class="stat-label">WINS</span>
         </div>
       </div>
-      <a href="${info}"><p>Info 🌐</p></a>
+      <a href="${data.team.info}"><p>Info 🌐</p></a>
     </div>
-    <a class="profile-driver" href="#" onclick="goToDriver('${driverOne.id}', '${season}')">
-      <img class="avatar" src="${driverOne.photo}">
-      <span>${driverOne.givenName} ${driverOne.familyName}</span>
+    <a class="profile-driver" href="#" onclick="goToDriver('${data.driver[0].id}', '${season}')">
+      <img class="avatar" src="${data.driver[0].photo}">
+      <span>${data.driver[0].givenName} ${data.driver[0].familyName}</span>
     </a>
-    <a class="profile-driver" href="#" onclick="goToDriver('${driverTwo.id}', '${season}')">
-      <img class="avatar" src="${driverTwo.photo}">
-      <span>${driverTwo.givenName} ${driverTwo.familyName}</span>
+    <a class="profile-driver" href="#" onclick="goToDriver('${data.driver[1].id}', '${season}')">
+      <img class="avatar" src="${data.driver[1].photo}">
+      <span>${data.driver[1].givenName} ${data.driver[1].familyName}</span>
     </a>
   </div>
   <h3> ${season} GP RESULTS</h3>
@@ -532,10 +502,9 @@ async function loadRaceDetail(round, season) {
   if (!data) return;
   const content = document.getElementById("content");
   content.innerHTML = "";
-  let rowsHTML = "";
-  /* console.log(data); */
-  for (const item of data.results) {
-    rowsHTML += `
+  const rowsHTML = data.results
+    .map(
+      (item) => `
     <tr>
       <td><span class="badge">${badge(item.position)}</span></td>
       <td>
@@ -556,9 +525,9 @@ async function loadRaceDetail(round, season) {
       <td>${item.fastestLap}</td>
       <td>${item.points}</td>
       <td>${item.status}</td>
-    </tr>`;
-  }
-
+    </tr>`,
+    )
+    .join("");
   content.innerHTML += `
   <div class="race-header">
     <span class="gp-round">${round}</span>
