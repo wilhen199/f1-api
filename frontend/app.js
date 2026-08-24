@@ -115,7 +115,7 @@ function goToDriver(driverId, season) {
   }
   document.getElementById("navResults").classList.add("active");
 
-  loadDriverResults(driverId, season);
+  loadResultsDriver(driverId, season);
 }
 
 function goToTeam(teamId, season) {
@@ -130,19 +130,20 @@ function goToTeam(teamId, season) {
   }
   document.getElementById("navResults").classList.add("active");
 
-  loadTeamResults(teamId, season);
+  loadResultsTeam(teamId, season);
 }
 
 function goToRace(round, season) {
   currentRound = round;
-  currentTabResults = "Races";
+  currentTabResults = "RaceDetail";
   document.getElementById("tabsBar").style.display = "flex";
+  renderTabsBar("results");
   const allNavs = document.querySelectorAll(".nav-link");
   for (const n of allNavs) {
     n.classList.remove("active");
   }
   document.getElementById("navResults").classList.add("active");
-  loadRaceDetail(round, season);
+  loadMainRace(round, season);
 }
 
 /* ##### MENU - TABS ##### */
@@ -221,9 +222,11 @@ async function loadSeason() {
       if (currentTabResults === "Races") {
         loadRaces(select.value);
       } else if (currentTabResults === "Driver") {
-        loadDriverResults(currentDriverId, select.value);
+        loadResultsDriver(currentDriverId, select.value);
       } else if (currentTabResults === "Team") {
-        loadTeamResults(currentTeamId, select.value);
+        loadResultsTeam(currentTeamId, select.value);
+      } else if (currentTabResults === "RaceDetail") {
+        loadMainRace(currentRound, select.value);
       } else {
         loadAwards(select.value);
       }
@@ -358,7 +361,7 @@ async function loadRaces(season) {
     </div>`;
 }
 
-async function loadDriverResults(driverId, season) {
+async function loadResultsDriver(driverId, season) {
   const data = await fetchApi(`/api/driver/${driverId}?season=${season}`);
   if (!data) return;
   const content = document.getElementById("content");
@@ -368,7 +371,7 @@ async function loadDriverResults(driverId, season) {
       (race) =>
         `<tr>
       <td>${race.round}</td>
-      <td><img src="${race.flag}" class="flagimg"> <a href="#" onclick=PRace('${race.round}', '${season}')">${race.raceName}</a></td>
+      <td><img src="${race.flag}" class="flagimg"> <a href="#" onclick="goToRace('${race.round}', '${season}')">${race.raceName}</a></td>
       <td><img src="${race.team.photo}" class="avatar"> <a href="#" onclick="goToTeam('${race.team.id}', '${season}')">${race.team.name}</a></td>
       <td>${badge(race.grid)}</td>
       <td>${badge(race.position)}</td>
@@ -421,7 +424,7 @@ async function loadDriverResults(driverId, season) {
     </div>`;
 }
 
-async function loadTeamResults(teamId, season) {
+async function loadResultsTeam(teamId, season) {
   const data = await fetchApi(`/api/team/${teamId}?season=${season}`);
   if (!data) return;
   const content = document.getElementById("content");
@@ -445,7 +448,7 @@ async function loadTeamResults(teamId, season) {
       return `
     <tr>
       <td>${race.round}</td>
-      <td><img class="flagimg"src="${race.flag}"> <a href="/race/${race.round}?season=${season}">${race.raceName}</a></td>
+      <td><img class="flagimg" src="${race.flag}"> <a href="#" onclick="goToRace('${race.round}', '${season}')">${race.raceName}</a></td>
       <td>${driversHtml}</td>
     </tr>`;
     })
@@ -497,7 +500,7 @@ async function loadTeamResults(teamId, season) {
     </div>`;
 }
 
-async function loadRaceDetail(round, season) {
+async function loadMainRace(round, season) {
   const data = await fetchApi(`/api/results/race/${round}?season=${season}`);
   if (!data) return;
   const content = document.getElementById("content");
@@ -516,7 +519,7 @@ async function loadRaceDetail(round, season) {
       <td>
         <div>
           <img class="avatar" src="${item.team.photo}">
-          <a href="#" onclick="goToDriver('${item.team.id}', '${season}')">${item.team.name}</a>
+          <a href="#" onclick="goToTeam('${item.team.id}', '${season}')">${item.team.name}</a>
         </div>
       </td>
       <td>${badge(item.grid)}</td>
