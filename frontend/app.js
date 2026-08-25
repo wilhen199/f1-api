@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("navStandings").classList.add("active");
 
   document.getElementById("navStandings").addEventListener("click", () => {
+    hideSubTabs();
     document.getElementById("tabsBar").style.display = "flex";
     renderTabsBar("standings");
     const allNavs = document.querySelectorAll(".nav-link");
@@ -23,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.getElementById("navResults").addEventListener("click", () => {
+    hideSubTabs();
     document.getElementById("tabsBar").style.display = "flex";
     currentTabResults = "Races";
     renderTabsBar("results");
@@ -46,6 +48,16 @@ let currentTabResults = "Races";
 let currentDriverId = null;
 let currentTeamId = null;
 let currentRound = null;
+let currentSubTabRaces = "Main Race";
+let currentSubTabDriver = "Main Races";
+
+function hideSubTabs() {
+  const subTabBar = document.getElementById("subTabsBar");
+  if (subTabBar) {
+    subTabBar.classList.add("hidden");
+    subTabBar.classList.remove("active");
+  }
+}
 
 function badge(position) {
   const pos = Number(position);
@@ -105,7 +117,6 @@ async function fetchApi(url) {
 
 function goToDriver(driverId, season) {
   currentDriverId = driverId;
-  currentTabResults = "Driver";
   document.getElementById("tabsBar").style.display = "flex";
   renderTabsBar("results");
 
@@ -119,8 +130,8 @@ function goToDriver(driverId, season) {
 }
 
 function goToTeam(teamId, season) {
+  hideSubTabs();
   currentTeamId = teamId;
-  currentTabResults = "Team";
   document.getElementById("tabsBar").style.display = "flex";
   renderTabsBar("results");
 
@@ -134,8 +145,9 @@ function goToTeam(teamId, season) {
 }
 
 function goToRace(round, season) {
+  currentSubTabRaces = "Main Race";
+  hideSubTabs();
   currentRound = round;
-  currentTabResults = "RaceDetail";
   document.getElementById("tabsBar").style.display = "flex";
   renderTabsBar("results");
   const allNavs = document.querySelectorAll(".nav-link");
@@ -143,7 +155,8 @@ function goToRace(round, season) {
     n.classList.remove("active");
   }
   document.getElementById("navResults").classList.add("active");
-  loadMainRace(round, season);
+  renderRaceSubTabs(round, season);
+  loadResultMainRace(round, season);
 }
 
 /* ##### MENU - TABS ##### */
@@ -178,7 +191,7 @@ async function renderTabsBar(view = "standings") {
 
       if (view === "standings") {
         currentTabStandigs = i;
-        if (i === "Drivers") {
+        if (i === "Driver") {
           loadStandingsDrivers(season);
         } else {
           loadStandingsTeams(season);
@@ -193,6 +206,76 @@ async function renderTabsBar(view = "standings") {
       }
     });
     tabBar.appendChild(tab);
+  }
+}
+
+async function renderRaceSubTabs(round, season) {
+  const subTabBar = document.getElementById("subTabsBar");
+  subTabBar.classList.remove("hidden");
+  subTabBar.classList.add("active");
+  subTabBar.innerHTML = "";
+  const subTabToDisplay = ["Main Race", "Sprint", "Qualifying"];
+  for (const subTabName of subTabToDisplay) {
+    const subTab = document.createElement("div");
+    subTab.textContent = subTabName;
+    subTab.className = "subtab";
+    if (subTabName === currentSubTabRaces) {
+      subTab.classList.add("active");
+    }
+    subTab.addEventListener("click", () => {
+      const allSubTabs = document.querySelectorAll(".subtab");
+      for (const st of allSubTabs) {
+        st.classList.remove("active");
+      }
+      subTab.classList.add("active");
+      currentSubTabRaces = subTabName;
+
+      if (subTabName === "Main Race") {
+        loadResultMainRace(round, season);
+      } else if (subTabName === "Sprint") {
+        loadResultSprintRace(round, season);
+      } else {
+        loadResultQualifyingRace(round, season);
+      }
+    });
+    subTabBar.appendChild(subTab);
+  }
+}
+
+async function renderDriverSubTabs(driverId, season) {
+  const subTabBar = document.getElementById("subTabsBar");
+
+  subTabBar.classList.remove("hidden");
+  subTabBar.classList.add("active");
+  subTabBar.innerHTML = "";
+
+  const subTabToDisplay = ["Main Races", "Sprints", "Qualifyings"];
+
+  for (const subTabName of subTabToDisplay) {
+    const subTab = document.createElement("div");
+    subTab.textContent = subTabName;
+    subTab.className = "subtab";
+
+    if (subTabName === currentSubTabDriver) {
+      subTab.classList.add("active");
+    }
+
+    subTab.addEventListener("click", () => {
+      const allSubTabs = document.querySelectorAll(".subtab");
+      for (const st of allSubTabs) {
+        st.classList.remove("active");
+      }
+      subTab.classList.add("active");
+
+      if (subTabName === "Main Races") {
+        loadResultsDriver(driverId, season);
+      } else if (subTabName === "Sprints") {
+        loadResultSprintDriver(driverId, season);
+      } else {
+        loadResultQualifyingDriver(driverId, season);
+      }
+    });
+    subTabBar.appendChild(subTab);
   }
 }
 
@@ -212,6 +295,7 @@ async function loadSeason() {
   select.addEventListener("change", () => {
     const currentView = document.querySelector(".nav-link.active").id.replace("nav", "").toLowerCase();
     if (currentView === "standings") {
+      hideSubTabs();
       const currentTab = document.querySelector("#tabsBar .tab.active").textContent;
       if (currentTab === "Drivers") {
         loadStandingsDrivers(select.value);
@@ -220,14 +304,17 @@ async function loadSeason() {
       }
     } else if (currentView === "results") {
       if (currentTabResults === "Races") {
+        hideSubTabs();
         loadRaces(select.value);
-      } else if (currentTabResults === "Driver") {
+      } else if (currentTabResults === "Drivers") {
         loadResultsDriver(currentDriverId, select.value);
       } else if (currentTabResults === "Team") {
+        hideSubTabs();
         loadResultsTeam(currentTeamId, select.value);
       } else if (currentTabResults === "RaceDetail") {
-        loadMainRace(currentRound, select.value);
+        loadResultMainRace(currentRound, select.value);
       } else {
+        hideSubTabs();
         loadAwards(select.value);
       }
     }
@@ -422,6 +509,7 @@ async function loadResultsDriver(driverId, season) {
       </tbody>
     </table>
     </div>`;
+  renderDriverSubTabs(driverId, season);
 }
 
 async function loadResultsTeam(teamId, season) {
@@ -500,7 +588,7 @@ async function loadResultsTeam(teamId, season) {
     </div>`;
 }
 
-async function loadMainRace(round, season) {
+async function loadResultMainRace(round, season) {
   const data = await fetchApi(`/api/results/race/${round}?season=${season}`);
   if (!data) return;
   const content = document.getElementById("content");
@@ -558,6 +646,140 @@ async function loadMainRace(round, season) {
       </tbody>
     </table>
     </div>`;
+}
+
+async function loadResultSprintRace(round, season) {
+  const data = await fetchApi(`/api/results/race/${round}?season=${season}`);
+  if (!data) return;
+  const content = document.getElementById("content");
+  if (!data.has_sprint) {
+    content.innerHTML = `<p class="empty-state">No sprint race found for ${data.race.raceName} (${season}).</p>`;
+    return;
+  }
+  content.innerHTML = "";
+  const rowsHTML = data.sprint
+    .map(
+      (row) => `
+    <tr>
+      <td><span class="badge">${badge(row.position)}</span></td>
+      <td>
+        <div>
+          <img class="avatar" src="${row.driver.photo}">
+          <a href="#" onclick="goToDriver('${row.driver.id}', '${season}')">${row.driver.givenName} ${row.driver.familyName}</a>
+        </div>
+      </td>
+      <td>
+        <div>
+          <img class="avatar" src="${row.team.photo}">
+          <a href="#" onclick="goToTeam('${row.team.id}', '${season}')">${row.team.name}</a>
+        </div>
+      </td>
+      <td>${badge(row.grid)}</td>
+      <td>${row.laps}</td>
+      <td>${row.time}</td>
+      <td>${row.fastestLap}</td>
+      <td>${row.points}</td>
+      <td>${row.status}</td>
+    </tr>
+  `,
+    )
+    .join("");
+  content.innerHTML += `
+  <div class="race-header">
+    <span class="gp-round">${round}</span>
+    <img class="flagimg" src="${data.race.flag}">
+    <h2>${data.race.raceName}</h2>
+    <div>${data.race.circuit}   -   ${data.race.date}</div>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>POS</th>
+          <th>DRIVER</th>
+          <th>TEAM</th>
+          <th>GRID</th>
+          <th>LAPS</th>
+          <th>TIME</th>
+          <th>FASTEST LAP</th>
+          <th>PTS</th>
+          <th>STATUS</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rowsHTML}
+      </tbody>
+    </table>
+    </div>`;
+}
+
+async function loadResultQualifyingRace(round, season) {
+  const data = await fetchApi(`/api/results/race/${round}?season=${season}`);
+  if (!data) return;
+  const content = document.getElementById("content");
+  content.innerHTML = "";
+  const rowsHTML = data.qualifying
+    .map(
+      (row) => `
+    <tr>
+      <td><span class="badge">${badge(row.position)}</span></td>
+      <td>
+        <div>
+          <img class="avatar" src="${row.driver.photo}">
+          <a href="#" onclick="goToDriver('${row.driver.id}', '${season}')">${row.driver.givenName} ${row.driver.familyName}</a>
+        </div>
+      </td>
+      <td>
+        <div>
+          <img class="avatar" src="${row.team.photo}">
+          <a href="#" onclick="goToTeam('${row.team.id}', '${season}')">${row.team.name}</a>
+        </div>
+      </td>
+      <td>${row.q1 || "-"}</td>
+      <td>${row.q2 || "-"}</td>
+      <td>${row.q3 || "-"}</td>
+    </tr>
+  `,
+    )
+    .join("");
+  content.innerHTML += `
+  <div class="race-header">
+    <span class="gp-round">${round}</span>
+    <img class="flagimg" src="${data.race.flag}">
+    <h2>${data.race.raceName}</h2>
+    <div>${data.race.circuit}   -   ${data.race.date}</div>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>POS</th>
+          <th>DRIVER</th>
+          <th>TEAM</th>
+          <th>Q1</th>
+          <th>Q2</th>
+          <th>Q3</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rowsHTML}
+      </tbody>
+    </table>
+    </div>`;
+}
+
+async function loadResultSprintDriver(driverId, season) {
+  const data = await fetchApi(`/api/results/sprint?season=${season}`);
+  if (!data) return;
+  const content = document.getElementById("content");
+  content.innerHTML = `<h1>SPRINT DRIVER CONTENT ROUND (${season})</h1>`;
+}
+
+async function loadResultQualifyingDriver(driverId, season) {
+  const data = await fetchApi(`/api/results/qualifying?season=${season}`);
+  if (!data) return;
+  const content = document.getElementById("content");
+  content.innerHTML = `<h1>QUALI DRIVER CONTENT ROUND (${season})</h1>`;
 }
 
 async function loadAwards(season) {

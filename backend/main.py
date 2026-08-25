@@ -332,7 +332,7 @@ async def race_detail(
 
     return {
         "season": season,
-        "has_sprint?": bool(info["sprint"]),
+        "has_sprint": bool(info["sprint"]),
         "race": helpers._race(info.get("race", {}), results_rows),
         "results": results_rows,
         "qualifying": quali_rows,

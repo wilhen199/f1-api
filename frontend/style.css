@@ -316,3 +316,28 @@ a:hover {
 .race-header h2 {
   font-size: 1.3rem;
 }
+
+.subtabs {
+  display: flex;
+  gap: 0;
+  padding: 0 2rem;
+  background: #0d0d16;
+  border-bottom: 1px solid #2a2a3a;
+}
+
+.subtabs.hidden {
+  display: none;
+}
+
+.subtabs .subtab {
+  font-size: 0.78rem;
+  padding: 0.45rem 1rem;
+  color: #aaa;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+
+.subtabs .subtab.active {
+  color: #fff;
+  border-bottom-color: #e10600;
+}
