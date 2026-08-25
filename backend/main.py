@@ -444,7 +444,13 @@ async def awards(season: int = Query(default=current_season, ge=1950)):
         laps = races_results[0].get("laps") if races_results else None
         quali_results = next((r for r in quali_data if r.get("round") == round_num), {}).get("QualifyingResults", [])
 
-        top5_drivers = [helpers._driver(races_results[i].get("Driver") or {}) for i in range(5)]
+        top5 = [{
+            "driver": helpers._driver(races_results[i].get("Driver") or {}),
+            "team": helpers._team(races_results[i].get("Constructor") or {}),
+            "grid": races_results[i].get("grid"),
+        } for i in range(5)]
+        top5_drivers = [t["driver"] for t in top5]
+
         driver_items.extend(top5_drivers)
 
         row_team = helpers._team(races_results[0].get("Constructor") or {})
@@ -487,7 +493,7 @@ async def awards(season: int = Query(default=current_season, ge=1950)):
             "laps": laps,
             "winner": top5_drivers[0],
             "team": row_team,
-            "top_5": top5_drivers,
+            "top_5": top5,
             "pole": quali_results[0] if quali_results else None,
             "driver_of_the_day": dotd_row,
             "fastest_pit_stop": {
