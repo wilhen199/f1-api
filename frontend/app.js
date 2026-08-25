@@ -769,17 +769,129 @@ async function loadResultQualifyingRace(round, season) {
 }
 
 async function loadResultSprintDriver(driverId, season) {
-  const data = await fetchApi(`/api/results/sprint?season=${season}`);
+  const data = await fetchApi(`/api/driver/${driverId}?season=${season}`);
   if (!data) return;
   const content = document.getElementById("content");
-  content.innerHTML = `<h1>SPRINT DRIVER CONTENT ROUND (${season})</h1>`;
+  content.innerHTML = "";
+  const rowsHTML = data.sprint
+    .map(
+      (sprint) =>
+        `<tr>
+      <td>${sprint.round}</td>
+      <td><img src="${sprint.flag}" class="flagimg"> <a href="#" onclick="goToRace('${sprint.round}', '${season}')">${sprint.raceName}</a></td>
+      <td><img src="${sprint.team.photo}" class="avatar"> <a href="#" onclick="goToTeam('${sprint.team.id}', '${season}')">${sprint.team.name}</a></td>
+      <td>${badge(sprint.grid)}</td>
+      <td>${badge(sprint.position)}</td>
+      <td>${sprint.points}</td>
+      <td>${sprint.status}</td>
+    </tr>`,
+    )
+    .join("");
+  content.innerHTML += `
+    <div class="profile">
+      <img class="avatar" src="${data.driver.photo}">
+      <div class="profile-info">
+        <h2>${data.driver.givenName} ${data.driver.familyName}  <img class="flagimg" src="${data.driver.flag}"> </h2>
+        <div class="profile-stats">
+          <div>
+          <span class="stat-num">${badge(data.position)}</span>
+          <span class="stat-label">POS</span>
+          </div>
+          <div>
+
+          <span class="stat-num">${data.points}</span>
+          <span class="stat-label">PTS</span>
+          </div>
+          <div>
+          <span class="stat-num">${data.wins}</span>
+          <span class="stat-label">WINS</span>
+          </div>
+        </div>
+        <a href="${data.driver.info}"><p>Info 🌐</p></a>
+      </div>
+    </div>
+    <h3> ${season} SPRINT RESULTS</h3>
+    <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ROUND</th>
+          <th>GRAND PRIX</th>
+          <th>TEAM</th>
+          <th>GRID</th>
+          <th>RESULT</th>
+          <th>PTS</th>
+          <th>STATUS</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rowsHTML}
+      </tbody>
+    </table>
+    </div>`;
 }
 
 async function loadResultQualifyingDriver(driverId, season) {
-  const data = await fetchApi(`/api/results/qualifying?season=${season}`);
+  const data = await fetchApi(`/api/driver/${driverId}?season=${season}`);
   if (!data) return;
   const content = document.getElementById("content");
-  content.innerHTML = `<h1>QUALI DRIVER CONTENT ROUND (${season})</h1>`;
+  content.innerHTML = "";
+  const rowsHTML = data.qualifying
+    .map(
+      (qualifying) =>
+        `<tr>
+      <td>${qualifying.round}</td>
+      <td><img src="${qualifying.flag}" class="flagimg"> <a href="#" onclick="goToRace('${qualifying.round}', '${season}')">${qualifying.raceName}</a></td>
+      <td><img src="${qualifying.team.photo}" class="avatar"> <a href="#" onclick="goToTeam('${qualifying.team.id}', '${season}')">${qualifying.team.name}</a></td>
+      <td>${badge(qualifying.position)}</td>
+      <td>${qualifying.Q1}</td>
+      <td>${qualifying.Q2}</td>
+      <td>${qualifying.Q3}</td>
+    </tr>`,
+    )
+    .join("");
+  content.innerHTML += `
+    <div class="profile">
+      <img class="avatar" src="${data.driver.photo}">
+      <div class="profile-info">
+        <h2>${data.driver.givenName} ${data.driver.familyName}  <img class="flagimg" src="${data.driver.flag}"> </h2>
+        <div class="profile-stats">
+          <div>
+          <span class="stat-num">${badge(data.position)}</span>
+          <span class="stat-label">POS</span>
+          </div>
+          <div>
+
+          <span class="stat-num">${data.points}</span>
+          <span class="stat-label">PTS</span>
+          </div>
+          <div>
+          <span class="stat-num">${data.wins}</span>
+          <span class="stat-label">WINS</span>
+          </div>
+        </div>
+        <a href="${data.driver.info}"><p>Info 🌐</p></a>
+      </div>
+    </div>
+    <h3> ${season} QUALIFYING RESULTS</h3>
+    <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ROUND</th>
+          <th>GRAND PRIX</th>
+          <th>TEAM</th>
+          <th>POS</th>
+          <th>Q1</th>
+          <th>Q2</th>
+          <th>Q3</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rowsHTML}
+      </tbody>
+    </table>
+    </div>`;
 }
 
 async function loadAwards(season) {

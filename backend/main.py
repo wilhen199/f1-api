@@ -128,6 +128,53 @@ async def driver_info(
             })
         team_items.append(row_team)
 
+    sprint = await f1_api.season_sprint(season)
+    sprint_rows = []
+    for race in sprint:
+        result_race = next((row for row in race.get("SprintResults", []) if (row.get("Driver") or {}).get("driverId", "").lower() == driverId.lower()), None,)
+        if not result_race:
+            continue
+        row_team = helpers._team(result_race.get("Constructor") or {})
+        sprint_rows.append(
+            {
+                "round": race.get("round"),
+                "raceName": race.get("raceName"),
+                "date": race.get("date"),
+                "position": result_race.get("position"),
+                "positionText": result_race.get("positionText"),
+                "grid": result_race.get("grid"),
+                "laps": result_race.get("laps"),
+                "time": (result_race.get("Time") or {}).get("time"),
+                "status": result_race.get("status"),
+                "points": result_race.get("points"),
+                "fastestLap": (result_race.get("FastestLap") or {}).get("Time", {}).get("time"),
+                "team": row_team,
+                "flag": images.flag_url((race.get("Circuit") or {}).get("Location", {}).get("country")),
+            })
+        team_items.append(row_team)
+
+
+    qualifying = await f1_api.season_qualifying(season)
+    quali_rows = []
+    for race in qualifying:
+        result_race = next((row for row in race.get("QualifyingResults", []) if (row.get("Driver") or {}).get("driverId", "").lower() == driverId.lower()), None,)
+        if not result_race:
+            continue
+        quali_rows.append({
+            "round": race.get("round"),
+            "raceName": race.get("raceName"),
+            "date": race.get("date"),
+            "position": result_race.get("position"),
+            "Q1": result_race.get("Q1"),
+            "Q2": result_race.get("Q2"),
+            "Q3": result_race.get("Q3"),
+            "team": row_team,
+            "flag": images.flag_url((race.get("Circuit") or {}).get("Location", {}).get("country")),
+        })
+        team_items.append(row_team)
+    
+    
+    
     await asyncio.gather(
         helpers._resolve_photos(driver_items, "driver"),
         helpers._resolve_photos(team_items, "team"),
@@ -140,6 +187,8 @@ async def driver_info(
         "points": result_driver.get("points", "0"),
         "wins": result_driver.get("wins", "0"),
         "races": races_rows,
+        "sprint": sprint_rows,
+        "qualifying": quali_rows,
     }
 
 @app.get("/api/team/{teamId}")
