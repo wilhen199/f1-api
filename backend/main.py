@@ -449,13 +449,18 @@ async def awards(season: int = Query(default=current_season, ge=1950)):
             "driver": helpers._driver(races_results[i].get("Driver") or {}),
             "team": helpers._team(races_results[i].get("Constructor") or {}),
             "grid": races_results[i].get("grid"),
+            "points": races_results[i].get("points")
         } for i in range(5)]
         top5_drivers = [t["driver"] for t in top5]
+        top5_teams = [t["team"] for t in top5]
 
         driver_items.extend(top5_drivers)
+        team_items.extend(top5_teams)
 
         row_team = helpers._team(races_results[0].get("Constructor") or {})
         team_items.append(row_team)
+        
+        pprint(top5)
 
         fps_item = {}
         for f in fps_data:
@@ -489,6 +494,15 @@ async def awards(season: int = Query(default=current_season, ge=1950)):
             sprint_winner = helpers._driver(sprint_raw[0].get("Driver") or {})
             driver_items.append(sprint_winner)
             team_items.append(helpers._team(sprint_raw[0].get("Constructor") or {}))
+            
+        pole_raw = quali_results[0] if quali_results else None
+        pole = None
+        if pole_raw:
+            pole_driver = helpers._driver(pole_raw.get("Driver") or {})
+            pole = {"driver": pole_driver,
+            "time": pole_raw.get("Q3") or pole_raw.get("Q2") or pole_raw.get("Q1"),}
+            driver_items.append(pole["driver"])
+        
 
         rows.append({
             "round" : round_num,
@@ -502,7 +516,7 @@ async def awards(season: int = Query(default=current_season, ge=1950)):
             "team": row_team,
             "sprint_winner": sprint_winner if sprint_raw else None,
             "top_5": top5,
-            "pole": quali_results[0] if quali_results else None,
+            "pole": pole,
             "driver_of_the_day": dotd_row,
             "fastest_pit_stop": {
                 "team": fps_item.get("teamName"),

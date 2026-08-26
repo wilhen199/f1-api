@@ -42,7 +42,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-/* ##### VARIABLES AND UTILITIES ##### */
+/* ########################### */
+/* #- VARIABLES - UTILITIES -# */
+/* ########################### */
+
 let currentTabStandigs = "Drivers";
 let currentTabResults = "Races";
 let currentDriverId = null;
@@ -50,6 +53,9 @@ let currentTeamId = null;
 let currentRound = null;
 let currentSubTabRaces = "Main Race";
 let currentSubTabDriver = "Main Races";
+
+let currentAwardsRows = [];
+let currentAwardsSeason = null;
 
 function hideSubTabs() {
   const subTabBar = document.getElementById("subTabsBar");
@@ -159,7 +165,9 @@ function goToRace(round, season) {
   loadResultMainRace(round, season);
 }
 
-/* ##### MENU - TABS ##### */
+/* ######################### */
+/* #----- MENU - TABS -----# */
+/* ######################### */
 
 async function renderTabsBar(view = "standings") {
   const tabBar = document.getElementById("tabsBar");
@@ -323,7 +331,9 @@ async function loadSeason() {
   loadStandingsDrivers(select.value);
 }
 
-/* ##### STANDIGS ##### */
+/* ######################### */
+/* #------ STANDINGS ------# */
+/* ######################### */
 
 async function loadStandingsDrivers(season) {
   const data = await fetchApi(`/api/standings/drivers?season=${season}`);
@@ -409,7 +419,9 @@ async function loadStandingsTeams(season) {
     </div>`;
 }
 
-/* ##### RESULTS ##### */
+/* ####################### */
+/* #------ RESULTS ------# */
+/* ####################### */
 
 async function loadRaces(season) {
   const data = await fetchApi(`/api/results?season=${season}`);
@@ -735,9 +747,9 @@ async function loadResultQualifyingRace(round, season) {
           <a href="#" onclick="goToTeam('${row.team.id}', '${season}')">${row.team.name}</a>
         </div>
       </td>
-      <td>${row.q1 || "-"}</td>
-      <td>${row.q2 || "-"}</td>
-      <td>${row.q3 || "-"}</td>
+      <td>${row.Q1 || "-"}</td>
+      <td>${row.Q2 || "-"}</td>
+      <td>${row.Q3 || "-"}</td>
     </tr>
   `,
     )
@@ -844,9 +856,9 @@ async function loadResultQualifyingDriver(driverId, season) {
       <td><img src="${qualifying.flag}" class="flagimg"> <a href="#" onclick="goToRace('${qualifying.round}', '${season}')">${qualifying.raceName}</a></td>
       <td><img src="${qualifying.team.photo}" class="avatar"> <a href="#" onclick="goToTeam('${qualifying.team.id}', '${season}')">${qualifying.team.name}</a></td>
       <td>${badge(qualifying.position)}</td>
-      <td>${qualifying.Q1}</td>
-      <td>${qualifying.Q2}</td>
-      <td>${qualifying.Q3}</td>
+      <td>${qualifying.Q1 || "-"}</td>
+      <td>${qualifying.Q2 || "-"}</td>
+      <td>${qualifying.Q3 || "-"}</td>
     </tr>`,
     )
     .join("");
@@ -894,45 +906,131 @@ async function loadResultQualifyingDriver(driverId, season) {
     </div>`;
 }
 
+/* ####################### */
+/* #------ AWARDS ------# */
+/* ####################### */
+
 async function loadAwards(season) {
   const data = await fetchApi(`/api/awards?season=${season}`);
   if (!data) return;
+  currentAwardsRows = data.rows;
+  currentAwardsSeason = season;
   const content = document.getElementById("content");
-  let rowsHTML = "";
-  content.innerHTML = "";
-  for (const race of data) {
-    const round = race.round;
-    const raceName = race.raceName;
-    const circuit = race.Circuit.circuitName;
-    const date = race.date;
-    const laps = race.laps;
-    const country = race.Circuit.Location.country;
-
-    rowsHTML += `
-    <tr>
-      <td>${country}</td>
-      <td><a href="/race/${round}?season=${season}">${raceName}</a></td>
-      <td>${circuit}</td>
-      <td>${date}</td>
-      <td>${laps}</td>
-    </tr>`;
+  content.innerHTML = `
+    <h2 class="view-title">${season} Per-GP Highlights</h2>
+    <div class="awards-controls"><select id="awardsRoundSelect"></select></div>
+    <div id="awardsCard"></div>
+  `;
+  const select = document.getElementById("awardsRoundSelect");
+  for (const row of data.rows) {
+    const option = document.createElement("option");
+    option.value = row.round;
+    option.textContent = `R${row.round} - ${row.raceName}`;
+    select.appendChild(option);
   }
-  content.innerHTML += `
-    <h2 class="view-title"> ${season} Awards</h2>
-    <div class="tablewrap">
-    <table>
-      <thead>
-        <tr>
-          <th></th>
-          <th>GRAND PRIX</th>
-          <th>CIRCUIT</th>
-          <th>DATE</th>
-          <th>LAPS</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${rowsHTML}
-      </tbody>
-    </table>
+  select.addEventListener("change", () => {
+    renderAwardsCard(select.value);
+  });
+  renderAwardsCard(data.rows[0].round);
+  hideSubTabs();
+}
+
+function renderAwardsCard(round) {
+  const row = currentAwardsRows.find((r) => String(r.round) === String(round));
+  const card = document.getElementById("awardsCard");
+  if (!row) {
+    card.innerHTML = `<p class="empty-state">No data for this round.</p>`;
+    return;
+  }
+
+  const badgesHtml = `
+    ${
+      row.pole
+        ? `<div class="award-chip award-pole">
+            <span class="award-chip-label">POLE</span>
+            <img class="avatar-tiny" src="${row.pole.driver.photo}">
+            <strong>${row.pole.driver.givenName} ${row.pole.driver.familyName}</strong>
+            <span>${row.pole.time || "-"}</span>
+          </div>`
+        : ""
+    }
+    ${
+      row.driver_of_the_day
+        ? `<div class="award-chip award-dotd">
+            <span class="award-chip-label">DOTD</span>
+            <img class="avatar-tiny" src="${row.driver_of_the_day.driver.photo}">
+            <strong>${row.driver_of_the_day.driver.givenName} ${row.driver_of_the_day.driver.familyName}</strong>
+            <span>${row.driver_of_the_day.percentage}%</span>
+          </div>`
+        : ""
+    }
+    ${
+      row.fastest_pit_stop
+        ? `<div class="award-chip award-pitstop">
+            <span class="award-chip-label">FASTEST PIT STOP</span>
+            <span class="award-swatch" style="background:#${row.fastest_pit_stop.colour}"></span>
+            <strong>${row.fastest_pit_stop.team}</strong>
+            <span>${row.fastest_pit_stop.time}</span>
+          </div>`
+        : ""
+    }
+    ${
+      row.sprint_winner
+        ? `<div class="award-chip award-sprint">
+            <span class="award-chip-label">SPRINT WIN</span>
+            <img class="avatar-tiny" src="${row.sprint_winner.photo}">
+            <strong>${row.sprint_winner.givenName} ${row.sprint_winner.familyName}</strong>
+          </div>`
+        : ""
+    }
+  `;
+
+  const top5Html = row.top_5
+    .map(
+      (item, index) => `
+    <tr>
+      <td>${badge(index + 1)}</td>
+      <td>
+        <div>
+          <img class="avatar" src="${item.driver.photo}">
+          <a href="#" onclick="goToDriver('${item.driver.id}', '${currentAwardsSeason}')">${item.driver.givenName} ${item.driver.familyName}</a>
+        </div>
+      </td>
+      <td>
+        <div>
+          <img class="avatar" src="${item.team.photo}">
+          <a href="#" onclick="goToTeam('${item.team.id}', '${currentAwardsSeason}')">${item.team.name}</a>
+        </div>
+      </td>
+      <td>${badge(item.grid)}</td>
+      <td>${item.points || ""}</td>
+    </tr>`,
+    )
+    .join("");
+
+  card.innerHTML = `
+    <div class="gp-card">
+      <div class="gp-card-header">
+        <span class="gp-round">${row.round}</span>
+        <img class="flagimg" src="${row.flag_circuit}">
+        <a href="#" onclick="goToRace('${row.round}', '${currentAwardsSeason}')"><strong>${row.raceName}</strong></a>
+        <span class="gp-card-meta">${row.circuit} · ${row.date}</span>
+      </div>
+      <div class="award-badges">${badgesHtml}</div>
+      <h3>TOP 5</h3>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>POS</th>
+              <th>DRIVER</th>
+              <th>TEAM</th>
+              <th>GRID</th>
+              <th>PTS</th>
+            </tr>
+          </thead>
+          <tbody>${top5Html}</tbody>
+        </table>
+      </div>
     </div>`;
 }
