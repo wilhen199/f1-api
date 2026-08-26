@@ -57,6 +57,8 @@ let currentSubTabDriver = "Main Races";
 let currentAwardsRows = [];
 let currentAwardsSeason = null;
 
+const apiCache = {};
+
 function hideSubTabs() {
   const subTabBar = document.getElementById("subTabsBar");
   if (subTabBar) {
@@ -102,6 +104,10 @@ function handleRateLimit(response) {
 }
 
 async function fetchApi(url) {
+  if (apiCache[url]) {
+    return apiCache[url];
+  }
+
   const response = await fetch(url, {
     headers: {
       "Content-Type": "application/json",
@@ -118,7 +124,9 @@ async function fetchApi(url) {
     return null;
   }
 
-  return await response.json();
+  const data = await response.json();
+  apiCache[url] = data;
+  return data;
 }
 
 function goToDriver(driverId, season) {
@@ -199,7 +207,7 @@ async function renderTabsBar(view = "standings") {
 
       if (view === "standings") {
         currentTabStandigs = i;
-        if (i === "Driver") {
+        if (i === "Drivers") {
           loadStandingsDrivers(season);
         } else {
           loadStandingsTeams(season);

@@ -459,8 +459,6 @@ async def awards(season: int = Query(default=current_season, ge=1950)):
 
         row_team = helpers._team(races_results[0].get("Constructor") or {})
         team_items.append(row_team)
-        
-        pprint(top5)
 
         fps_item = {}
         for f in fps_data:
