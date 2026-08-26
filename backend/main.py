@@ -297,9 +297,9 @@ async def race_detail(
     # QUALI RESULT
     quali_rows = [{
         "position": quali.get("position"),
-        "q1": quali.get("Q1"),
-        "q2": quali.get("Q2"),
-        "q3": quali.get("Q3"),
+        "Q1": quali.get("Q1"),
+        "Q2": quali.get("Q2"),
+        "Q3": quali.get("Q3"),
         "driver": helpers._driver(quali.get("Driver") or {}),
         "team": helpers._team(quali.get("Constructor") or {}),
     } 
@@ -426,11 +426,12 @@ async def pit_stops(
 
 @app.get("/api/awards")
 async def awards(season: int = Query(default=current_season, ge=1950)):
-    season_data, quali_data, fps_data, dotd_data = await asyncio.gather(
+    season_data, quali_data, fps_data, dotd_data, sprint_data = await asyncio.gather(
         f1_api.season_results(season), 
         f1_api.season_qualifying(season), 
         f1_api.fastest_pit_stops(season), 
-        f1_api.driver_of_the_day(season),)
+        f1_api.driver_of_the_day(season),
+        f1_api.season_sprint(season),)
         
     rows = []
     driver_items = []
@@ -483,6 +484,12 @@ async def awards(season: int = Query(default=current_season, ge=1950)):
                     team_items.append(dotd_row["team"])
                     break
 
+        sprint_raw = next((r for r in sprint_data if r.get("round") == round_num), {}).get("SprintResults", [])
+        if sprint_raw:
+            sprint_winner = helpers._driver(sprint_raw[0].get("Driver") or {})
+            driver_items.append(sprint_winner)
+            team_items.append(helpers._team(sprint_raw[0].get("Constructor") or {}))
+
         rows.append({
             "round" : round_num,
             "raceName": race.get("raceName"),
@@ -493,6 +500,7 @@ async def awards(season: int = Query(default=current_season, ge=1950)):
             "laps": laps,
             "winner": top5_drivers[0],
             "team": row_team,
+            "sprint_winner": sprint_winner if sprint_raw else None,
             "top_5": top5,
             "pole": quali_results[0] if quali_results else None,
             "driver_of_the_day": dotd_row,
