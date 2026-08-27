@@ -127,118 +127,23 @@ async def driver_info(
     driver = helpers.driver(result_driver.get("Driver") or {})
     team = helpers.team(helpers.constructor(result_driver))
 
-    races = await f1_api.season_results(season)
-    races_rows = []
-    team_items = [team]
-    driver_items = [driver]
-    for race in races:
-        result_race = next(
-            (
-                row
-                for row in race.get("Results", [])
-                if (row.get("Driver") or {}).get("driverId", "").lower()
-                == driver_id.lower()
-            ),
-            None,
-        )
-        if not result_race:
-            continue
-        row_team = helpers.team(result_race.get("Constructor") or {})
-        races_rows.append(
-            {
-                "round": race.get("round"),
-                "raceName": race.get("raceName"),
-                "date": race.get("date"),
-                "position": result_race.get("position"),
-                "positionText": result_race.get("positionText"),
-                "grid": result_race.get("grid"),
-                "laps": result_race.get("laps"),
-                "time": (result_race.get("Time") or {}).get("time"),
-                "status": result_race.get("status"),
-                "points": result_race.get("points"),
-                "fastestLap": (result_race.get("FastestLap") or {})
-                .get("Time", {})
-                .get("time"),
-                "team": row_team,
-                "flag": images.flag_url(
-                    (race.get("Circuit") or {}).get("Location", {}).get("country")
-                ),
-            }
-        )
-        team_items.append(row_team)
+    races_data, sprint_data, qualifying_data = await asyncio.gather(
+        f1_api.season_results(season),
+        f1_api.season_sprint(season),
+        f1_api.season_qualifying(season),
+    )
 
-    sprint = await f1_api.season_sprint(season)
-    sprint_rows = []
-    for race in sprint:
-        result_race = next(
-            (
-                row
-                for row in race.get("SprintResults", [])
-                if (row.get("Driver") or {}).get("driverId", "").lower()
-                == driver_id.lower()
-            ),
-            None,
-        )
-        if not result_race:
-            continue
-        row_team = helpers.team(result_race.get("Constructor") or {})
-        sprint_rows.append(
-            {
-                "round": race.get("round"),
-                "raceName": race.get("raceName"),
-                "date": race.get("date"),
-                "position": result_race.get("position"),
-                "positionText": result_race.get("positionText"),
-                "grid": result_race.get("grid"),
-                "laps": result_race.get("laps"),
-                "time": (result_race.get("Time") or {}).get("time"),
-                "status": result_race.get("status"),
-                "points": result_race.get("points"),
-                "fastestLap": (result_race.get("FastestLap") or {})
-                .get("Time", {})
-                .get("time"),
-                "team": row_team,
-                "flag": images.flag_url(
-                    (race.get("Circuit") or {}).get("Location", {}).get("country")
-                ),
-            }
-        )
-        team_items.append(row_team)
-
-    qualifying = await f1_api.season_qualifying(season)
-    quali_rows = []
-    for race in qualifying:
-        result_race = next(
-            (
-                row
-                for row in race.get("QualifyingResults", [])
-                if (row.get("Driver") or {}).get("driverId", "").lower()
-                == driver_id.lower()
-            ),
-            None,
-        )
-        if not result_race:
-            continue
-        quali_rows.append(
-            {
-                "round": race.get("round"),
-                "raceName": race.get("raceName"),
-                "date": race.get("date"),
-                "position": result_race.get("position"),
-                "Q1": result_race.get("Q1"),
-                "Q2": result_race.get("Q2"),
-                "Q3": result_race.get("Q3"),
-                "team": row_team,
-                "flag": images.flag_url(
-                    (race.get("Circuit") or {}).get("Location", {}).get("country")
-                ),
-            }
-        )
-        team_items.append(row_team)
+    races_rows, race_teams = helpers.driver_race_rows(races_data, driver_id)
+    sprint_rows, sprint_teams = helpers.driver_sprint_rows(sprint_data, driver_id)
+    quali_rows, quali_teams = helpers.driver_quali_rows(
+        qualifying_data, driver_id, team
+    )
 
     await asyncio.gather(
-        helpers.resolve_photos(driver_items, "driver"),
-        helpers.resolve_photos(team_items, "team"),
+        helpers.resolve_photos([driver], "driver"),
+        helpers.resolve_photos(
+            [team] + race_teams + sprint_teams + quali_teams, "team"
+        ),
     )
     return {
         "season": season,
@@ -256,7 +161,11 @@ async def driver_info(
 @app.get("/api/team/{team_id}")
 async def team_info(team_id: str, season: int = Query(default=current_season, ge=1950)):
     """Return full season detail for a specific constructor."""
-    standings = await f1_api.constructor_standings(season)
+    standings, driver_standings, races_data = await asyncio.gather(
+        f1_api.constructor_standings(season),
+        f1_api.driver_standings(season),
+        f1_api.season_results(season),
+    )
     result_team = next(
         (
             row
@@ -270,50 +179,17 @@ async def team_info(team_id: str, season: int = Query(default=current_season, ge
         raise HTTPException(404, "Team not found on that season")
 
     team = helpers.team(result_team.get("Constructor") or {})
-    races = await f1_api.season_results(season)
-    races_rows = []
-    team_items = [team]
     driver_items = [
         helpers.driver(d.get("Driver") or {})
-        for d in await f1_api.driver_standings(season)
+        for d in driver_standings
         if (d.get("Constructors") or [{}])[0].get("constructorId", "").lower()
         == team_id.lower()
     ]
-    for race in races:
-        result_race = [
-            row
-            for row in race.get("Results", [])
-            if (row.get("Constructor") or {}).get("constructorId", "").lower()
-            == team_id.lower()
-        ]
-        if not result_race:
-            continue
-
-        row_driver = [
-            {
-                "driver": helpers.driver(r.get("Driver") or {}),
-                "position": r.get("position"),
-                "points": r.get("points"),
-                "status": r.get("status"),
-            }
-            for r in result_race
-        ]
-
-        races_rows.append(
-            {
-                "round": race.get("round"),
-                "raceName": race.get("raceName"),
-                "flag": images.flag_url(
-                    (race.get("Circuit") or {}).get("Location", {}).get("country")
-                ),
-                "date": race.get("date"),
-                "drivers": row_driver,
-            }
-        )
+    races_rows = helpers.team_race_rows(races_data, team_id)
 
     await asyncio.gather(
         helpers.resolve_photos(driver_items, "driver"),
-        helpers.resolve_photos(team_items, "team"),
+        helpers.resolve_photos([team], "team"),
     )
     return {
         "season": season,
@@ -355,123 +231,37 @@ async def race_detail(
     round_num: int, season: int = Query(default=current_season, ge=1950)
 ):
     """Return full detail for a single race including results, qualifying, sprint and awards."""
-    info = await f1_api.race_info(season, round_num)
+    info, fps_data, dotd_data = await asyncio.gather(
+        f1_api.race_info(season, round_num),
+        f1_api.fastest_pit_stops(season),
+        f1_api.driver_of_the_day(season),
+    )
     if not info:
         raise HTTPException(404, "Race is not found")
 
-    driver_items = []
-    team_items = []
+    results_rows, quali_rows, sprint_rows = helpers.race_detail_rows(info)
+    pole = helpers.find_pole(info.get("qualifying", []))
 
-    # RACE RESULT
-    results_rows = [
-        {
-            "position": result.get("position"),
-            "grid": result.get("grid"),
-            "laps": result.get("laps"),
-            "time": (result.get("Time") or {}).get("time"),
-            "points": result.get("points"),
-            "status": result.get("status"),
-            "fastestLap": (result.get("FastestLap") or {}).get("Time", {}).get("time"),
-            "driver": helpers.driver(result.get("Driver") or {}),
-            "team": helpers.team(result.get("Constructor") or {}),
-        }
-        for result in info.get("results", [])
-    ]
-
-    # QUALI RESULT
-    quali_rows = [
-        {
-            "position": quali.get("position"),
-            "Q1": quali.get("Q1"),
-            "Q2": quali.get("Q2"),
-            "Q3": quali.get("Q3"),
-            "driver": helpers.driver(quali.get("Driver") or {}),
-            "team": helpers.team(quali.get("Constructor") or {}),
-        }
-        for quali in info.get("qualifying", [])
-    ]
-
-    # POLE POTITION
-    pole = None
-    quali_raw = sorted(
-        info.get("qualifying", []), key=lambda x: int(x.get("position", 0))
+    round_date = (info.get("race") or {}).get("date")
+    fps_item = next((f for f in fps_data if f.get("meetingEndDate") == round_date), {})
+    dotd_entry = next(
+        (d for d in dotd_data if d.get("meetingEndDate") == round_date), {}
     )
-    if quali_raw:
-        p1 = quali_raw[0]
-        pole = {
-            "driver": helpers.driver(p1.get("Driver") or {}),
-            "team": helpers.team(p1.get("Constructor") or {}),
-            "time": p1.get("Q3") or p1.get("Q2") or p1.get("Q1"),
-        }
+    dotd_row = helpers.find_dotd(info.get("results", []), dotd_entry)
+
+    driver_items = [row["driver"] for row in results_rows + quali_rows + sprint_rows]
+    team_items = [row["team"] for row in results_rows + quali_rows + sprint_rows]
+    if pole:
         driver_items.append(pole["driver"])
         team_items.append(pole["team"])
-
-    # SPRINT RESULT
-    sprint_rows = [
-        {
-            "position": sprint.get("position"),
-            "grid": sprint.get("grid"),
-            "laps": sprint.get("laps"),
-            "time": (sprint.get("Time") or {}).get("time"),
-            "status": sprint.get("status"),
-            "points": sprint.get("points"),
-            "fastestLap": (sprint.get("FastestLap") or {}).get("Time", {}).get("time"),
-            "driver": helpers.driver(sprint.get("Driver") or {}),
-            "team": helpers.team(sprint.get("Constructor") or {}),
-        }
-        for sprint in info.get("sprint", [])
-    ]
-
-    # FASTEST PIT STOP
-    fps_data = await f1_api.fastest_pit_stops(season)
-    fps_item = {}
-    round_date = info.get("race", []).get("date")
-    country = info.get("Circuit", {}).get("Location", {}).get("country")
-    for f in fps_data:
-        if (
-            f.get("meetingEndDate") == round_date
-            or f.get("meetingIsoCountryName") == country
-        ):
-            fps_item = f
-            break
-
-    # DRIVER OF THE DAY
-    dotd_data = await f1_api.driver_of_the_day(season)
-    dotd_entry = {}
-    for d in dotd_data:
-        if d.get("meetingEndDate") == round_date:
-            dotd_entry = d
-            break
-    dotd_row = None
-    if dotd_entry:
-        search_lastname = dotd_entry.get("driverLastName", "").lower()
-        dotd_row = [
-            {
-                "driver": helpers.driver(r.get("Driver") or {}),
-                "team": helpers.team(r.get("Constructor") or {}),
-                "percentage": dotd_entry.get("votePercentage"),
-            }
-            for r in info.get("results", [])
-            if (r.get("Driver") or {}).get("familyName", "").lower() == search_lastname
-        ]
-        if dotd_row:
-            driver_items.append(dotd_row[0]["driver"])
-            team_items.append(dotd_row[0]["team"])
-
-    #    driver_items = [i["driver"] for i in results_rows]
-    #    team_items = [t["team"] for t in results_rows]
-    driver_items.extend([row["driver"] for row in results_rows])
-    team_items.extend([row["team"] for row in results_rows])
-    driver_items.extend([row["driver"] for row in quali_rows])
-    team_items.extend([row["team"] for row in quali_rows])
-    driver_items.extend([row["driver"] for row in sprint_rows])
-    team_items.extend([row["team"] for row in sprint_rows])
+    if dotd_row:
+        driver_items.append(dotd_row["driver"])
+        team_items.append(dotd_row["team"])
 
     await asyncio.gather(
         helpers.resolve_photos(driver_items, "driver"),
         helpers.resolve_photos(team_items, "team"),
     )
-
     return {
         "season": season,
         "has_sprint": bool(info["sprint"]),
@@ -483,8 +273,8 @@ async def race_detail(
         "fastest_pit_stops": (
             {
                 "team": fps_item.get("teamName"),
-                "time": fps_item.get("displayTime"),  # e.g. "2.17s"
-                "pit_box_time": fps_item.get("pitBoxTime"),  # e.g. "2.170"
+                "time": fps_item.get("displayTime"),
+                "pit_box_time": fps_item.get("pitBoxTime"),
                 "colour": fps_item.get("teamColourCode"),
             }
             if fps_item
@@ -540,115 +330,14 @@ async def awards(season: int = Query(default=current_season, ge=1950)):
         f1_api.season_sprint(season),
     )
 
-    rows = []
-    driver_items = []
-    team_items = []
-
+    rows, driver_items, team_items = [], [], []
     for race in season_data:
-        round_num = race.get("round")
-        round_date = race.get("date")
-        country = race.get("Circuit", {}).get("Location", {}).get("country")
-        races_results = race.get("Results", [])
-        laps = races_results[0].get("laps") if races_results else None
-        quali_results = next(
-            (r for r in quali_data if r.get("round") == round_num), {}
-        ).get("QualifyingResults", [])
-
-        top5 = [
-            {
-                "driver": helpers.driver(races_results[i].get("Driver") or {}),
-                "team": helpers.team(races_results[i].get("Constructor") or {}),
-                "grid": races_results[i].get("grid"),
-                "points": races_results[i].get("points"),
-            }
-            for i in range(5)
-        ]
-        top5_drivers = [t["driver"] for t in top5]
-        top5_teams = [t["team"] for t in top5]
-
-        driver_items.extend(top5_drivers)
-        team_items.extend(top5_teams)
-
-        row_team = helpers.team(races_results[0].get("Constructor") or {})
-        team_items.append(row_team)
-
-        fps_item = {}
-        for f in fps_data:
-            if (
-                f.get("meetingEndDate") == round_date
-                or f.get("meetingIsoCountryName") == country
-            ):
-                fps_item = f
-                break
-
-        dotd_entry = {}
-        for d in dotd_data:
-            if d.get("meetingEndDate") == round_date:
-                dotd_entry = d
-                break
-
-        dotd_row = None
-        if dotd_entry:
-            search_lastname = dotd_entry.get("driverLastName", "").lower()
-            for r in races_results:
-                driver_raw = r.get("Driver") or {}
-                if driver_raw.get("familyName", "").lower() == search_lastname:
-                    dotd_row = {
-                        "driver": helpers.driver(driver_raw),
-                        "team": helpers.team(r.get("Constructor") or {}),
-                        "percentage": dotd_entry.get("votePercentage"),
-                    }
-                    driver_items.append(dotd_row["driver"])
-                    team_items.append(dotd_row["team"])
-                    break
-
-        sprint_raw = next(
-            (r for r in sprint_data if r.get("round") == round_num), {}
-        ).get("SprintResults", [])
-        if sprint_raw:
-            sprint_winner = helpers.driver(sprint_raw[0].get("Driver") or {})
-            driver_items.append(sprint_winner)
-            team_items.append(helpers.team(sprint_raw[0].get("Constructor") or {}))
-
-        pole_raw = quali_results[0] if quali_results else None
-        pole = None
-        if pole_raw:
-            pole_driver = helpers.driver(pole_raw.get("Driver") or {})
-            pole = {
-                "driver": pole_driver,
-                "time": pole_raw.get("Q3") or pole_raw.get("Q2") or pole_raw.get("Q1"),
-            }
-            driver_items.append(pole["driver"])
-
-        rows.append(
-            {
-                "round": round_num,
-                "raceName": race.get("raceName"),
-                "circuit": race.get("Circuit", {}).get("circuitName"),
-                "date": race.get("date"),
-                "country": race.get("Circuit", {}).get("Location", {}).get("country"),
-                "flag_circuit": images.flag_url(
-                    (race.get("Circuit") or {}).get("Location", {}).get("country")
-                ),
-                "laps": laps,
-                "winner": top5_drivers[0],
-                "team": row_team,
-                "sprint_winner": sprint_winner if sprint_raw else None,
-                "top_5": top5,
-                "pole": pole,
-                "driver_of_the_day": dotd_row,
-                "fastest_pit_stop": (
-                    {
-                        "team": fps_item.get("teamName"),
-                        "time": fps_item.get("displayTime"),  # e.g. "2.17s"
-                        "pit_box_time": fps_item.get("pitBoxTime"),  # e.g. "2.170"
-                        "colour": fps_item.get("teamColourCode"),
-                    }
-                    if fps_item
-                    else None
-                ),
-            }
+        row, d_items, t_items = helpers.awards_race_row(
+            race, quali_data, fps_data, dotd_data, sprint_data
         )
+        rows.append(row)
+        driver_items.extend(d_items)
+        team_items.extend(t_items)
 
     await asyncio.gather(
         helpers.resolve_photos(driver_items, "driver"),
