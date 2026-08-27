@@ -1,59 +1,76 @@
+"""Helper functions to normalize and enrich F1 data with photos and flags."""
+
 import images
 
 photo_service = images.PhotoService()
 
-def _driver(driver):
+
+def driver(data):
+    """Normalize a raw Ergast Driver object into a flat dict."""
     return {
-        "id": driver.get("driverId"),
-        "permanentNumber": driver.get("permanentNumber"),
-        "code": driver.get("code"),
-        "url": driver.get("url"),
-        "givenName": driver.get("givenName"),
-        "familyName": driver.get("familyName"),
-        "dateOfBirth": driver.get("dateOfBirth"),
-        "nationality": driver.get("nationality"),
-        "flag": images.flag_url(driver.get("nationality")),
-        "info": driver.get("url"),
-    
+        "id": data.get("driverId"),
+        "permanentNumber": data.get("permanentNumber"),
+        "code": data.get("code"),
+        "url": data.get("url"),
+        "givenName": data.get("givenName"),
+        "familyName": data.get("familyName"),
+        "dateOfBirth": data.get("dateOfBirth"),
+        "nationality": data.get("nationality"),
+        "flag": images.flag_url(data.get("nationality")),
+        "info": data.get("url"),
     }
 
-def _constructor(row):
+
+def constructor(row):
+    """Extract the Constructor dict from a standings or results row."""
     c = row.get("Constructor")
     if not c:
         constructors = row.get("Constructors") or []
         c = constructors[0] if constructors else {}
     return c or {}
 
-def _team(team):
-    nationality = team.get("nationality")
+
+def team(data):
+    """Normalize a raw Ergast Constructor object into a flat dict."""
+    nationality = data.get("nationality")
     return {
-        "id": team.get("constructorId"),
-        "name": team.get("name"),
-        "nationality": team.get("nationality"),
+        "id": data.get("constructorId"),
+        "name": data.get("name"),
+        "nationality": data.get("nationality"),
         "flag": images.flag_url(nationality),
-        "info": team.get("url")
+        "info": data.get("url"),
     }
 
-def _race(race, rows):
+
+def race(data, rows):
+    """Normalize a raw Ergast Race object into a flat dict."""
     return {
-        "round": race.get("round"),
-        "raceName": race.get("raceName"),
-        "date": race.get("date"),
-        "time": race.get("time"),
-        "circuit": race.get("Circuit", {}).get("circuitName"),
-        "country": race.get("Circuit", {}).get("Location", {}).get("country"),
-        "flag": images.flag_url(race.get("Circuit", {}).get("Location", {}).get("country")),
-        "laps": (rows[0].get("laps") if rows else None)
+        "round": data.get("round"),
+        "raceName": data.get("raceName"),
+        "date": data.get("date"),
+        "time": data.get("time"),
+        "circuit": data.get("Circuit", {}).get("circuitName"),
+        "country": data.get("Circuit", {}).get("Location", {}).get("country"),
+        "flag": images.flag_url(
+            data.get("Circuit", {}).get("Location", {}).get("country")
+        ),
+        "laps": (rows[0].get("laps") if rows else None),
     }
 
-async def _resolve_photos(items, kind):
+
+async def resolve_photos(items, kind):
+    """Resolve and attach a photo URL to each item in the list."""
     for i in items:
         # Official F1
-        official = (images.photo_driver(i.get("id")) if kind == "driver" else images.logo_team(i.get("id")))
+        official = (
+            images.photo_driver(i.get("id"))
+            if kind == "driver"
+            else images.logo_team(i.get("id"))
+        )
         if official:
             i["photo"] = official
             continue
-        
+
         # Wikipedia
         wikipedia = i.get("info")
         if wikipedia:

@@ -11,9 +11,9 @@ import asyncio
 import json
 import pathlib
 import urllib.parse
+from datetime import datetime
 
 import httpx
-from datetime import datetime 
 
 # 1) FLAGS
 COUNTRIES = {
@@ -107,24 +107,27 @@ UNKNOWN_CODE = "xx"
 
 SIZE = "w80"
 
+
 def flag_url(name):
+    """Return the flag image URL for a given country name or nationality."""
     if not name:
         return None
     code = COUNTRIES.get(name) or NATIONALITIES.get(name) or UNKNOWN_CODE
-    return f"https://flagcdn.com/{SIZE}/{code}.png"
+    if not code.isalpha() or len(code) > 4:
+        return None
+    return f"https://flagcdn.com/{SIZE}/{urllib.parse.quote(code)}.png"
 
 
-# 2) Official photos 
-"""
-Website https://www.formula1.com publishes the season's photos at 
-media.formula1.com. The URL follow this format:
-  .../common/f1/2026/{equipo}/{codigo}/2026{equipo}{codigo}right.webp
-For each SEASON, items must be updated:
-  - SEASON  -> the current year
-  - VERSION    -> files version used by F1 website
-  - TEAMS    -> Teams racing this season
-  - DRIVERS    -> Drivers racing this season
-"""
+# 2) Official photos
+# Website https://www.formula1.com publishes the season's photos at
+# media.formula1.com. The URL follow this format:
+#   .../common/f1/2026/{equipo}/{codigo}/2026{equipo}{codigo}right.webp
+# For each SEASON, items must be updated:
+#   - SEASON  -> the current year
+#   - VERSION    -> files version used by F1 website
+#   - TEAMS    -> Teams racing this season
+#   - DRIVERS    -> Drivers racing this season
+
 
 SEASON = datetime.now().year
 VERSION = "v1740000001"  # version de los archivos en la web de F1
@@ -168,8 +171,9 @@ DRIVERS = {
     "perez": ("cadillac", "serper01"),
 }
 
+
 def photo_driver(driver_id):
-    #URL of the driver's current official portrait.
+    """Return the official portrait URL for a current season driver."""
     if not driver_id:
         return None
     entry = DRIVERS.get(driver_id)
@@ -179,14 +183,17 @@ def photo_driver(driver_id):
     slug = TEAMS.get(team, team)
     return (
         "https://media.formula1.com/image/upload/"
-        f"c_fill,g_north,w_440,h_440/q_auto/" # images properties crop to fill a frame, w_440,h_440 = 440×440 square, g_north = anchor at the top (keeps the head, not the chest), q_auto = automatic quality.
+        # c_fill,g_north,w_440,h_440 = 440x440 square anchored at top (keeps head).
+        # q_auto = automatic quality.
+        f"c_fill,g_north,w_440,h_440/q_auto/"
         f"d_common:f1:{SEASON}:fallback:driver:{SEASON}fallbackdriverright.webp/"
         f"{VERSION}/common/f1/{SEASON}/{slug}/{code}/"
         f"{SEASON}{slug}{code}right.webp"
     )
 
+
 def logo_team(constructor_id):
-    #URL of the team's current official logo.
+    """Return the official logo URL for a current season team."""
     if not constructor_id:
         return None
     slug = TEAMS.get(constructor_id)
@@ -194,7 +201,7 @@ def logo_team(constructor_id):
         return None
     return (
         "https://media.formula1.com/image/upload/"
-        f"c_lfill,w_200/q_auto/{VERSION}/" # images properties crop to fill a frame, w_440, q_auto = automatic quality.
+        f"c_lfill,w_200/q_auto/{VERSION}/"  # images properties crop to fill a frame, w_440, q_auto = automatic quality.
         f"common/f1/{SEASON}/{slug}/{SEASON}{slug}logowhite.webp"
     )
 
@@ -203,20 +210,22 @@ def logo_team(constructor_id):
 USER_AGENT = "f1-stats/1.0 (F1 Stats learning project)"
 CACHE_FILE = pathlib.Path(__file__).parent / "cache" / "photos.json"
 
+
 class PhotoService:
     """Resolves and caches the photo of a Wikipedia page."""
 
     def __init__(self):
-        # In-memory cache: title -> {"url": ..., "canonical": ...} or None
+        """Initialize in-memory and disk cache, and per-title locks."""
         self._results = {}
         # One asyncio.Lock per title, so two requests for the SAME title
         # don't both call Wikipedia at the same time (wasted work).
         self._locks = {}
         self._load()
+
     # ------------------------------------------------------------------
     # Disk persistence
     # ------------------------------------------------------------------
-    
+
     def _load(self):
         """Load the cache from disk, if the file already exists."""
         try:
@@ -229,9 +238,7 @@ class PhotoService:
         """Write the current in-memory cache to disk."""
         try:
             CACHE_FILE.parent.mkdir(parents=True, exist_ok=True)
-            CACHE_FILE.write_text(
-                json.dumps(self._results, indent=2), encoding="utf-8"
-            )
+            CACHE_FILE.write_text(json.dumps(self._results, indent=2), encoding="utf-8")
         except OSError:
             # Not critical: worst case, we lose the cache on next restart.
             pass
@@ -312,10 +319,13 @@ class PhotoService:
             return result
 
     async def _fetch(self, page_title):
-        #Returns:
-        #    dict  -> {"url": ..., "canonical": ...}  if there is a photo
-        #    None  -> the page has no photo, or doesn't exist
-        #    False -> temporary error, should retry later (do not cache)
+        """Fetch the photo for a Wikipedia page title.
+
+        Returns:
+            dict  -> {"url": ..., "canonical": ...}  if there is a photo
+            None  -> the page has no photo, or doesn't exist
+            False -> temporary error, should retry later (do not cache)
+        """
         encoded_title = urllib.parse.quote(page_title)
         url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{encoded_title}"
 
@@ -352,9 +362,11 @@ class PhotoService:
             return False
 
     def _pick_image_url(self, data):
-        #Pick the best available image URL from the Wikipedia response.
-        # Preferences: 1 -> original image, 2 -> thumbnail image.
-        
+        """Pick the best available image URL from the Wikipedia response.
+
+        Preferences: 1 -> original image, 2 -> thumbnail image.
+        """
+
         thumbnail_data = data.get("thumbnail")
         if thumbnail_data:
             thumbnail_url = thumbnail_data.get("source")
@@ -380,7 +392,7 @@ class PhotoService:
         return image_url
 
     def _pick_canonical_title(self, data, fallback_title):
-        #Pick the real ("canonical") title of the page.
+        """Return the canonical title of the page, falling back to the original title."""
 
         titles_data = data.get("titles")
         if titles_data and titles_data.get("canonical"):
