@@ -211,7 +211,7 @@ async def fastest_pit_stops(season):
     try:
         async with httpx.AsyncClient(
             timeout=20,
-            headers={"User-Agent": USER_AGENT, "apikey": F1COM_APIKEY},
+            headers={"User-Agent": USER_AGENT or "", "apikey": F1COM_APIKEY or ""},
         ) as client:
             resp = await client.get(url)
             resp.raise_for_status()
@@ -252,7 +252,7 @@ async def driver_of_the_day(season):
     try:
         async with httpx.AsyncClient(
             timeout=20,
-            headers={"User-Agent": USER_AGENT, "apikey": F1COM_APIKEY},
+            headers={"User-Agent": USER_AGENT or "", "apikey": F1COM_APIKEY or ""},
         ) as client:
             resp = await client.get(url)
             resp.raise_for_status()
