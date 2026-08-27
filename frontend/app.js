@@ -22,6 +22,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     const season = document.getElementById("seasonSelect").value;
     window.location.hash = `#/standings/drivers?season=${season}`;
   });
+
+  document.addEventListener("click", async (event) => {
+    const link = event.target.closest('a[href^="#/"]');
+    if (!link) {
+      return;
+    }
+    event.preventDefault();
+    const hash = link.getAttribute("href");
+    const { path, params } = parseHash(hash);
+    const apiUrl = getApiUrl(path, params);
+    if (!apiUrl) {
+      window.location.hash = hash;
+      return;
+    }
+    await navigateTo(hash, apiUrl);
+  });
 });
 
 /* ######################### */
@@ -45,15 +61,8 @@ function getRoute() {
 
 function router() {
   const { path, params } = getRoute();
-
   const season = params.get("season") || document.getElementById("seasonSelect")?.value || new Date().getFullYear().toString();
-
   const tab = params.get("tab");
-
-  console.log("ROUTER");
-  console.log("Path:", path);
-  console.log("Season:", season);
-  console.log("Tab:", tab);
 
   /*
   # -------------------------
@@ -323,6 +332,65 @@ async function fetchApi(url) {
   return data;
 }
 
+function parseHash(hash) {
+  const [path, queryString] = hash.substring(1).split("?");
+  return { path, params: new URLSearchParams(queryString || "") };
+}
+
+function getApiUrl(path, params) {
+  const season = params.get("season");
+
+  if (!season) {
+    return null;
+  }
+
+  if (path === "/standings/drivers") {
+    return `/api/standings/drivers?season=${season}`;
+  }
+
+  if (path === "/standings/teams") {
+    return `/api/standings/teams?season=${season}`;
+  }
+
+  if (path === "/results/races") {
+    return `/api/results?season=${season}`;
+  }
+
+  if (path === "/results/awards") {
+    return `/api/awards?season=${season}`;
+  }
+
+  const driverMatch = path.match(/^\/driver\/([^/]+)$/);
+
+  if (driverMatch) {
+    return `/api/driver/${driverMatch[1]}?season=${season}`;
+  }
+
+  const teamMatch = path.match(/^\/team\/([^/]+)$/);
+
+  if (teamMatch) {
+    return `/api/team/${teamMatch[1]}?season=${season}`;
+  }
+
+  const raceMatch = path.match(/^\/race\/([^/]+)$/);
+
+  if (raceMatch) {
+    return `/api/results/race/${raceMatch[1]}?season=${season}`;
+  }
+
+  return null;
+}
+
+async function navigateTo(hash, apiUrl) {
+  const data = await fetchApi(apiUrl);
+
+  if (!data) {
+    return;
+  }
+
+  window.location.hash = hash;
+}
+
 function backLink() {
   return '<a class="back" href="#" onclick="history.back(); return false;">◀️ Back</a>';
 }
@@ -391,20 +459,15 @@ async function renderRaceSubTabs(round, season) {
       subTab.classList.add("active");
     }
     subTab.addEventListener("click", () => {
-      const allSubTabs = document.querySelectorAll(".subtab");
-      for (const st of allSubTabs) {
-        st.classList.remove("active");
-      }
-      subTab.classList.add("active");
-      currentSubTabRaces = subTabName;
-
+      let hash;
       if (subTabName === "Main Race") {
-        loadResultMainRace(round, season);
+        hash = `#/race/${round}?season=${season}`;
       } else if (subTabName === "Sprint") {
-        loadResultSprintRace(round, season);
+        hash = `#/race/${round}?season=${season}&tab=sprint`;
       } else {
-        loadResultQualifyingRace(round, season);
+        hash = `#/race/${round}?season=${season}&tab=qualifying`;
       }
+      window.location.hash = hash;
     });
     subTabBar.appendChild(subTab);
   }
@@ -412,36 +475,28 @@ async function renderRaceSubTabs(round, season) {
 
 async function renderDriverSubTabs(driverId, season) {
   const subTabBar = document.getElementById("subTabsBar");
-
   subTabBar.classList.remove("hidden");
   subTabBar.classList.add("active");
   subTabBar.innerHTML = "";
-
   const subTabToDisplay = ["Main Races", "Sprints", "Qualifyings"];
-
   for (const subTabName of subTabToDisplay) {
     const subTab = document.createElement("div");
     subTab.textContent = subTabName;
     subTab.className = "subtab";
-
     if (subTabName === currentSubTabDriver) {
       subTab.classList.add("active");
     }
 
     subTab.addEventListener("click", () => {
-      const allSubTabs = document.querySelectorAll(".subtab");
-      for (const st of allSubTabs) {
-        st.classList.remove("active");
-      }
-      subTab.classList.add("active");
-
+      let hash;
       if (subTabName === "Main Races") {
-        loadResultsDriver(driverId, season);
+        hash = `#/driver/${driverId}?season=${season}`;
       } else if (subTabName === "Sprints") {
-        loadResultSprintDriver(driverId, season);
+        hash = `#/driver/${driverId}?season=${season}&tab=sprints`;
       } else {
-        loadResultQualifyingDriver(driverId, season);
+        hash = `#/driver/${driverId}?season=${season}&tab=qualifyings`;
       }
+      window.location.hash = hash;
     });
     subTabBar.appendChild(subTab);
   }
@@ -610,7 +665,7 @@ async function loadResultsDriver(driverId, season) {
       (race) =>
         `<tr>
       <td>${race.round}</td>
-      <td><img src="${race.flag}" class="flagimg"> <a href="#/race/${race.round}?season?${season}">${race.raceName}</a></td>
+      <td><img src="${race.flag}" class="flagimg"> <a href="#/race/${race.round}?season=${season}">${race.raceName}</a></td>
       <td><img src="${race.team.photo}" class="avatar"> <a href="#/team/${race.team.id}?season=${season}">${race.team.name}</a></td>
       <td>${badge(race.grid)}</td>
       <td>${badge(race.position)}</td>
