@@ -81,7 +81,10 @@ async def driver_standings(season):
 async def constructor_standings(season):
     """Return the constructor championship standings for the given season."""
     data = await _fetch(f"{season}/constructorstandings")
-    list_teams_standings = data["MRData"]["StandingsTable"]["StandingsLists"][0]
+    standings_lists = data["MRData"]["StandingsTable"]["StandingsLists"]
+    if not standings_lists:
+        return []
+    list_teams_standings = standings_lists[0]
     return list_teams_standings["ConstructorStandings"] if list_teams_standings else []
 
 

@@ -59,6 +59,12 @@ async def standings_drivers(season: int = Query(default=current_season, ge=1950)
 async def standings_teams(season: int = Query(default=current_season, ge=1950)):
     """Return constructor championship standings for the given season."""
     standings = await f1_api.constructor_standings(season)
+    if not standings:
+        return {
+            "season": season,
+            "rows": [],
+            "message": "The Constructors Championship was not awarded until 1958",
+        }
     rows = [
         {
             "position": s.get("position") or s.get("positionText"),
@@ -214,7 +220,7 @@ async def results_list(season: int = Query(default=current_season, ge=1950)):
             "raceName": race.get("raceName"),
             "circuit": race.get("Circuit", {}).get("circuitName"),
             "date": race.get("date"),
-            "country": race.get(("Circuit") or {}).get("Location", {}).get("country"),
+            "country": race.get("Circuit").get("Location", {}).get("country"),
             "laps": race.get("Results")[0].get("laps"),
             "flag": images.flag_url(
                 (race.get("Circuit") or {}).get("Location", {}).get("country")
