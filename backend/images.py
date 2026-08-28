@@ -64,6 +64,7 @@ COUNTRIES = {
 NATIONALITIES = {
     "American": "us",
     "Argentine": "ar",
+    "Argentina": "ar",
     "Australian": "au",
     "Austrian": "at",
     "Belgian": "be",
