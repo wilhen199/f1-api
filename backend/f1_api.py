@@ -2,6 +2,7 @@
 
 import asyncio
 import os
+import time
 
 import httpx
 from dotenv import load_dotenv
@@ -16,11 +17,24 @@ HEADERS = {"User-Agent": USER_AGENT}
 F1COM_BASE_URL = os.getenv("F1COM_BASE_URL")
 F1COM_APIKEY = os.getenv("F1COM_APIKEY")
 
+CACHE = {}
+CACHE_TTL = 3600
+
 
 async def _fetch(suffix):
     """Perform a GET request to the Ergast API and return the JSON response."""
     url = f"{BASE_URL}/{suffix}"
-    data = None
+    now = time.time()
+
+    """ Check if the data is already in the cache and not expired """
+    if url in CACHE:
+        cache_entry = CACHE[url]
+        if now - cache_entry["timestamp"] < CACHE_TTL:
+            print(f"Cache hit for {url} (timestamp: {cache_entry['timestamp']})")
+            print(f"⚡ [CACHE HIT] Respondiendo desde memoria: {url}")
+            return cache_entry["data"]
+
+    # data = None
     async with httpx.AsyncClient(headers=HEADERS, follow_redirects=True) as client:
         resp = await client.get(url)
     if resp.status_code == 429:
@@ -35,6 +49,9 @@ async def _fetch(suffix):
         )
     resp.raise_for_status()
     data = resp.json()
+
+    CACHE[url] = {"data": data, "timestamp": now}
+
     return data
 
 
