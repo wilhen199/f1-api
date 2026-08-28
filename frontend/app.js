@@ -590,7 +590,6 @@ async function loadStandingsDrivers(season) {
 async function loadStandingsTeams(season) {
   const data = await fetchApi(`/api/standings/teams?season=${season}`);
   if (!data) return;
-  console.log(data);
   if (data.message) {
     document.getElementById("content").innerHTML = `<p class="empty-state">${data.message}</p>`;
     return;
