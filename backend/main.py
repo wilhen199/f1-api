@@ -39,7 +39,7 @@ async def standings_drivers(season: int = Query(default=current_season, ge=1950)
     rows = [
         {
             "position": s.get("position") or s.get("positionText"),
-            "points": s.get("points", "0"),
+            "points": round(float(s.get("points", "0")), 1),
             "wins": s.get("wins", "0"),
             "driver": helpers.driver(s.get("Driver") or {}),
             "team": helpers.team(helpers.constructor(s)),
