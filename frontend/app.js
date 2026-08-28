@@ -291,6 +291,22 @@ function initials(name) {
   return result;
 }
 
+function driverAvatar(driver, givenName, familyName) {
+  driverName = givenName + " " + familyName;
+  if (driver.photo) {
+    return `<img class="avatar" src="${driver.photo}">`;
+  }
+  return `<span class="avatar-fallback">${initials(driverName)}</span>`;
+}
+
+function driverAvatarProfile(driver, givenName, familyName) {
+  driverName = givenName + " " + familyName;
+  if (driver.photo) {
+    return `<img class="avatar" src="${driver.photo}">`;
+  }
+  return `<span class="avatar-fallback-profile">${initials(driverName)}</span>`;
+}
+
 function teamAvatar(team) {
   if (team.photo) {
     return `<img class="avatar" src="${team.photo}">`;
@@ -554,7 +570,7 @@ async function loadStandingsDrivers(season) {
       (row) => `
       <tr>
         <td>${badge(row.position)}</td>
-        <td><img class="avatar" src="${row.driver.photo}"> <a href="#/driver/${row.driver.id}?season=${season}">${row.driver.givenName} ${row.driver.familyName}</a></td>
+        <td>${driverAvatar(row.driver, row.driver.givenName, row.driver.familyName)} <a href="#/driver/${row.driver.id}?season=${season}">${row.driver.givenName} ${row.driver.familyName}</a></td>
         <td><img class="flagimg" src="${row.driver.flag}"></td>
         <td>
           ${teamAvatar(row.team)}
@@ -695,7 +711,7 @@ async function loadResultsDriver(driverId, season) {
     .join("");
   content.innerHTML += `
     <div class="profile">
-      <img class="avatar" src="${data.driver.photo}">
+      ${driverAvatarProfile(data.driver, data.driver.givenName, data.driver.familyName)}
       <div class="profile-info">
         <h2>${data.driver.givenName} ${data.driver.familyName}  <img class="flagimg" src="${data.driver.flag}"> </h2>
         <div class="profile-stats">
