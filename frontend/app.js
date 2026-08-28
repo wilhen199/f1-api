@@ -19,8 +19,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.location.hash = `#/results/races?season=${season}`;
   });
   document.getElementById("headerLogo").addEventListener("click", () => {
-    const season = document.getElementById("seasonSelect").value;
-    window.location.hash = `#/standings/drivers?season=${season}`;
+    /* const season = document.getElementById("seasonSelect").value; */
+    window.location.hash = `#/standings/drivers?season=${new Date().getFullYear()}`;
   });
 
   document.addEventListener("click", async (event) => {
@@ -291,6 +291,20 @@ function initials(name) {
   return result;
 }
 
+function teamAvatar(team) {
+  if (team.photo) {
+    return `<img class="avatar" src="${team.photo}">`;
+  }
+  return `<span class="avatar-fallback">${initials(team.name)}</span>`;
+}
+
+function teamAvatarProfile(team) {
+  if (team.photo) {
+    return `<img class="avatar" src="${team.photo}">`;
+  }
+  return `<span class="avatar-fallback-profile">${initials(team.name)}</span>`;
+}
+
 function showToast(message) {
   const toast = document.getElementById("toast");
   toast.textContent = message;
@@ -543,7 +557,7 @@ async function loadStandingsDrivers(season) {
         <td><img class="avatar" src="${row.driver.photo}"> <a href="#/driver/${row.driver.id}?season=${season}">${row.driver.givenName} ${row.driver.familyName}</a></td>
         <td><img class="flagimg" src="${row.driver.flag}"></td>
         <td>
-          ${row.team.photo ? `<img class="avatar" src="${row.team.photo}">` : `<span class="avatar-fallback">${initials(row.team.name)}</span>`}
+          ${teamAvatar(row.team)}
           <a href="#/team/${row.team.id}?season=${season}">${row.team.name}</a>
         </td>
         <td>${row.points}</td>
@@ -584,7 +598,7 @@ async function loadStandingsTeams(season) {
     <tr>
       <td>${badge(row.position)}</td>
       <td>
-        ${row.team.photo ? `<img class="avatar" src="${row.team.photo}">` : `<span class="avatar-fallback">${initials(row.team.name)}</span>`}
+        ${teamAvatar(row.team)}
         <a href="#/team/${row.team.id}?season=${season}">${row.team.name}</a>
     </td>
       <td><img class="flagimg" src="${row.team.flag}"></td>
@@ -666,7 +680,7 @@ async function loadResultsDriver(driverId, season) {
         `<tr>
       <td>${race.round}</td>
       <td><img src="${race.flag}" class="flagimg"> <a href="#/race/${race.round}?season=${season}">${race.raceName}</a></td>
-      <td><img src="${race.team.photo}" class="avatar"> <a href="#/team/${race.team.id}?season=${season}">${race.team.name}</a></td>
+      <td>${teamAvatar(race.team)} <a href="#/team/${race.team.id}?season=${season}">${race.team.name}</a></td>
       <td>${badge(race.grid)}</td>
       <td>${badge(race.position)}</td>
       <td>${race.points}</td>
@@ -750,7 +764,7 @@ async function loadResultsTeam(teamId, season) {
     .join("");
   content.innerHTML += `
     <div class="profile">
-      <img class="avatar" src="${data.team.photo}">
+      ${teamAvatarProfile(data.team)}
       <div class="profile-info">
         <h2>${data.team.name} <img class="flagimg" src="${data.team.flag}"></h2>
         <div class="profile-stats">
@@ -814,7 +828,7 @@ async function loadResultMainRace(round, season) {
       </td>
       <td>
         <div>
-          <img class="avatar" src="${item.team.photo}">
+          ${teamAvatar(item.team)}
           <a href="#/team/${item.team.id}?season=${season}">${item.team.name}</a>
         </div>
       </td>
@@ -879,7 +893,7 @@ async function loadResultSprintRace(round, season) {
       </td>
       <td>
         <div>
-          <img class="avatar" src="${row.team.photo}">
+          ${teamAvatar(row.team)}
           <a href="#/team/${row.team.id}?season=${season}">${row.team.name}</a>
         </div>
       </td>
@@ -990,7 +1004,7 @@ async function loadResultSprintDriver(driverId, season) {
         `<tr>
       <td>${sprint.round}</td>
       <td><img src="${sprint.flag}" class="flagimg"> <a href="#/race/${sprint.round}?season=${season}">${sprint.raceName}</a></td>
-      <td><img src="${sprint.team.photo}" class="avatar"> <a href="#/team/${sprint.team.id}?season=${season}">${sprint.team.name}</a></td>
+      <td>${teamAvatar(sprint.team)} <a href="#/team/${sprint.team.id}?season=${season}">${sprint.team.name}</a></td>
       <td>${badge(sprint.grid)}</td>
       <td>${badge(sprint.position)}</td>
       <td>${sprint.points}</td>
@@ -1053,7 +1067,7 @@ async function loadResultQualifyingDriver(driverId, season) {
         `<tr>
       <td>${qualifying.round}</td>
       <td><img src="${qualifying.flag}" class="flagimg"> <a href="#/race/${qualifying.round}?season=${season}">${qualifying.raceName}</a></td>
-      <td><img src="${qualifying.team.photo}" class="avatar"> <a href="#/team/${qualifying.team.id}?season=${season}">${qualifying.team.name}</a></td>
+      <td>${teamAvatar(qualifying.team)} <a href="#/team/${qualifying.team.id}?season=${season}">${qualifying.team.name}</a></td>
       <td>${badge(qualifying.position)}</td>
       <td>${qualifying.Q1 || "-"}</td>
       <td>${qualifying.Q2 || "-"}</td>
@@ -1198,7 +1212,7 @@ function renderAwardsCard(round) {
       </td>
       <td>
         <div>
-          <img class="avatar" src="${item.team.photo}">
+          ${teamAvatar(item.team)}
           <a href="#/team/${item.team.id}?season=${currentAwardsSeason}">${item.team.name}</a>
         </div>
       </td>

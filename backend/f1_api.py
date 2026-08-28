@@ -30,8 +30,6 @@ async def _fetch(suffix):
     if url in CACHE:
         cache_entry = CACHE[url]
         if now - cache_entry["timestamp"] < CACHE_TTL:
-            print(f"Cache hit for {url} (timestamp: {cache_entry['timestamp']})")
-            print(f"⚡ [CACHE HIT] Respondiendo desde memoria: {url}")
             return cache_entry["data"]
 
     # data = None

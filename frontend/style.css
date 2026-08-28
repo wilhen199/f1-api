@@ -133,6 +133,20 @@ select {
   vertical-align: middle;
 }
 
+.avatar-fallback-profile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: #33333b;
+  color: #ccc;
+  font-size: 3rem;
+  font-weight: bold;
+  vertical-align: middle;
+}
+
 .flagimg {
   height: 18px;
   width: 32px;
