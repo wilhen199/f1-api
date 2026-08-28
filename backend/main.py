@@ -3,6 +3,7 @@
 import asyncio
 import pathlib
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import f1_api
 import helpers
@@ -10,7 +11,7 @@ import images
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.staticfiles import StaticFiles
 
-current_season = datetime.now().year
+current_season = datetime.now(ZoneInfo("America/Bogota")).year
 
 app = FastAPI()
 FRONTEND_DIR = pathlib.Path(__file__).resolve().parent.parent / "frontend"

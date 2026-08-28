@@ -12,6 +12,7 @@ import json
 import pathlib
 import urllib.parse
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import httpx
 
@@ -130,7 +131,7 @@ def flag_url(name):
 #   - DRIVERS    -> Drivers racing this season
 
 
-SEASON = datetime.now().year
+SEASON = datetime.now(ZoneInfo("America/Bogota")).year
 VERSION = "v1740000001"  # version de los archivos en la web de F1
 
 TEAMS = {
