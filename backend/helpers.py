@@ -407,3 +407,15 @@ def awards_race_row(race_data, quali_data, fps_data, dotd_data, sprint_data):
         ),
     }
     return row, driver_items, team_items
+
+
+def parse_position(pos=None, pos_text=None):
+    """Parse a position value from the Ergast API."""
+    for val in (pos, pos_text):
+        if val is None:
+            continue
+        try:
+            return int(val)
+        except (ValueError, TypeError):
+            continue
+    return 0

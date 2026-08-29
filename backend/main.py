@@ -39,7 +39,9 @@ async def standings_drivers(season: int = Query(default=current_season, ge=1950)
     standings = await f1_api.driver_standings(season)
     rows = [
         {
-            "position": s.get("position") or s.get("positionText"),
+            "position": helpers.parse_position(
+                s.get("position") or s.get("positionText")
+            ),
             "points": round(float(s.get("points", "0")), 1),
             "wins": s.get("wins", "0"),
             "driver": helpers.driver(s.get("Driver") or {}),
@@ -68,7 +70,9 @@ async def standings_teams(season: int = Query(default=current_season, ge=1950)):
         }
     rows = [
         {
-            "position": s.get("position") or s.get("positionText"),
+            "position": helpers.parse_position(
+                s.get("position") or s.get("positionText")
+            ),
             "points": s.get("points", "0"),
             "wins": s.get("wins", "0"),
             "team": helpers.team(s.get("Constructor") or {}),
@@ -156,7 +160,9 @@ async def driver_info(
         "season": season,
         "driver": driver,
         "team": team,
-        "position": result_driver.get("position") or result_driver.get("positionText"),
+        "position": helpers.parse_position(
+            result_driver.get("position") or result_driver.get("positionText")
+        ),
         "points": result_driver.get("points", "0"),
         "wins": result_driver.get("wins", "0"),
         "races": races_rows,
@@ -202,7 +208,9 @@ async def team_info(team_id: str, season: int = Query(default=current_season, ge
         "season": season,
         "team": team,
         "driver": driver_items,
-        "position": int(result_team.get("position") or result_team.get("positionText")),
+        "position": helpers.parse_position(
+            result_team.get("position") or result_team.get("positionText")
+        ),
         "points": result_team.get("points", "0"),
         "wins": result_team.get("wins", "0"),
         "races": races_rows,
