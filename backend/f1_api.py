@@ -19,6 +19,7 @@ F1COM_APIKEY = os.getenv("F1COM_APIKEY")
 
 CACHE = {}
 CACHE_TTL = 3600
+LOCKS = {}
 
 
 async def _fetch(suffix):
@@ -27,10 +28,22 @@ async def _fetch(suffix):
     now = time.time()
 
     """ Check if the data is already in the cache and not expired """
-    if url in CACHE:
-        cache_entry = CACHE[url]
-        if now - cache_entry["timestamp"] < CACHE_TTL:
-            return cache_entry["data"]
+    # STEP 1: fast path, no lock needed if already cached and fresh.
+    cached = CACHE.get(url)
+    if cached and time.time() - cached["timestamp"] < CACHE_TTL:
+        return cached["data"]
+
+    # STEP 2: not cached (or expired). Get/create a lock for this URL.
+    if url not in LOCKS:
+        LOCKS[url] = asyncio.Lock()
+    lock = LOCKS[url]
+
+    async with lock:
+        # STEP 3: re-check inside the lock — another request might have
+        # already fetched and cached this exact URL while we were waiting.
+        cached = CACHE.get(url)
+        if cached and time.time() - cached["timestamp"] < CACHE_TTL:
+            return cached["data"]
 
     # data = None
     async with httpx.AsyncClient(headers=HEADERS, follow_redirects=True) as client:
