@@ -1017,6 +1017,10 @@ async function loadResultQualifyingRace(round, season) {
 async function loadResultSprintDriver(driverId, season) {
   const data = await fetchApi(`/api/driver/${driverId}?season=${season}`);
   if (!data) return;
+  if (!data.sprint.message) {
+    document.getElementById("content").innerHTML = `<p class="empty-state">The Sprint Race did not take place until 2021</p>`;
+    return;
+  }
   const content = document.getElementById("content");
   content.innerHTML = "";
   const rowsHTML = data.sprint
@@ -1080,6 +1084,12 @@ async function loadResultSprintDriver(driverId, season) {
 async function loadResultQualifyingDriver(driverId, season) {
   const data = await fetchApi(`/api/driver/${driverId}?season=${season}`);
   if (!data) return;
+  console.log(data);
+  console.log(data.qualifying);
+  if (!data.qualifying) {
+    document.getElementById("content").innerHTML = `<p class="empty-state">There is no qualifying data from source</p>`;
+    return;
+  }
   const content = document.getElementById("content");
   content.innerHTML = "";
   const rowsHTML = data.qualifying

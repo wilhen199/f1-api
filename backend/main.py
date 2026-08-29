@@ -107,6 +107,12 @@ async def season_results(season: int = Query(default=current_season, ge=1950)):
 async def season_qualifying(season: int = Query(default=current_season, ge=1950)):
     """Return all qualifying results for the given season."""
     qualifying = await f1_api.season_qualifying(season)
+    if not qualifying:
+        return {
+            "season": season,
+            "rows": [],
+            "message": "There is no qualifying data from source",
+        }
     return qualifying
 
 
@@ -166,8 +172,12 @@ async def driver_info(
         "points": result_driver.get("points", "0"),
         "wins": result_driver.get("wins", "0"),
         "races": races_rows,
-        "sprint": sprint_rows,
-        "qualifying": quali_rows,
+        **(
+            {"sprint": "No sprint races in this season"}
+            if int(season) < 2021
+            else ({"sprint": sprint_rows} if sprint_data else {})
+        ),
+        **({"qualifying": quali_rows} if qualifying_data else {}),
     }
 
 
