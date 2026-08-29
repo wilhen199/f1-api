@@ -172,11 +172,7 @@ async def driver_info(
         "points": result_driver.get("points", "0"),
         "wins": result_driver.get("wins", "0"),
         "races": races_rows,
-        **(
-            {"sprint": "No sprint races in this season"}
-            if int(season) < 2021
-            else ({"sprint": sprint_rows} if sprint_data else {})
-        ),
+        **({"sprint": sprint_rows} if sprint_data else {}),
         **({"qualifying": quali_rows} if qualifying_data else {}),
     }
 

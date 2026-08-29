@@ -1017,7 +1017,7 @@ async function loadResultQualifyingRace(round, season) {
 async function loadResultSprintDriver(driverId, season) {
   const data = await fetchApi(`/api/driver/${driverId}?season=${season}`);
   if (!data) return;
-  if (!data.sprint.message) {
+  if (!data.sprint) {
     document.getElementById("content").innerHTML = `<p class="empty-state">The Sprint Race did not take place until 2021</p>`;
     return;
   }
