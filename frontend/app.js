@@ -855,8 +855,8 @@ async function loadResultMainRace(round, season) {
       </td>
       <td>${badge(item.grid)}</td>
       <td>${item.laps}</td>
-      <td>${item.time}</td>
-      <td>${item.fastestLap}</td>
+      <td>${item.time || "-"}</td>
+      <td>${item.fastestLap || "-"}</td>
       <td>${item.points}</td>
       <td>${item.status}</td>
     </tr>`,
@@ -920,8 +920,8 @@ async function loadResultSprintRace(round, season) {
       </td>
       <td>${badge(row.grid)}</td>
       <td>${row.laps}</td>
-      <td>${row.time}</td>
-      <td>${row.fastestLap}</td>
+      <td>${row.time || "-"}</td>
+      <td>${row.fastestLap || "-"}</td>
       <td>${row.points}</td>
       <td>${row.status}</td>
     </tr>
