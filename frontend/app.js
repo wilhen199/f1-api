@@ -806,11 +806,11 @@ async function loadResultsTeam(teamId, season) {
         <span class="back">${backLink()}</span>
       </div>
       <a class="profile-driver" href="#/driver/${data.driver[0].id}?season=${season}">
-        <img class="avatar" src="${data.driver[0].photo}">
+        ${driverAvatarProfile(data.driver[0], data.driver[0].givenName, data.driver[0].familyName)}
         <span>${data.driver[0].givenName} ${data.driver[0].familyName}</span>
       </a>
       <a class="profile-driver" href="#/driver/${data.driver[1].id}?season=${season}">
-        <img class="avatar" src="${data.driver[1].photo}">
+        ${driverAvatarProfile(data.driver[1], data.driver[1].givenName, data.driver[1].familyName)}
         <span>${data.driver[1].givenName} ${data.driver[1].familyName}</span>
       </a>
     </div>
@@ -843,7 +843,7 @@ async function loadResultMainRace(round, season) {
       <td><span class="badge">${badge(item.position)}</span></td>
       <td>
         <div>
-          <img class="avatar" src="${item.driver.photo}">
+          ${driverAvatar(item.driver, item.driver.givenName, item.driver.familyName)}
           <a href="#/driver/${item.driver.id}?season=${season}">${item.driver.givenName} ${item.driver.familyName}</a>
         </div>
       </td>
@@ -908,7 +908,7 @@ async function loadResultSprintRace(round, season) {
       <td><span class="badge">${badge(row.position)}</span></td>
       <td>
         <div>
-          <img class="avatar" src="${row.driver.photo}">
+          ${driverAvatar(row.driver, row.driver.givenName, row.driver.familyName)}
           <a href="#/driver/${row.driver.id}?season=${season}">${row.driver.givenName} ${row.driver.familyName}</a>
         </div>
       </td>
@@ -970,13 +970,13 @@ async function loadResultQualifyingRace(round, season) {
       <td><span class="badge">${badge(row.position)}</span></td>
       <td>
         <div>
-          <img class="avatar" src="${row.driver.photo}">
+          ${driverAvatar(row.driver, row.driver.givenName, row.driver.familyName)}
           <a href="#/driver/${row.driver.id}?season=${season}">${row.driver.givenName} ${row.driver.familyName}</a>
         </div>
       </td>
       <td>
         <div>
-          <img class="avatar" src="${row.team.photo}">
+          ${teamAvatar(row.team)}
           <a href="#/team/${row.team.id}?season=${season}">${row.team.name}</a>
         </div>
       </td>
@@ -1035,7 +1035,7 @@ async function loadResultSprintDriver(driverId, season) {
     .join("");
   content.innerHTML += `
     <div class="profile">
-      <img class="avatar" src="${data.driver.photo}">
+      ${driverAvatarProfile(data.driver, data.driver.givenName, data.driver.familyName)}
       <div class="profile-info">
         <h2>${data.driver.givenName} ${data.driver.familyName}  <img class="flagimg" src="${data.driver.flag}"></h2>
         <div class="profile-stats">
@@ -1098,7 +1098,7 @@ async function loadResultQualifyingDriver(driverId, season) {
     .join("");
   content.innerHTML += `
     <div class="profile">
-      <img class="avatar" src="${data.driver.photo}">
+      ${driverAvatarProfile(data.driver, data.driver.givenName, data.driver.familyName)}
       <div class="profile-info">
         <h2>${data.driver.givenName} ${data.driver.familyName}  <img class="flagimg" src="${data.driver.flag}"> </h2>
         <div class="profile-stats">
