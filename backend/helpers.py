@@ -278,7 +278,7 @@ def find_pole(qualifying):
     """Return pole position dict {driver, team, time} from qualifying list, or None."""
     if not qualifying:
         return None
-    p1 = sorted(qualifying, key=lambda x: int(x.get("position", 0)))[0]
+    p1 = min(qualifying, key=lambda x: int(x.get("position", 0)))
     return {
         "driver": driver(p1.get("Driver") or {}),
         "team": team(p1.get("Constructor") or {}),
