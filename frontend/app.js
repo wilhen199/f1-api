@@ -154,12 +154,15 @@ function router() {
     setSeasonSelect(season);
     if (tab === "sprints") {
       currentSubTabDriver = "Sprints";
+      renderDriverSubTabs(driverId, season);
       loadResultSprintDriver(driverId, season);
     } else if (tab === "qualifyings") {
       currentSubTabDriver = "Qualifyings";
+      renderDriverSubTabs(driverId, season);
       loadResultQualifyingDriver(driverId, season);
     } else {
       currentSubTabDriver = "Main Races";
+      renderDriverSubTabs(driverId, season);
       loadResultsDriver(driverId, season);
     }
     return;
