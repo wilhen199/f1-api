@@ -45,25 +45,24 @@ async def _fetch(suffix):
         if cached and time.time() - cached["timestamp"] < CACHE_TTL:
             return cached["data"]
 
-    # data = None
-    async with httpx.AsyncClient(headers=HEADERS, follow_redirects=True) as client:
-        resp = await client.get(url)
-    if resp.status_code == 429:
-        retry_after = resp.headers.get("Retry-After", "60")
-        raise HTTPException(
-            status_code=429,
-            detail=(
-                f"Too many requests to the F1 data provider."
-                f"Please try again after {retry_after} seconds"
-            ),
-            headers={"Retry-After": retry_after},
-        )
-    resp.raise_for_status()
-    data = resp.json()
+        async with httpx.AsyncClient(headers=HEADERS, follow_redirects=True) as client:
+            resp = await client.get(url)
+        if resp.status_code == 429:
+            retry_after = resp.headers.get("Retry-After", "60")
+            raise HTTPException(
+                status_code=429,
+                detail=(
+                    f"Too many requests to the F1 data provider."
+                    f"Please try again after {retry_after} seconds"
+                ),
+                headers={"Retry-After": retry_after},
+            )
+        resp.raise_for_status()
+        data = resp.json()
 
-    CACHE[url] = {"data": data, "timestamp": now}
+        CACHE[url] = {"data": data, "timestamp": now}
 
-    return data
+        return data
 
 
 async def seasons():
