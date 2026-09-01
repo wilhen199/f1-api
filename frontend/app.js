@@ -246,6 +246,23 @@ let currentAwardsSeason = null;
 
 const apiCache = {};
 
+/**
+ * Escape HTML characters to prevent XSS attacks
+ */
+function escapeHtml(text) {
+  if (text === null || text === undefined) return "";
+  const str = String(text);
+  const map = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#x27;",
+  };
+
+  return str.replace(/[&<>"']/g, (char) => map[char]);
+}
+
 function setActiveNav(view) {
   const allNavs = document.querySelectorAll(".nav-link");
   for (const nav of allNavs) {
@@ -272,6 +289,9 @@ function hideSubTabs() {
 
 function badge(position) {
   const pos = Number(position);
+  if (isNaN(pos) || pos <= 0) {
+    return '<span class="badge">${escapeHtml(position)}</span>';
+  }
   if (pos === 1) {
     return '<span class="badge pos-1">1</span>';
   } else if (pos === 2) {
@@ -283,7 +303,8 @@ function badge(position) {
 }
 
 function initials(name) {
-  const words = name.split(" ");
+  if (!name) return "";
+  const words = String(name).split(" ");
   let result = "";
   for (const word of words) {
     result += word[0];
@@ -292,33 +313,33 @@ function initials(name) {
 }
 
 function driverAvatar(driver, givenName, familyName) {
-  driverName = givenName + " " + familyName;
+  const driverName = (givenName || "") + " " + (familyName || "");
   if (driver.photo) {
-    return `<img class="avatar" src="${driver.photo}">`;
+    return `<img class="avatar" src="${escapeHtml(driver.photo)}">`;
   }
-  return `<span class="avatar-fallback">${initials(driverName)}</span>`;
+  return `<span class="avatar-fallback">${escapeHtml(initials(driverName))}</span>`;
 }
 
 function driverAvatarProfile(driver, givenName, familyName) {
-  driverName = givenName + " " + familyName;
+  const driverName = (givenName || "") + " " + (familyName || "");
   if (driver.photo) {
-    return `<img class="avatar" src="${driver.photo}">`;
+    return `<img class="avatar" src="${escapeHtml(driver.photo)}">`;
   }
-  return `<span class="avatar-fallback-profile">${initials(driverName)}</span>`;
+  return `<span class="avatar-fallback-profile">${escapeHtml(initials(driverName))}</span>`;
 }
 
 function teamAvatar(team) {
   if (team.photo) {
-    return `<img class="avatar" src="${team.photo}">`;
+    return `<img class="avatar" src="${escapeHtml(team.photo)}">`;
   }
-  return `<span class="avatar-fallback">${initials(team.name)}</span>`;
+  return `<span class="avatar-fallback">${escapeHtml(initials(team.name))}</span>`;
 }
 
 function teamAvatarProfile(team) {
   if (team.photo) {
-    return `<img class="avatar" src="${team.photo}">`;
+    return `<img class="avatar" src="${escapeHtml(team.photo)}">`;
   }
-  return `<span class="avatar-fallback-profile">${initials(team.name)}</span>`;
+  return `<span class="avatar-fallback-profile">${escapeHtml(initials(team.name))}</span>`;
 }
 
 function showToast(message) {
@@ -353,7 +374,7 @@ async function fetchApi(url) {
 
   if (!response.ok) {
     const errorData = await response.json();
-    document.getElementById("content").innerHTML = `<p class="empty-state">${errorData.detail}</p>`;
+    document.getElementById("content").innerHTML = `<p class="empty-state">${escapeHtml(errorData.detail)}</p>`;
     return null;
   }
 
@@ -570,14 +591,14 @@ async function loadStandingsDrivers(season) {
       (row) => `
       <tr>
         <td>${badge(row.position)}</td>
-        <td>${driverAvatar(row.driver, row.driver.givenName, row.driver.familyName)} <a href="#/driver/${row.driver.id}?season=${season}">${row.driver.givenName} ${row.driver.familyName}</a></td>
-        <td><img class="flagimg" src="${row.driver.flag}"></td>
+        <td>${driverAvatar(row.driver, row.driver.givenName, row.driver.familyName)} <a href="#/driver/${escapeHtml(row.driver.id)}?season=${season}">${escapeHtml(row.driver.givenName)} ${escapeHtml(row.driver.familyName)}</a></td>
+        <td><img class="flagimg" src="${escapeHtml(row.driver.flag)}"></td>
         <td>
           ${teamAvatar(row.team)}
-          <a href="#/team/${row.team.id}?season=${season}">${row.team.name}</a>
+          <a href="#/team/${escapeHtml(row.team.id)}?season=${season}">${escapeHtml(row.team.name)}</a>
         </td>
-        <td>${row.points}</td>
-        <td>${row.wins}</td>
+        <td>${escapeHtml(row.points)}</td>
+        <td>${escapeHtml(row.wins)}</td>
     </tr>`,
     )
     .join("");
@@ -607,7 +628,7 @@ async function loadStandingsTeams(season) {
   const data = await fetchApi(`/api/standings/teams?season=${season}`);
   if (!data) return;
   if (data.message) {
-    document.getElementById("content").innerHTML = `<p class="empty-state">${data.message}</p>`;
+    document.getElementById("content").innerHTML = `<p class="empty-state">${escapeHtml(data.message)}</p>`;
     return;
   }
 
@@ -620,11 +641,11 @@ async function loadStandingsTeams(season) {
       <td>${badge(row.position)}</td>
       <td>
         ${teamAvatar(row.team)}
-        <a href="#/team/${row.team.id}?season=${season}">${row.team.name}</a>
+        <a href="#/team/${escapeHtml(row.team.id)}?season=${season}">${escapeHtml(row.team.name)}</a>
     </td>
-      <td><img class="flagimg" src="${row.team.flag}"></td>
-      <td>${row.points}</td>
-      <td>${row.wins}</td>
+      <td><img class="flagimg" src="${escapeHtml(row.team.flag)}"></td>
+      <td>${escapeHtml(row.points)}</td>
+      <td>${escapeHtml(row.wins)}</td>
     </tr>`,
     )
     .join("");
@@ -662,11 +683,11 @@ async function loadRaces(season) {
     .map(
       (row) => `
     <tr>
-      <td><img class="flagimg" src="${row.flag}"></td>
-      <td><a href="#/race/${row.round}?season=${season}">${row.raceName}</a></td>
-      <td>${row.circuit}</td>
-      <td>${row.date}</td>
-      <td>${row.laps}</td>
+      <td><img class="flagimg" src="${escapeHtml(row.flag)}"></td>
+      <td><a href="#/race/${escapeHtml(row.round)}?season=${season}">${escapeHtml(row.raceName)}</a></td>
+      <td>${escapeHtml(row.circuit)}</td>
+      <td>${escapeHtml(row.date)}</td>
+      <td>${escapeHtml(row.laps)}</td>
     </tr>`,
     )
     .join("");
@@ -699,13 +720,13 @@ async function loadResultsDriver(driverId, season) {
     .map(
       (race) =>
         `<tr>
-      <td>${race.round}</td>
-      <td><img src="${race.flag}" class="flagimg"> <a href="#/race/${race.round}?season=${season}">${race.raceName}</a></td>
-      <td>${teamAvatar(race.team)} <a href="#/team/${race.team.id}?season=${season}">${race.team.name}</a></td>
+      <td>${escapeHtml(race.round)}</td>
+      <td><img src="${escapeHtml(race.flag)}" class="flagimg"> <a href="#/race/${escapeHtml(race.round)}?season=${season}">${escapeHtml(race.raceName)}</a></td>
+      <td>${teamAvatar(race.team)} <a href="#/team/${escapeHtml(race.team.id)}?season=${season}">${escapeHtml(race.team.name)}</a></td>
       <td>${badge(race.grid)}</td>
       <td>${badge(race.position)}</td>
-      <td>${race.points}</td>
-      <td>${race.status}</td>
+      <td>${escapeHtml(race.points)}</td>
+      <td>${escapeHtml(race.status)}</td>
     </tr>`,
     )
     .join("");
@@ -713,22 +734,22 @@ async function loadResultsDriver(driverId, season) {
     <div class="profile">
       ${driverAvatarProfile(data.driver, data.driver.givenName, data.driver.familyName)}
       <div class="profile-info">
-        <h2>${data.driver.givenName} ${data.driver.familyName}  <img class="flagimg" src="${data.driver.flag}"> </h2>
+        <h2>${escapeHtml(data.driver.givenName)} ${escapeHtml(data.driver.familyName)}  <img class="flagimg" src="${escapeHtml(data.driver.flag)}"> </h2>
         <div class="profile-stats">
           <div>
             <span class="stat-num">${badge(data.position)}</span>
             <span class="stat-label">POS</span>
           </div>
           <div>
-            <span class="stat-num">${data.points}</span>
+            <span class="stat-num">${escapeHtml(data.points)}</span>
             <span class="stat-label">PTS</span>
           </div>
           <div>
-            <span class="stat-num">${data.wins}</span>
+            <span class="stat-num">${escapeHtml(data.wins)}</span>
             <span class="stat-label">WINS</span>
           </div>
         </div>
-        <a href="${data.driver.info}"><p>🌐 Info</p></a>
+        <a href="${escapeHtml(data.driver.info)}"><p>🌐 Info</p></a>
         <span class="back">${backLink()}</span>
       </div>
     </div>
@@ -767,18 +788,18 @@ async function loadResultsTeam(teamId, season) {
           (item) =>
             `
         <div class="driver-row">
-          <a href="#/driver/${item.driver.id}?season=${season}">${item.driver.givenName} ${item.driver.familyName}</a>
+          <a href="#/driver/${escapeHtml(item.driver.id)}?season=${season}">${escapeHtml(item.driver.givenName)} ${escapeHtml(item.driver.familyName)}</a>
           ${badge(item.position)}
-          <span>${item.points} pts</span>
-          <span>${item.status}</span>
+          <span>${escapeHtml(item.points)} pts</span>
+          <span>${escapeHtml(item.status)}</span>
         </div>`,
         )
         .join("");
 
       return `
     <tr>
-      <td>${race.round}</td>
-      <td><img class="flagimg" src="${race.flag}"> <a href="#/race/${race.round}?season=${season}">${race.raceName}</a></td>
+      <td>${escapeHtml(race.round)}</td>
+      <td><img class="flagimg" src="${escapeHtml(race.flag)}"> <a href="#/race/${escapeHtml(race.round)}?season=${season}">${escapeHtml(race.raceName)}</a></td>
       <td>${driversHtml}</td>
     </tr>`;
     })
@@ -787,31 +808,31 @@ async function loadResultsTeam(teamId, season) {
     <div class="profile">
       ${teamAvatarProfile(data.team)}
       <div class="profile-info">
-        <h2>${data.team.name} <img class="flagimg" src="${data.team.flag}"></h2>
+        <h2>${escapeHtml(data.team.name)} <img class="flagimg" src="${escapeHtml(data.team.flag)}"></h2>
         <div class="profile-stats">
           <div>
             <span class="stat-num">${badge(data.position)}</span>
             <span class="stat-label">POS</span>
           </div>
           <div>
-            <span class="stat-num">${data.points}</span>
+            <span class="stat-num">${escapeHtml(data.points)}</span>
             <span class="stat-label">PTS</span>
           </div>
           <div>
-            <span class="stat-num">${data.wins}</span>
+            <span class="stat-num">${escapeHtml(data.wins)}</span>
             <span class="stat-label">WINS</span>
           </div>
         </div>
-        <a href="${data.team.info}"><p>🌐Info</p></a>
+        <a href="${escapeHtml(data.team.info)}"><p>🌐Info</p></a>
         <span class="back">${backLink()}</span>
       </div>
-      <a class="profile-driver" href="#/driver/${data.driver[0].id}?season=${season}">
+      <a class="profile-driver" href="#/driver/${escapeHtml(data.driver[0].id)}?season=${season}">
         ${driverAvatarProfile(data.driver[0], data.driver[0].givenName, data.driver[0].familyName)}
-        <span>${data.driver[0].givenName} ${data.driver[0].familyName}</span>
+        <span>${escapeHtml(data.driver[0].givenName)} ${escapeHtml(data.driver[0].familyName)}</span>
       </a>
-      <a class="profile-driver" href="#/driver/${data.driver[1].id}?season=${season}">
+      <a class="profile-driver" href="#/driver/${escapeHtml(data.driver[1].id)}?season=${season}">
         ${driverAvatarProfile(data.driver[1], data.driver[1].givenName, data.driver[1].familyName)}
-        <span>${data.driver[1].givenName} ${data.driver[1].familyName}</span>
+        <span>${escapeHtml(data.driver[1].givenName)} ${escapeHtml(data.driver[1].familyName)}</span>
       </a>
     </div>
     <h3> ${season} GP RESULTS</h3>
@@ -844,30 +865,30 @@ async function loadResultMainRace(round, season) {
       <td>
         <div>
           ${driverAvatar(item.driver, item.driver.givenName, item.driver.familyName)}
-          <a href="#/driver/${item.driver.id}?season=${season}">${item.driver.givenName} ${item.driver.familyName}</a>
+          <a href="#/driver/${escapeHtml(item.driver.id)}?season=${season}">${escapeHtml(item.driver.givenName)} ${escapeHtml(item.driver.familyName)}</a>
         </div>
       </td>
       <td>
         <div>
           ${teamAvatar(item.team)}
-          <a href="#/team/${item.team.id}?season=${season}">${item.team.name}</a>
+          <a href="#/team/${escapeHtml(item.team.id)}?season=${season}">${escapeHtml(item.team.name)}</a>
         </div>
       </td>
       <td>${badge(item.grid)}</td>
-      <td>${item.laps}</td>
-      <td>${item.time || "-"}</td>
-      <td>${item.fastestLap || "-"}</td>
-      <td>${item.points}</td>
-      <td>${item.status}</td>
+      <td>${escapeHtml(item.laps)}</td>
+      <td>${escapeHtml(item.time || "-")}</td>
+      <td>${escapeHtml(item.fastestLap || "-")}</td>
+      <td>${escapeHtml(item.points)}</td>
+      <td>${escapeHtml(item.status)}</td>
     </tr>`,
     )
     .join("");
   content.innerHTML += `
     <div class="race-header">
-      <span class="gp-round">${round}</span>
-      <img class="flagimg" src="${data.race.flag}">
-      <h2>${data.race.raceName}</h2>
-      <div>${data.race.circuit}   -   ${data.race.date}</div>
+      <span class="gp-round">${escapeHtml(round)}</span>
+      <img class="flagimg" src="${escapeHtml(data.race.flag)}">
+      <h2>${escapeHtml(data.race.raceName)}</h2>
+      <div>${escapeHtml(data.race.circuit)}   -   ${escapeHtml(data.race.date)}</div>
     </div>
     <span class="back">${backLink()}</span>
     <div class="tablewrap">
@@ -897,7 +918,7 @@ async function loadResultSprintRace(round, season) {
   if (!data) return;
   const content = document.getElementById("content");
   if (!data.has_sprint) {
-    content.innerHTML = `<p class="empty-state">No sprint race found for ${data.race.raceName} (${season}).</p>`;
+    content.innerHTML = `<p class="empty-state">No sprint race found for ${escapeHtml(data.race.raceName)} (${season}).</p>`;
     return;
   }
   content.innerHTML = "";
@@ -909,31 +930,31 @@ async function loadResultSprintRace(round, season) {
       <td>
         <div>
           ${driverAvatar(row.driver, row.driver.givenName, row.driver.familyName)}
-          <a href="#/driver/${row.driver.id}?season=${season}">${row.driver.givenName} ${row.driver.familyName}</a>
+          <a href="#/driver/${escapeHtml(row.driver.id)}?season=${season}">${escapeHtml(row.driver.givenName)} ${escapeHtml(row.driver.familyName)}</a>
         </div>
       </td>
       <td>
         <div>
           ${teamAvatar(row.team)}
-          <a href="#/team/${row.team.id}?season=${season}">${row.team.name}</a>
+          <a href="#/team/${escapeHtml(row.team.id)}?season=${season}">${escapeHtml(row.team.name)}</a>
         </div>
       </td>
       <td>${badge(row.grid)}</td>
-      <td>${row.laps}</td>
-      <td>${row.time || "-"}</td>
-      <td>${row.fastestLap || "-"}</td>
-      <td>${row.points}</td>
-      <td>${row.status}</td>
+      <td>${escapeHtml(row.laps)}</td>
+      <td>${escapeHtml(row.time || "-")}</td>
+      <td>${escapeHtml(row.fastestLap || "-")}</td>
+      <td>${escapeHtml(row.points)}</td>
+      <td>${escapeHtml(row.status)}</td>
     </tr>
   `,
     )
     .join("");
   content.innerHTML += `
   <div class="race-header">
-    <span class="gp-round">${round}</span>
-    <img class="flagimg" src="${data.race.flag}">
-    <h2>${data.race.raceName}</h2>
-    <div>${data.race.circuit}   -   ${data.race.date}</div>
+    <span class="gp-round">${escapeHtml(round)}</span>
+    <img class="flagimg" src="${escapeHtml(data.race.flag)}">
+    <h2>${escapeHtml(data.race.raceName)}</h2>
+    <div>${escapeHtml(data.race.circuit)}   -   ${escapeHtml(data.race.date)}</div>
   </div>
   <span class="back">${backLink()}</span>
   <div class="tablewrap">
@@ -971,28 +992,28 @@ async function loadResultQualifyingRace(round, season) {
       <td>
         <div>
           ${driverAvatar(row.driver, row.driver.givenName, row.driver.familyName)}
-          <a href="#/driver/${row.driver.id}?season=${season}">${row.driver.givenName} ${row.driver.familyName}</a>
+          <a href="#/driver/${escapeHtml(row.driver.id)}?season=${season}">${escapeHtml(row.driver.givenName)} ${escapeHtml(row.driver.familyName)}</a>
         </div>
       </td>
       <td>
         <div>
           ${teamAvatar(row.team)}
-          <a href="#/team/${row.team.id}?season=${season}">${row.team.name}</a>
+          <a href="#/team/${escapeHtml(row.team.id)}?season=${season}">${escapeHtml(row.team.name)}</a>
         </div>
       </td>
-      <td>${row.Q1 || "-"}</td>
-      <td>${row.Q2 || "-"}</td>
-      <td>${row.Q3 || "-"}</td>
+      <td>${escapeHtml(row.Q1 || "-")}</td>
+      <td>${escapeHtml(row.Q2 || "-")}</td>
+      <td>${escapeHtml(row.Q3 || "-")}</td>
     </tr>
   `,
     )
     .join("");
   content.innerHTML += `
   <div class="race-header">
-    <span class="gp-round">${round}</span>
-    <img class="flagimg" src="${data.race.flag}">
-    <h2>${data.race.raceName}</h2>
-    <div>${data.race.circuit}   -   ${data.race.date}</div>
+    <span class="gp-round">${escapeHtml(round)}</span>
+    <img class="flagimg" src="${escapeHtml(data.race.flag)}">
+    <h2>${escapeHtml(data.race.raceName)}</h2>
+    <div>${escapeHtml(data.race.circuit)}   -   ${escapeHtml(data.race.date)}</div>
   </div>
   <span class="back">${backLink()}</span>
   <div class="tablewrap">
@@ -1027,13 +1048,13 @@ async function loadResultSprintDriver(driverId, season) {
     .map(
       (sprint) =>
         `<tr>
-      <td>${sprint.round}</td>
-      <td><img src="${sprint.flag}" class="flagimg"> <a href="#/race/${sprint.round}?season=${season}">${sprint.raceName}</a></td>
-      <td>${teamAvatar(sprint.team)} <a href="#/team/${sprint.team.id}?season=${season}">${sprint.team.name}</a></td>
+      <td>${escapeHtml(sprint.round)}</td>
+      <td><img src="${escapeHtml(sprint.flag)}" class="flagimg"> <a href="#/race/${escapeHtml(sprint.round)}?season=${season}">${escapeHtml(sprint.raceName)}</a></td>
+      <td>${teamAvatar(sprint.team)} <a href="#/team/${escapeHtml(sprint.team.id)}?season=${season}">${escapeHtml(sprint.team.name)}</a></td>
       <td>${badge(sprint.grid)}</td>
       <td>${badge(sprint.position)}</td>
-      <td>${sprint.points}</td>
-      <td>${sprint.status}</td>
+      <td>${escapeHtml(sprint.points)}</td>
+      <td>${escapeHtml(sprint.status)}</td>
     </tr>`,
     )
     .join("");
@@ -1041,22 +1062,22 @@ async function loadResultSprintDriver(driverId, season) {
     <div class="profile">
       ${driverAvatarProfile(data.driver, data.driver.givenName, data.driver.familyName)}
       <div class="profile-info">
-        <h2>${data.driver.givenName} ${data.driver.familyName}  <img class="flagimg" src="${data.driver.flag}"></h2>
+        <h2>${escapeHtml(data.driver.givenName)} ${escapeHtml(data.driver.familyName)}  <img class="flagimg" src="${escapeHtml(data.driver.flag)}"></h2>
         <div class="profile-stats">
           <div>
             <span class="stat-num">${badge(data.position)}</span>
             <span class="stat-label">POS</span>
           </div>
           <div>
-            <span class="stat-num">${data.points}</span>
+            <span class="stat-num">${escapeHtml(data.points)}</span>
             <span class="stat-label">PTS</span>
           </div>
           <div>
-            <span class="stat-num">${data.wins}</span>
+            <span class="stat-num">${escapeHtml(data.wins)}</span>
             <span class="stat-label">WINS</span>
           </div>
         </div>
-        <a href="${data.driver.info}"><p>🌐 Info</p></a>
+        <a href="${escapeHtml(data.driver.info)}"><p>🌐 Info</p></a>
         <span class="back">${backLink()}</span>
       </div>
     </div>
@@ -1084,8 +1105,6 @@ async function loadResultSprintDriver(driverId, season) {
 async function loadResultQualifyingDriver(driverId, season) {
   const data = await fetchApi(`/api/driver/${driverId}?season=${season}`);
   if (!data) return;
-  console.log(data);
-  console.log(data.qualifying);
   if (!data.qualifying) {
     document.getElementById("content").innerHTML = `<p class="empty-state">There is no qualifying data from source</p>`;
     return;
@@ -1096,13 +1115,13 @@ async function loadResultQualifyingDriver(driverId, season) {
     .map(
       (qualifying) =>
         `<tr>
-      <td>${qualifying.round}</td>
-      <td><img src="${qualifying.flag}" class="flagimg"> <a href="#/race/${qualifying.round}?season=${season}">${qualifying.raceName}</a></td>
-      <td>${teamAvatar(qualifying.team)} <a href="#/team/${qualifying.team.id}?season=${season}">${qualifying.team.name}</a></td>
+      <td>${escapeHtml(qualifying.round)}</td>
+      <td><img src="${escapeHtml(qualifying.flag)}" class="flagimg"> <a href="#/race/${escapeHtml(qualifying.round)}?season=${season}">${escapeHtml(qualifying.raceName)}</a></td>
+      <td>${teamAvatar(qualifying.team)} <a href="#/team/${escapeHtml(qualifying.team.id)}?season=${season}">${escapeHtml(qualifying.team.name)}</a></td>
       <td>${badge(qualifying.position)}</td>
-      <td>${qualifying.Q1 || "-"}</td>
-      <td>${qualifying.Q2 || "-"}</td>
-      <td>${qualifying.Q3 || "-"}</td>
+      <td>${escapeHtml(qualifying.Q1 || "-")}</td>
+      <td>${escapeHtml(qualifying.Q2 || "-")}</td>
+      <td>${escapeHtml(qualifying.Q3 || "-")}</td>
     </tr>`,
     )
     .join("");
@@ -1110,22 +1129,22 @@ async function loadResultQualifyingDriver(driverId, season) {
     <div class="profile">
       ${driverAvatarProfile(data.driver, data.driver.givenName, data.driver.familyName)}
       <div class="profile-info">
-        <h2>${data.driver.givenName} ${data.driver.familyName}  <img class="flagimg" src="${data.driver.flag}"> </h2>
+        <h2>${escapeHtml(data.driver.givenName)} ${escapeHtml(data.driver.familyName)}  <img class="flagimg" src="${escapeHtml(data.driver.flag)}"> </h2>
         <div class="profile-stats">
           <div>
             <span class="stat-num">${badge(data.position)}</span>
             <span class="stat-label">POS</span>
           </div>
           <div>
-            <span class="stat-num">${data.points}</span>
+            <span class="stat-num">${escapeHtml(data.points)}</span>
             <span class="stat-label">PTS</span>
           </div>
           <div>
-            <span class="stat-num">${data.wins}</span>
+            <span class="stat-num">${escapeHtml(data.wins)}</span>
             <span class="stat-label">WINS</span>
           </div>
         </div>
-        <a href="${data.driver.info}"><p>🌐 Info</p></a>
+        <a href="${escapeHtml(data.driver.info)}"><p>🌐 Info</p></a>
         <span class="back">${backLink()}</span>
       </div>
     </div>
@@ -1193,9 +1212,9 @@ function renderAwardsCard(round) {
       row.pole
         ? `<div class="award-chip award-pole">
             <span class="award-chip-label">POLE</span>
-            <img class="avatar-tiny" src="${row.pole.driver.photo}">
-            <strong>${row.pole.driver.givenName} ${row.pole.driver.familyName}</strong>
-            <span>${row.pole.time || "-"}</span>
+            <img class="avatar-tiny" src="${escapeHtml(row.pole.driver.photo)}">
+            <strong>${escapeHtml(row.pole.driver.givenName)} ${escapeHtml(row.pole.driver.familyName)}</strong>
+            <span>${escapeHtml(row.pole.time || "-")}</span>
           </div>`
         : ""
     }
@@ -1203,9 +1222,9 @@ function renderAwardsCard(round) {
       row.driver_of_the_day
         ? `<div class="award-chip award-dotd">
             <span class="award-chip-label">DOTD</span>
-            <img class="avatar-tiny" src="${row.driver_of_the_day.driver.photo}">
-            <strong>${row.driver_of_the_day.driver.givenName} ${row.driver_of_the_day.driver.familyName}</strong>
-            <span>${row.driver_of_the_day.percentage}%</span>
+            <img class="avatar-tiny" src="${escapeHtml(row.driver_of_the_day.driver.photo)}">
+            <strong>${escapeHtml(row.driver_of_the_day.driver.givenName)} ${escapeHtml(row.driver_of_the_day.driver.familyName)}</strong>
+            <span>${escapeHtml(row.driver_of_the_day.percentage)}%</span>
           </div>`
         : ""
     }
@@ -1213,9 +1232,9 @@ function renderAwardsCard(round) {
       row.fastest_pit_stop
         ? `<div class="award-chip award-pitstop">
             <span class="award-chip-label">FASTEST PIT STOP</span>
-            <span class="award-swatch" style="background:#${row.fastest_pit_stop.colour}"></span>
-            <strong>${row.fastest_pit_stop.team}</strong>
-            <span>${row.fastest_pit_stop.time}</span>
+            <span class="award-swatch" style="background:#${escapeHtml(row.fastest_pit_stop.colour)}"></span>
+            <strong>${escapeHtml(row.fastest_pit_stop.team)}</strong>
+            <span>${escapeHtml(row.fastest_pit_stop.time)}</span>
           </div>`
         : ""
     }
@@ -1223,8 +1242,8 @@ function renderAwardsCard(round) {
       row.sprint_winner
         ? `<div class="award-chip award-sprint">
             <span class="award-chip-label">SPRINT WIN</span>
-            <img class="avatar-tiny" src="${row.sprint_winner.photo}">
-            <strong>${row.sprint_winner.givenName} ${row.sprint_winner.familyName}</strong>
+            <img class="avatar-tiny" src="${escapeHtml(row.sprint_winner.photo)}">
+            <strong>${escapeHtml(row.sprint_winner.givenName)} ${escapeHtml(row.sprint_winner.familyName)}</strong>
           </div>`
         : ""
     }
@@ -1237,18 +1256,18 @@ function renderAwardsCard(round) {
       <td>${badge(index + 1)}</td>
       <td>
         <div>
-          <img class="avatar" src="${item.driver.photo}">
-          <a href="#/driver/${item.driver.id}?season=${currentAwardsSeason}">${item.driver.givenName} ${item.driver.familyName}</a>
+          <img class="avatar" src="${escapeHtml(item.driver.photo)}">
+          <a href="#/driver/${escapeHtml(item.driver.id)}?season=${currentAwardsSeason}">${escapeHtml(item.driver.givenName)} ${escapeHtml(item.driver.familyName)}</a>
         </div>
       </td>
       <td>
         <div>
           ${teamAvatar(item.team)}
-          <a href="#/team/${item.team.id}?season=${currentAwardsSeason}">${item.team.name}</a>
+          <a href="#/team/${escapeHtml(item.team.id)}?season=${currentAwardsSeason}">${escapeHtml(item.team.name)}</a>
         </div>
       </td>
       <td>${badge(item.grid)}</td>
-      <td>${item.points || ""}</td>
+      <td>${escapeHtml(item.points || "")}</td>
     </tr>`,
     )
     .join("");
@@ -1256,10 +1275,10 @@ function renderAwardsCard(round) {
   card.innerHTML = `
     <div class="gp-card">
       <div class="gp-card-header">
-        <span class="gp-round">${row.round}</span>
-        <img class="flagimg" src="${row.flag_circuit}">
-        <a href="#/race/${row.round}?season=${currentAwardsSeason}"><strong>${row.raceName}</strong></a>
-        <span class="gp-card-meta">${row.circuit} · ${row.date}</span>
+        <span class="gp-round">${escapeHtml(row.round)}</span>
+        <img class="flagimg" src="${escapeHtml(row.flag_circuit)}">
+        <a href="#/race/${escapeHtml(row.round)}?season=${currentAwardsSeason}"><strong>${escapeHtml(row.raceName)}</strong></a>
+        <span class="gp-card-meta">${escapeHtml(row.circuit)} · ${escapeHtml(row.date)}</span>
       </div>
       <div class="award-badges">${badgesHtml}</div>
       <h3>TOP 5</h3>
