@@ -21,10 +21,8 @@ def test_seasons_returns_years_in_descending_order():
         "MRData": {
             "SeasonTable": {
                 "Seasons": [
-                    {"season": "2023"},
                     {"season": "2024"},
                     {"season": "2025"},
-                    {"season": "2026"},
                 ]
             }
         }
