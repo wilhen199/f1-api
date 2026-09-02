@@ -365,3 +365,8 @@ def test_race_info_combines_endpoints():
         assert result["sprint"] == []
     finally:
         f1_api._fetch = original_fetch
+
+
+def test_force_fail():
+    """Este test falla intencionalmente para probar la protección de merge."""
+    assert False, "Fallo intencional para probar el CI"
