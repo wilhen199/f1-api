@@ -23,10 +23,10 @@ jobs:
           echo "F1COM_APIKEY=${{ secrets.F1COM_APIKEY }}" >> .env
 
       - name: Build the Docker image
-        run: docker-compose build 
+        run: docker compose build 
 
       - name: Start the container in detached mode
-        run: docker-compose up -d
+        run: docker compose up -d
 
       - name: Wait for service to be ready (health check)
         run: |
@@ -43,7 +43,7 @@ jobs:
 
       - name: Run unit tests inside the container
         run: |
-          docker-compose exec -T api \
+          docker compose exec -T api \
             pytest /app/backend/tests/ -v --maxfail=1
 
       - name: Stop and clean up containers
