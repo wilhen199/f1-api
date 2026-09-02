@@ -21,8 +21,10 @@ def test_seasons_returns_years_in_descending_order():
         "MRData": {
             "SeasonTable": {
                 "Seasons": [
+                    {"season": "2023"},
                     {"season": "2024"},
                     {"season": "2025"},
+                    {"season": "2026"},
                 ]
             }
         }
@@ -365,8 +367,3 @@ def test_race_info_combines_endpoints():
         assert result["sprint"] == []
     finally:
         f1_api._fetch = original_fetch
-
-
-def test_force_fail():
-    """Este test falla intencionalmente para probar la protección de merge."""
-    assert False, "Fallo intencional para probar el CI"
