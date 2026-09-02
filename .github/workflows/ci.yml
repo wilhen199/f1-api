@@ -1,0 +1,51 @@
+name: "CI - Build and Test"
+
+on:
+  push:
+    branches: ["main"]
+  pull_request: 
+    branches: ["main"]
+
+
+jobs:
+  build-and-test:
+
+    name: "Build and Test"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+          echo "F1COM_BASE_URL=${{ secrets.F1COM_BASE_URL }}" > .env
+          echo "F1COM_APIKEY=${{ secrets.F1COM_APIKEY }}" >> .env
+
+      - name: Build the Docker image
+        run: docker-compose build 
+
+      - name: Start the container in detached mode
+        run: docker-compose up -d
+
+      - name: Wait for service to be ready (health check)
+        run: |
+          echo "Waiting for the service to be ready..."
+          for i in {1..30}; do
+            if curl --fail http://localhost:8000/docs; then
+              echo "Service is ready!"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Service did not become ready in time."
+          exit 1
+
+      - name: Run unit tests inside the container
+        run: |
+          docker-compose exec -T api \
+            pytest /app/backend/tests/ -v --maxfail=1
+
+      - name: Stop and clean up containers
+        if: always()
+        run: docker-compose down
