@@ -985,6 +985,10 @@ async function loadResultSprintRace(round, season) {
 async function loadResultQualifyingRace(round, season) {
   const data = await fetchApi(`/api/results/race/${round}?season=${season}`);
   if (!data) return;
+  if (data.qualifying === null || data.qualifying.length === 0) {
+    document.getElementById("content").innerHTML = `<p class="empty-state">There is no qualifying data from source</p>`;
+    return;
+  }
   const content = document.getElementById("content");
   content.innerHTML = "";
   const rowsHTML = data.qualifying
