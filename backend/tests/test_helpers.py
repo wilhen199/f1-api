@@ -5,7 +5,7 @@ mocking: we just feed them raw-shaped Ergast data and check the
 output dict.
 """
 
-import helpers
+from backend import helpers
 
 
 def test_driver_normalizes_basic_fields():

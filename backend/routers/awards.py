@@ -2,10 +2,10 @@
 
 import asyncio
 
-import f1_api
-import helpers
-from config import CURRENT_SEASON
 from fastapi import APIRouter, Query
+
+from backend import f1_api, helpers
+from backend.config import CURRENT_SEASON
 
 router = APIRouter(prefix="/api", tags=["awards"])
 

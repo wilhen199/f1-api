@@ -2,7 +2,7 @@
 
 import asyncio
 
-import f1_api
+from backend import f1_api
 
 
 def reset_f1_api_state():

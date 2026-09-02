@@ -3,15 +3,11 @@ version: '3.8'
 services:
   api:
     build:
-      context: .                # El contexto es la raíz del proyecto
+      context: .
       dockerfile: Dockerfile
     container_name: f1-api-app
     ports:
-      - "8000:8000"             # Mapea el puerto 8000 de tu máquina al del contenedor
+      - "8000:8000"
     env_file:
-      - .env                    # Carga las variables de entorno de tu .env
-    # (Opcional) Para desarrollo, puedes montar volúmenes para ver cambios en caliente:
-    # volumes:
-    #   - ./backend:/app/backend
-    #   - ./frontend:/app/frontend
+      - .env
     restart: unless-stopped

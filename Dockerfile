@@ -2,8 +2,6 @@ FROM python:3.13-slim
 
 WORKDIR /app
 
-ENV PYTHONPATH=/app/backend
-
 COPY backend/requirements.txt /app/backend/
 
 RUN pip install --no-cache-dir -r /app/backend/requirements.txt

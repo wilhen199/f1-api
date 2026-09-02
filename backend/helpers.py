@@ -1,6 +1,6 @@
 """Helper functions to normalize and enrich F1 data with photos and flags."""
 
-import images
+from backend import images
 
 photo_service = images.PhotoService()
 

@@ -2,11 +2,10 @@
 
 import asyncio
 
-import f1_api
-import helpers
-import images
-from config import CURRENT_SEASON
 from fastapi import APIRouter, HTTPException, Query
+
+from backend import f1_api, helpers, images
+from backend.config import CURRENT_SEASON
 
 router = APIRouter(prefix="/api", tags=["results"])
 
