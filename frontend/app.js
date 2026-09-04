@@ -293,7 +293,7 @@ function hideSubTabs() {
 function badge(position) {
   const pos = Number(position);
   if (isNaN(pos) || pos <= 0) {
-    return '<span class="badge">${escapeHtml(position)}</span>';
+    return `<span class="badge">${escapeHtml(position)}</span>`;
   }
   if (pos === 1) {
     return '<span class="badge pos-1">1</span>';
