@@ -76,7 +76,8 @@ header {
 }
 
 .container {
-  max-width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
   padding: 1.2rem 2rem 3rem;
 }
 
@@ -156,7 +157,7 @@ select {
 
 .view-title {
   margin: 0.2rem 0 1rem;
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   letter-spacing: 1px;
 }
 
@@ -171,14 +172,14 @@ th {
   background: #e10600;
   padding: 0.7rem 1rem;
   text-align: left;
-  font-size: 0.85rem;
+  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 td {
   padding: 0.65rem 1rem;
   border-bottom: 1px solid #2a2a4a;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 tr:last-child td {
   border-bottom: none;
