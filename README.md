@@ -6,17 +6,19 @@
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6%2B-F7DF1E.svg?logo=javascript&logoColor=yellow)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Docker](https://img.shields.io/badge/Docker-container-2496ED.svg?logo=docker&logoColor=white)](https://www.docker.com/)
 [![Docker Compose](https://img.shields.io/badge/Docker_Compose-v2-2496ED.svg?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
-[![Status](https://img.shields.io/badge/status-in%20progress-orange.svg)](#status)
+[![CI - Build and Test](https://github.com/wilhen199/f1-api/actions/workflows/ci.yml/badge.svg)](https://github.com/wilhen199/f1-api/actions/workflows/ci.yml)
+[![Status](https://img.shields.io/badge/status-in%20progress-orange.svg)](#-status)
 
 A full-stack web application that aggregates Formula 1 historical and current season data — standings, race results, qualifying, sprint races, pit stops, and per-race awards — served through a FastAPI backend and a vanilla JS frontend.
 
 ---
+
 ## 📅 Status
 
 This project is a personal learning build and is **actively in progress**.
 
 | Area | Status |
-|---|---|
+| --- | --- |
 | Backend (async fetch, caching, routers) | ✅ Done |
 | Frontend (routing, standings, results, awards) | ✅ Done |
 | Testing (pytest, no real network calls) | ✅ Done |
@@ -26,8 +28,11 @@ This project is a personal learning build and is **actively in progress**.
 | Automated AWS deployment (Terraform) | 📋 Planned |
 
 > Deployments to AWS are done as hands-on practice/lab exercises and are **not kept running permanently**.
+
 ---
+
 ## 📸 What it looks like
+
 ![F1 Stats App Standings Drivers](./docs/f1-standings-drivers.png)
 
 ![F1 Stats App Standing Teams](./docs/f1-standings-teams.png)
@@ -35,6 +40,7 @@ This project is a personal learning build and is **actively in progress**.
 ![F1 Stats App Results Races](./docs/f1-results-races.png)
 
 ![F1 Stats App Results Awards](./docs/f1-results-awards.png)
+
 ---
 
 ## 📋 What it does
@@ -47,6 +53,7 @@ This project is a personal learning build and is **actively in progress**.
 - **Photos & Flags** — official F1 portrait/logo images for current-season drivers and teams; Wikipedia photos as fallback for historical entries; country flags via flagcdn.com.
 
 Data is sourced from two external APIs:
+
 - [Jolpica/Ergast](https://api.jolpi.ca/ergast/f1) — historical and current F1 data (free, public).
 - Official F1 website API — Driver of the Day votes and DHL fastest pit stop awards (requires API key).
 
@@ -100,23 +107,25 @@ cd backend
 pytest tests/test_f1_api.py -v
 ```
 
-
 ---
+
 ## ⚙️ Environment Variables
 
 Copy `.env.example` to `.env` and fill in the values below.
 
 | Variable | Required | Default | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `F1COM_APIKEY` | ✅ Yes | — | API key for the official F1 website API (Driver of the Day, fastest pit stops). |
 | `F1COM_BASE_URL` | No | `https://api.formula1.com` | Base URL for the official F1 API. Override only if needed. |
 
-> how to get your F1COM_APIKEY: 
-> 1. Go to https://www.formula1.com/
+> how to get your F1COM_APIKEY:
+>
+> 1. Go to <https://www.formula1.com/>
 > 2. Open Browser's DevTools (F12)
 > 3. Go to Network Tab and filter by api.formula1.com
 > 4. Refresh the page and look for the Request Headers section
 > 5. In the Request Headers section, find the `Apikey` header and copy its value (e.g., `ANaNNCYP5X5LfTP5y2S6iEzKz6kZufMy`).
+>
 ---
 
 ## 📄API Documentation
@@ -132,7 +141,7 @@ Use these to explore and test every endpoint (standings, results, awards, driver
 
 ## 📂 How it works
 
-```
+```text
 Browser
   │
   │  GET /  (static files)
@@ -197,7 +206,7 @@ Browser
 ## 🚀Best practices covered
 
 | Area | What's implemented |
-|---|---|
+| --- | --- |
 | **Async I/O** | All network calls use `httpx.AsyncClient`; concurrent fetches use `asyncio.gather` |
 | **Caching** | In-memory TTL cache with double-checked locking; disk-persisted photo cache |
 | **Rate-limit handling** | 429 responses from Ergast propagate a proper `Retry-After` header to the client |
@@ -208,7 +217,6 @@ Browser
 | **Testing** | Unit tests with monkey-patched `_fetch` — no real network calls; covers pagination, edge cases, and empty responses |
 | **HTTP best practices** | Custom `User-Agent` header on all outbound requests; `follow_redirects=True` |
 | **API design** | Versioned prefix (`/api`), tagged routes, query-param defaults, proper 404 responses |
-
 
 ---
 
