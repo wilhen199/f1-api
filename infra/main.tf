@@ -8,3 +8,10 @@ module "network" {
   private_subnet_cidrs = local.private_subnet_cidrs
 }
 
+module "ecr" {
+  source  = "./modules/ecr"
+  project = local.project
+
+  ecr_repo_name = local.ecr_repo_name
+
+}
