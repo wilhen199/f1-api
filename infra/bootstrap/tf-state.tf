@@ -11,19 +11,15 @@ provider "aws" {
   region = local.region
 }
 
-resource "random_id" "backend_suffix" {
-  byte_length = 4
-}
-
 resource "aws_s3_bucket" "backend_bucket" {
-  bucket = "${local.project_name}-tfstate-${random_id.backend_suffix.hex}"
+  bucket = local.bucket_name
 
   force_destroy = true
   lifecycle {
     prevent_destroy = false
   }
   tags = {
-    Name    = "${local.project_name}-tfstate-${random_id.backend_suffix.hex}"
+    Name    = local.bucket_name
     Project = local.project_name
   }
 }
@@ -54,7 +50,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_bucket_
 }
 
 resource "aws_dynamodb_table" "backend_locks" {
-  name         = "${local.project_name}-tfstate-lock"
+  name         = local.table_name
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID"
   attribute {
@@ -62,7 +58,7 @@ resource "aws_dynamodb_table" "backend_locks" {
     type = "S"
   }
   tags = {
-    Name    = "${local.project_name}-tfstate-lock"
+    Name    = local.table_name
     Project = local.project_name
   }
 }
