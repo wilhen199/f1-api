@@ -4,3 +4,13 @@ __pycache__/
 *.pyc
 backend/cache/
 *.log
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+*.tfstate.lock.info
+.terraform/
+**/.terraform/*
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json

@@ -24,8 +24,8 @@ This project is a personal learning build and is **actively in progress**.
 | Testing (pytest, no real network calls) | ✅ Done |
 | CI/CD (GitHub Actions) | ✅ Done |
 | Containerization (Docker) | ✅ Done |
-| Manual AWS deployment (ECS Fargate) | 🚧 In progress |
-| Automated AWS deployment (Terraform) | 📋 Planned |
+| Manual AWS deployment (ECS Fargate) | ✅ Done |
+| Automated AWS deployment (Terraform) | 🚧 In progress |
 
 > Deployments to AWS are done as hands-on practice/lab exercises and are **not kept running permanently**.
 
