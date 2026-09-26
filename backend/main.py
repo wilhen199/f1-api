@@ -24,6 +24,11 @@ app.include_router(results.router)
 app.include_router(awards.router)
 
 
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
+
 @app.get("/api/seasons", tags=["general"])
 async def get_seasons():
     """Return the list of available F1 seasons."""
