@@ -3,8 +3,5 @@ resource "aws_ecr_repository" "f1-api-app_ecr_repo" {
   force_delete = true
   tags = {
     project = var.project
-
   }
 }
-
-
