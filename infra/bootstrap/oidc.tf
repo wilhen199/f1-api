@@ -21,10 +21,7 @@ data "aws_iam_policy_document" "github_trust" {
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values = ["repo:wilhen199/f1-api:*"
-        #        "repo:wilhen199/f1-api:pull_request",
-        #        "repo:wilhen199/f1-api:ref:refs/heads/main",
-      ]
+      values   = "repo:wilhen199/f1-api:*"
     }
   }
 }
