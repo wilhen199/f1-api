@@ -23,7 +23,7 @@ jobs:
 
     env:
       ECR_REGISTRY: ${{ vars.ECR_REGISTRY }}
-      ECR_REPOSITORY: f1-api
+      ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
       IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
 
     steps:
