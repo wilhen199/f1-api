@@ -62,4 +62,6 @@ jobs:
 
       - name: Terraform Apply with new image tag
         working-directory: infra
+        env:
+          TF_VAR_ssm_parameter_values: '{"base_url":"${{ secrets.F1COM_BASE_URL }}","api_key":"${{ secrets.F1COM_APIKEY }}"}'
         run: terraform apply -auto-approve -var="image_tag=$IMAGE_TAG"
