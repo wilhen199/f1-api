@@ -47,7 +47,7 @@ jobs:
 
       - name: Terraform Apply - ECR Repository
         working-directory: infra
-        run: terraform apply -input=false -auto-approve -target=module.ecr -var="image_tag=$IMAGE_TAG"
+        run: terraform apply -input=false -auto-approve -target=module.ecr 
 
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
