@@ -6,8 +6,13 @@
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6%2B-F7DF1E.svg?logo=javascript&logoColor=yellow)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Docker](https://img.shields.io/badge/Docker-container-2496ED.svg?logo=docker&logoColor=white)](https://www.docker.com/)
 [![Docker Compose](https://img.shields.io/badge/Docker_Compose-v2-2496ED.svg?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
+
 [![CI - Build and Test](https://github.com/wilhen199/f1-api/actions/workflows/ci.yml/badge.svg)](https://github.com/wilhen199/f1-api/actions/workflows/ci.yml)
+
 [![Infra - Terraform Plan/Apply](https://github.com/wilhen199/f1-api/actions/workflows/infra.yml/badge.svg)](https://github.com/wilhen199/f1-api/actions/workflows/infra.yml)
+
+[![Deploy - Build image and apply Terraform](https://github.com/wilhen199/f1-api/actions/workflows/deploy.yml/badge.svg)](https://github.com/wilhen199/f1-api/actions/workflows/deploy.yml)
+
 [![Status](https://img.shields.io/badge/status-in%20progress-orange.svg)](#-status)
 
 A full-stack web application that aggregates Formula 1 historical and current season data — standings, race results, qualifying, sprint races, pit stops, and per-race awards — served through a FastAPI backend and a vanilla JS frontend.
