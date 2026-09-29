@@ -27,9 +27,11 @@ module "ecs" {
   alb_name                      = local.alb_name
   app_task_name                 = local.app_task_name
   container_port                = local.container_port
-  ecr_repo_url                  = module.ecr.respository_url
+  ecr_repo_url                  = module.ecr.repository_url
   ssm_parameter_values          = var.ssm_parameter_values
   public_subnets                = module.network.public_subnets_ids
   private_subnets               = module.network.private_subnets_ids
   f1-api-vpc_id                 = module.network.vpc_id
+
+  image_tag = var.image_tag
 }
