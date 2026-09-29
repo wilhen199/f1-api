@@ -33,8 +33,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build the Docker image
-        run: docker compose build
+      - name: Build the Docker image (using Buildx cache)
+        env: 
+          DOCKER_BUILDKIT: 1
+          COMPOSE_DOCKER_CLI_BUILD: 1
+        run: docker compose build --build-arg BUILDKIT_INLINE_CACHE=1
 
       - name: Start the container in detached mode
         run: docker compose up -d
