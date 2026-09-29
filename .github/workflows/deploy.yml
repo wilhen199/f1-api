@@ -1,14 +1,12 @@
 name: "Deploy - Build image and apply Terraform"
 
 on:
-  workflow_run:
-    workflows: ["CI - Build and Test"]
-    types: [completed]
-    branches: [main]
+  push:
+    branches: ["main"]
     
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   id-token: write
@@ -19,18 +17,17 @@ jobs:
     name: "Build image and deploy"
     runs-on: ubuntu-latest
     environment: prod 
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     env:
       ECR_REGISTRY: ${{ vars.ECR_REGISTRY }}
       ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
-      IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
+      IMAGE_TAG: ${{ github.sha }}
 
     steps:
       - name: Checkout exact commit tested by CI
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: ${{ github.sha }}
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
@@ -55,6 +52,8 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.16.2"
 
       - name: Terraform Init
         working-directory: infra
@@ -64,4 +63,4 @@ jobs:
         working-directory: infra
         env:
           TF_VAR_ssm_parameter_values: '{"base_url":"${{ secrets.F1COM_BASE_URL }}","api_key":"${{ secrets.F1COM_APIKEY }}"}'
-        run: terraform apply -auto-approve -var="image_tag=$IMAGE_TAG"
+        run: terraform apply -input=false -auto-approve -var="image_tag=$IMAGE_TAG"
