@@ -35,6 +35,19 @@ jobs:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.16.2"
+
+      - name: Terraform Init
+        working-directory: infra
+        run: terraform init
+
+      - name: Terraform Apply - ECR Repository
+        working-directory: infra
+        run: terraform apply -input=false -auto-approve -target=module.ecr -var="image_tag=$IMAGE_TAG"
+
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
@@ -49,15 +62,6 @@ jobs:
           aws ecr describe-images \
             --repository-name $ECR_REPOSITORY \
             --image-ids imageTag=$IMAGE_TAG
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: "1.16.2"
-
-      - name: Terraform Init
-        working-directory: infra
-        run: terraform init
 
       - name: Terraform Apply with new image tag
         working-directory: infra
