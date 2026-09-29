@@ -9,11 +9,9 @@
 
 [![CI - Build and Test](https://github.com/wilhen199/f1-api/actions/workflows/ci.yml/badge.svg)](https://github.com/wilhen199/f1-api/actions/workflows/ci.yml)
 
-[![Infra - Terraform Plan/Apply](https://github.com/wilhen199/f1-api/actions/workflows/infra.yml/badge.svg)](https://github.com/wilhen199/f1-api/actions/workflows/infra.yml)
-
 [![Deploy - Build image and apply Terraform](https://github.com/wilhen199/f1-api/actions/workflows/deploy.yml/badge.svg)](https://github.com/wilhen199/f1-api/actions/workflows/deploy.yml)
 
-[![Status](https://img.shields.io/badge/status-in%20progress-orange.svg)](#-status)
+[![Status](https://img.shields.io/badge/status-completed-green.svg)](#-status)
 
 A full-stack web application that aggregates Formula 1 historical and current season data — standings, race results, qualifying, sprint races, pit stops, and per-race awards — served through a FastAPI backend and a vanilla JS frontend.
 
@@ -31,7 +29,7 @@ This project is a personal learning build and is **actively in progress**.
 | CI/CD (GitHub Actions) | ✅ Done |
 | Containerization (Docker) | ✅ Done |
 | Manual AWS deployment (ECS Fargate) | ✅ Done |
-| Automated AWS deployment (Terraform) | 🚧 In progress |
+| Automated AWS deployment (Terraform) | ✅ Done |
 
 > Deployments to AWS are done as hands-on practice/lab exercises and are **not kept running permanently**.
 
