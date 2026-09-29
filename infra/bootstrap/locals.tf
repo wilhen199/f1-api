@@ -4,6 +4,8 @@ locals {
   bucket_name  = "f1-api-tfstate-wf"
   table_name   = "f1-api-tfstate-lock"
 
+  github_repo_subject = "repo:wilhen199@64449523/f1-api@1331446422"
+
   github_actions_policies = [
     "arn:aws:iam::aws:policy/AmazonECS_FullAccess",
     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess",
