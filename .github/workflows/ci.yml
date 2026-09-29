@@ -3,7 +3,17 @@ name: "CI - Build and Test"
 on:
   pull_request: 
     branches: ["main"]
+    paths-ignore:
+      - "docs/**"
+      - "**.md"
+      - "infra/**"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   build-and-test:
@@ -20,8 +30,11 @@ jobs:
           echo "F1COM_BASE_URL=${{ secrets.F1COM_BASE_URL }}" > .env
           echo "F1COM_APIKEY=${{ secrets.F1COM_APIKEY }}" >> .env
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build the Docker image
-        run: docker compose build 
+        run: docker compose build
 
       - name: Start the container in detached mode
         run: docker compose up -d
@@ -30,7 +43,7 @@ jobs:
         run: |
           echo "Waiting for the service to be ready..."
           for i in {1..30}; do
-            if curl --fail http://localhost:8000/docs; then
+            if curl --fail http://localhost:8000/health; then
               echo "Service is ready!"
               exit 0
             fi
