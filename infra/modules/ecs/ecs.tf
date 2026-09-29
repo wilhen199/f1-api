@@ -17,7 +17,7 @@ resource "aws_ecs_task_definition" "f1-api-task_definition" {
   container_definitions = jsonencode([
     {
       name      = var.app_task_name
-      image     = var.ecr_repo_url
+      image     = "${var.ecr_repo_url}:${var.image_tag}"
       cpu       = 256
       memory    = 512
       essential = true

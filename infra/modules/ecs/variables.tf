@@ -67,3 +67,7 @@ variable "f1-api-vpc_id" {
   description = "VPC ID for app"
   type        = string
 }
+variable "image_tag" {
+  type        = string
+  description = "Docker image tag to deploy"
+}
