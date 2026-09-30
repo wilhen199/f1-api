@@ -14,7 +14,10 @@ router = APIRouter(prefix="/api/standings", tags=["standings"])
 async def get_driver_standings(season: int = Query(default=CURRENT_SEASON, ge=1950)):
     """Return driver championship standings for the given season."""
     standings = await f1_api.driver_standings(season)
-    podiums = await f1_api.driver_podiums(season)
+    top_n = await f1_api.driver_top_n(season, [3, 5, 10])
+    podiums = top_n[3]
+    top5 = top_n[5]
+    top10 = top_n[10]
     rows = [
         {
             "position": helpers.parse_position(
@@ -23,6 +26,8 @@ async def get_driver_standings(season: int = Query(default=CURRENT_SEASON, ge=19
             "points": round(float(s.get("points", "0")), 1),
             "wins": s.get("wins", "0"),
             "podiums": podiums.get((s.get("Driver") or {}).get("driverId"), 0),
+            "top_5": top5.get((s.get("Driver") or {}).get("driverId"), 0),
+            "top_10": top10.get((s.get("Driver") or {}).get("driverId"), 0),
             "driver": helpers.driver(s.get("Driver") or {}),
             "team": helpers.team(helpers.constructor(s)),
         }

@@ -293,33 +293,18 @@ async def driver_of_the_day(season):
     return rows
 
 
-async def driver_podiums(season):
-    """Return a dict {driverId: podiums_count} for the given season."""
+async def driver_top_n(season, ns):
+    """Return a dict {driverId: top_n_count} for the given season."""
     races = await season_results(season)
-    podiums = {}
+    result = {n: {} for n in ns}
     for race in races:
-        for result in race.get("Results", []):
+        for r in race.get("Results", []):
             try:
-                pos = int(result.get("position"))
+                pos = int(r.get("position"))
             except (TypeError, ValueError):
                 continue
-            if pos <= 3:
-                driver_id = result["Driver"]["driverId"]
-                podiums[driver_id] = podiums.get(driver_id, 0) + 1
-    return podiums
-
-
-async def driver_top5(season):
-    """Return a dict {driverId: top5_count} for the given season."""
-    races = await season_results(season)
-    top5 = {}
-    for race in races:
-        for result in race.get("Results", []):
-            try:
-                pos = int(result.get("position"))
-            except (TypeError, ValueError):
-                continue
-            if pos <= 5:
-                driver_id = result["Driver"]["driverId"]
-                top5[driver_id] = top5.get(driver_id, 0) + 1
-    return top5
+            driver_id = r["Driver"]["driverId"]
+            for n in ns:
+                if pos <= n:
+                    result[n][driver_id] = result[n].get(driver_id, 0) + 1
+    return result
