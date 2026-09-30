@@ -95,6 +95,19 @@ function router() {
     return;
   }
 
+  if (path === "/standings/hall-of-fame") {
+    currentTabStandings = "Hall of Fame";
+    currentDriverId = null;
+    currentTeamId = null;
+    hideSubTabs();
+    document.getElementById("tabsBar").style.display = "flex";
+    renderTabsBar("standings");
+    setActiveNav("standings");
+    loadStandingsHallOfFame(season);
+    setSeasonSelect(season);
+    return;
+  }
+
   /*
   # -------------------------
   # RESULTS - RACES
@@ -394,6 +407,10 @@ function parseHash(hash) {
 function getApiUrl(path, params) {
   const season = params.get("season");
 
+  if (path === "/standings/hall-of-fame") {
+    return "/api/standings/hall-of-fame";
+  }
+
   if (!season) {
     return null;
   }
@@ -458,7 +475,7 @@ async function renderTabsBar(view = "standings") {
   tabBar.innerHTML = "";
   let tabToDisplay = [];
   if (view === "standings") {
-    tabToDisplay = ["Drivers", "Teams"];
+    tabToDisplay = ["Drivers", "Teams", "Hall of Fame"];
   } else if (view === "results") {
     tabToDisplay = ["Races", "Awards"];
   }
@@ -484,8 +501,10 @@ async function renderTabsBar(view = "standings") {
       if (view === "standings") {
         if (i === "Drivers") {
           window.location.hash = `#/standings/drivers?season=${season}`;
-        } else {
+        } else if (i === "Teams") {
           window.location.hash = `#/standings/teams?season=${season}`;
+        } else {
+          window.location.hash = `#/standings/hall-of-fame`;
         }
       } else {
         if (i === "Races") {
@@ -670,6 +689,54 @@ async function loadStandingsTeams(season) {
             <th>NAT</th>
             <th>PTS</th>
             <th>WINS</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHTML}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+async function loadStandingsHallOfFame() {
+  const data = await fetchApi("/api/standings/hall-of-fame");
+  if (!data) return;
+
+  const season = document.getElementById("seasonSelect")?.value || new Date().getFullYear();
+  const content = document.getElementById("content");
+  content.innerHTML = "";
+
+  const rowsHTML = data.rows
+    .map(
+      (row) => `
+    <tr>
+        <td>${badge(row.position)}</td>
+        <td>${driverAvatar(row.driver, row.driver.givenName, row.driver.familyName)} <a href="#/driver/${escapeHtml(row.driver.id)}?season=${season}">${escapeHtml(row.driver.givenName)} ${escapeHtml(row.driver.familyName)}</a></td>
+        <td><img class="flagimg" src="${escapeHtml(row.driver.flag)}"></td>
+        <td>${escapeHtml(row.championships)}</td>
+        <td>${escapeHtml(row.points)}</td>
+        <td>${escapeHtml(row.wins)}</td>
+        <td>${escapeHtml(row.podiums)}</td>
+        <td>${escapeHtml(row.top5)}</td>
+        <td>${escapeHtml(row.top10)}</td>
+    </tr>`,
+    )
+    .join("");
+  content.innerHTML += `
+    <h2 class="view-title">🏆 Hall of Fame</h2>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th>POS</th>
+            <th>DRIVER</th>
+            <th>NAT</th>
+            <th>TITLES</th>
+            <th>PTS</th>
+            <th>WINS</th>
+            <th>PODIUMS</th>
+            <th>TOP 5</th>
+            <th>TOP 10</th>
           </tr>
         </thead>
         <tbody>
