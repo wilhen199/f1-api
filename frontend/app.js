@@ -602,6 +602,7 @@ async function loadStandingsDrivers(season) {
         </td>
         <td>${escapeHtml(row.points)}</td>
         <td>${escapeHtml(row.wins)}</td>
+        <td>${escapeHtml(row.podiums)}</td>
     </tr>`,
     )
     .join("");
@@ -618,6 +619,7 @@ async function loadStandingsDrivers(season) {
             <th>TEAM</th>
             <th>PTS</th>
             <th>WINS</th>
+            <th>PODIUMS</th>
           </tr>
         </thead>
         <tbody>
