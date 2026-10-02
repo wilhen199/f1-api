@@ -70,7 +70,7 @@ function router() {
   # -------------------------
    */
   if (path === "/standings/drivers") {
-    currentTabStandigs = "Drivers";
+    currentTabStandings = "Drivers";
     currentDriverId = null;
     currentTeamId = null;
     hideSubTabs();
@@ -83,7 +83,7 @@ function router() {
   }
 
   if (path === "/standings/teams") {
-    currentTabStandigs = "Teams";
+    currentTabStandings = "Teams";
     currentDriverId = null;
     currentTeamId = null;
     hideSubTabs();
@@ -256,7 +256,7 @@ function router() {
 /* #- VARIABLES - UTILITIES -# */
 /* ########################### */
 
-let currentTabStandigs = "Drivers";
+let currentTabStandings = "Drivers";
 let currentTabResults = "Races";
 let currentDriverId = null;
 let currentTeamId = null;
@@ -510,7 +510,7 @@ async function renderTabsBar(view = "standings") {
     tab.textContent = i;
     tab.className = "tab";
 
-    if ((view === "standings" && i === currentTabStandigs) || (view === "results" && i === currentTabResults)) {
+    if ((view === "standings" && i === currentTabStandings) || (view === "results" && i === currentTabResults)) {
       tab.classList.add("active");
     }
 
@@ -616,7 +616,7 @@ async function renderHofSubTabs(season) {
     subTab.addEventListener("click", () => {
       let hash;
       if (subTabName === "Drivers") {
-        hash = `#/standings/hall-of-fame?season=${season}`;
+        hash = `#/standings/hall-of-fame?season=${season}&tab=drivers`;
       } else {
         hash = `#/standings/hall-of-fame?season=${season}&tab=teams`;
       }
@@ -797,6 +797,7 @@ async function loadStandingsHallOfFameDrivers() {
         </tbody>
       </table>
     </div>`;
+  renderHofSubTabs(season);
 }
 
 async function loadStandingsHallOfFameTeams() {
@@ -843,6 +844,7 @@ async function loadStandingsHallOfFameTeams() {
         </tbody>
       </table>
     </div>`;
+  renderHofSubTabs(season);
 }
 
 /* ####################### */
