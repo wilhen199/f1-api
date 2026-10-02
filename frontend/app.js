@@ -99,12 +99,19 @@ function router() {
     currentTabStandings = "Hall of Fame";
     currentDriverId = null;
     currentTeamId = null;
-    hideSubTabs();
     document.getElementById("tabsBar").style.display = "flex";
     renderTabsBar("standings");
     setActiveNav("standings");
-    loadStandingsHallOfFame(season);
     setSeasonSelect(season);
+    if (tab === "teams") {
+      currentSubTabHof = "Teams";
+      renderHofSubTabs(season);
+      loadStandingsHallOfFameTeams();
+    } else {
+      currentSubTabHof = "Drivers";
+      renderHofSubTabs(season);
+      loadStandingsHallOfFameDrivers();
+    }
     return;
   }
 
@@ -256,6 +263,7 @@ let currentTeamId = null;
 let currentRound = null;
 let currentSubTabRaces = "Main Race";
 let currentSubTabDriver = "Main Races";
+let currentSubTabHof = "Drivers";
 
 let currentAwardsRows = [];
 let currentAwardsSeason = null;
@@ -408,7 +416,8 @@ function getApiUrl(path, params) {
   const season = params.get("season");
 
   if (path === "/standings/hall-of-fame") {
-    return "/api/standings/hall-of-fame";
+    const tab = params.get("tab");
+    return tab === "teams" ? "/api/standings/hall-of-fame-teams" : "/api/standings/hall-of-fame";
   }
 
   if (!season) {
@@ -464,6 +473,22 @@ async function navigateTo(hash, apiUrl) {
 
 function backLink() {
   return '<a class="back" href="#" onclick="history.back(); return false;">◀️ Back</a>';
+}
+
+function formatSeasons(seasons) {
+  if (!seasons || !seasons.length) return "-";
+  let result = "";
+  for (let i = 0; i < seasons.length; i++) {
+    const year = seasons[i];
+    const yearText = String(year).slice(2);
+    result = result + "'" + yearText;
+
+    if (i < seasons.length - 1) {
+      result = result + ", ";
+    }
+  }
+
+  return result;
 }
 
 /* ######################### */
@@ -568,6 +593,32 @@ async function renderDriverSubTabs(driverId, season) {
         hash = `#/driver/${driverId}?season=${season}&tab=sprints`;
       } else {
         hash = `#/driver/${driverId}?season=${season}&tab=qualifyings`;
+      }
+      window.location.hash = hash;
+    });
+    subTabBar.appendChild(subTab);
+  }
+}
+
+async function renderHofSubTabs(season) {
+  const subTabBar = document.getElementById("subTabsBar");
+  subTabBar.classList.remove("hidden");
+  subTabBar.classList.add("active");
+  subTabBar.innerHTML = "";
+  const subTabToDisplay = ["Drivers", "Teams"];
+  for (const subTabName of subTabToDisplay) {
+    const subTab = document.createElement("div");
+    subTab.textContent = subTabName;
+    subTab.className = "subtab";
+    if (subTabName === currentSubTabHof) {
+      subTab.classList.add("active");
+    }
+    subTab.addEventListener("click", () => {
+      let hash;
+      if (subTabName === "Drivers") {
+        hash = `#/standings/hall-of-fame?season=${season}`;
+      } else {
+        hash = `#/standings/hall-of-fame?season=${season}&tab=teams`;
       }
       window.location.hash = hash;
     });
@@ -698,7 +749,7 @@ async function loadStandingsTeams(season) {
     </div>`;
 }
 
-async function loadStandingsHallOfFame() {
+async function loadStandingsHallOfFameDrivers() {
   const data = await fetchApi("/api/standings/hall-of-fame");
   if (!data) return;
 
@@ -719,11 +770,12 @@ async function loadStandingsHallOfFame() {
         <td>${escapeHtml(row.podiums)}</td>
         <td>${escapeHtml(row.top5)}</td>
         <td>${escapeHtml(row.top10)}</td>
+        <td>${escapeHtml(formatSeasons(row.seasons))}</td>
     </tr>`,
     )
     .join("");
   content.innerHTML += `
-    <h2 class="view-title">🏆 Hall of Fame</h2>
+    <h2 class="view-title">🏆 Drivers Hall of Fame</h2>
     <div class="tablewrap">
       <table>
         <thead>
@@ -737,6 +789,53 @@ async function loadStandingsHallOfFame() {
             <th>PODIUMS</th>
             <th>TOP 5</th>
             <th>TOP 10</th>
+            <th>YEARS</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHTML}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+async function loadStandingsHallOfFameTeams() {
+  const data = await fetchApi("/api/standings/hall-of-fame-teams");
+  if (!data) return;
+
+  const season = document.getElementById("seasonSelect")?.value || new Date().getFullYear();
+  const content = document.getElementById("content");
+  content.innerHTML = "";
+
+  const rowsHTML = data.rows
+    .map(
+      (row) => `
+    <tr>
+        <td>${badge(row.position)}</td>
+        <td>${teamAvatar(row.team)} <a href="#/team/${escapeHtml(row.team.id)}?season=${season}">${escapeHtml(row.team.name)}</a></td>
+        <td><img class="flagimg" src="${escapeHtml(row.team.flag)}"></td>
+        <td>${escapeHtml(row.championships)}</td>
+        <td>${escapeHtml(row.points)}</td>
+        <td>${escapeHtml(row.wins)}</td>
+        <td>${escapeHtml(row.podiums)}</td>
+        <td>${escapeHtml(formatSeasons(row.seasons))}</td>
+    </tr>`,
+    )
+    .join("");
+  content.innerHTML += `
+    <h2 class="view-title">🏆 Constructors Hall of Fame</h2>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th>POS</th>
+            <th>DRIVER</th>
+            <th>NAT</th>
+            <th>TITLES</th>
+            <th>PTS</th>
+            <th>WINS</th>
+            <th>PODIUMS</th>
+            <th>YEARS</th>
           </tr>
         </thead>
         <tbody>
