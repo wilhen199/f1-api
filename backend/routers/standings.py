@@ -8,11 +8,11 @@ from fastapi import APIRouter, Query
 
 from backend import f1_api, helpers
 from backend.config import CURRENT_SEASON
-from backend.data.champions import championship_counts
 
 router = APIRouter(prefix="/api/standings", tags=["standings"])
 
-HOF_FILE = Path(__file__).parent.parent / "data" / "hall_of_fame.json"
+HOF_DRIVERS_FILE = Path(__file__).parent.parent / "data" / "hall_of_fame.json"
+HOF_TEAMS_FILE = Path(__file__).parent.parent / "data" / "hall_of_fame_teams.json"
 
 
 @router.get("/drivers")
@@ -77,20 +77,20 @@ async def get_constructor_standings(
 
 @router.get("/hall-of-fame")
 async def get_hall_of_fame():
-    """Return all world champions with all-time stats, ranked by titles."""
-    if not HOF_FILE.exists():
+    """Return all world driver champions with all-time stats, ranked by titles."""
+    if not HOF_DRIVERS_FILE.exists():
         return {"rows": [], "message": "Run data/build_hof.py first"}
 
-    stats = json.loads(HOF_FILE.read_text(encoding="utf-8"))
-    titles = championship_counts()
+    stats = json.loads(HOF_DRIVERS_FILE.read_text(encoding="utf-8"))
 
     rows = []
-    for driver_id, entry in stats.items():
-        if driver_id not in titles:
+    for entry in stats.values():
+        if "championships" not in entry:
             continue
         rows.append(
             {
-                "championships": titles[driver_id],
+                "championships": entry["championships"],
+                "seasons": entry["seasons"],
                 "points": round(entry["points"], 1),
                 "wins": entry["wins"],
                 "podiums": entry["podiums"],
@@ -100,16 +100,54 @@ async def get_hall_of_fame():
             }
         )
 
-    rows.sort(
-        key=lambda r: (
-            -r["championships"],
-            -r["wins"],
-            -r["podiums"],
-            -r["points"],
+        rows.sort(
+            key=lambda r: (
+                -r["championships"],
+                -r["wins"],
+                -r["podiums"],
+                -r["points"],
+            )
         )
-    )
-    for i, r in enumerate(rows, start=1):
-        r["position"] = i
+        for i, r in enumerate(rows, start=1):
+            r["position"] = i
 
     await helpers.resolve_photos([r["driver"] for r in rows], "driver")
+    return {"rows": rows}
+
+
+@router.get("/hall-of-fame-teams")
+async def get_hall_of_fame_teams():
+    """Return all world constructors champions with all-time stats, ranked by titles."""
+    if not HOF_TEAMS_FILE.exists():
+        return {"rows": [], "message": "Run data/build_hof.py first"}
+
+    stats = json.loads(HOF_TEAMS_FILE.read_text(encoding="utf-8"))
+
+    rows = []
+    for entry in stats.values():
+        if "championships" not in entry:
+            continue
+        rows.append(
+            {
+                "championships": entry["championships"],
+                "seasons": entry["seasons"],
+                "points": round(entry["points"], 1),
+                "wins": entry["wins"],
+                "podiums": entry["podiums"],
+                "team": helpers.team(entry["constructor"]),
+            }
+        )
+
+        rows.sort(
+            key=lambda r: (
+                -r["championships"],
+                -r["wins"],
+                -r["podiums"],
+                -r["points"],
+            )
+        )
+        for i, r in enumerate(rows, start=1):
+            r["position"] = i
+
+    await helpers.resolve_photos([r["team"] for r in rows], "team")
     return {"rows": rows}

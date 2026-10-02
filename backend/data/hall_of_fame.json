@@ -12,7 +12,11 @@
     "wins": 5,
     "podiums": 20,
     "top5": 25,
-    "top10": 27
+    "top10": 27,
+    "championships": 1,
+    "seasons": [
+      1950
+    ]
   },
   "fangio": {
     "driver": {
@@ -27,7 +31,15 @@
     "wins": 24,
     "podiums": 35,
     "top5": 41,
-    "top10": 43
+    "top10": 43,
+    "championships": 5,
+    "seasons": [
+      1951,
+      1954,
+      1955,
+      1956,
+      1957
+    ]
   },
   "parsons": {
     "driver": {
@@ -102,7 +114,12 @@
     "wins": 13,
     "podiums": 17,
     "top5": 20,
-    "top10": 22
+    "top10": 22,
+    "championships": 2,
+    "seasons": [
+      1952,
+      1953
+    ]
   },
   "taruffi": {
     "driver": {
@@ -162,7 +179,11 @@
     "wins": 3,
     "podiums": 18,
     "top5": 27,
-    "top10": 33
+    "top10": 33,
+    "championships": 1,
+    "seasons": [
+      1958
+    ]
   },
   "trintignant": {
     "driver": {
@@ -312,7 +333,13 @@
     "wins": 14,
     "podiums": 31,
     "top5": 49,
-    "top10": 67
+    "top10": 67,
+    "championships": 3,
+    "seasons": [
+      1959,
+      1960,
+      1966
+    ]
   },
   "ward": {
     "driver": {
@@ -387,7 +414,11 @@
     "wins": 3,
     "podiums": 16,
     "top5": 18,
-    "top10": 30
+    "top10": 30,
+    "championships": 1,
+    "seasons": [
+      1961
+    ]
   },
   "trips": {
     "driver": {
@@ -447,7 +478,12 @@
     "wins": 14,
     "podiums": 36,
     "top5": 52,
-    "top10": 86
+    "top10": 86,
+    "championships": 2,
+    "seasons": [
+      1962,
+      1968
+    ]
   },
   "clark": {
     "driver": {
@@ -462,7 +498,12 @@
     "wins": 25,
     "podiums": 32,
     "top5": 39,
-    "top10": 46
+    "top10": 46,
+    "championships": 2,
+    "seasons": [
+      1963,
+      1965
+    ]
   },
   "gurney": {
     "driver": {
@@ -492,7 +533,11 @@
     "wins": 6,
     "podiums": 24,
     "top5": 37,
-    "top10": 50
+    "top10": 50,
+    "championships": 1,
+    "seasons": [
+      1964
+    ]
   },
   "bandini": {
     "driver": {
@@ -522,7 +567,13 @@
     "wins": 27,
     "podiums": 43,
     "top5": 54,
-    "top10": 61
+    "top10": 61,
+    "championships": 3,
+    "seasons": [
+      1969,
+      1971,
+      1973
+    ]
   },
   "ginther": {
     "driver": {
@@ -582,7 +633,11 @@
     "wins": 8,
     "podiums": 33,
     "top5": 52,
-    "top10": 72
+    "top10": 72,
+    "championships": 1,
+    "seasons": [
+      1967
+    ]
   },
   "ickx": {
     "driver": {
@@ -627,7 +682,11 @@
     "wins": 6,
     "podiums": 13,
     "top5": 20,
-    "top10": 22
+    "top10": 22,
+    "championships": 1,
+    "seasons": [
+      1970
+    ]
   },
   "regazzoni": {
     "driver": {
@@ -657,7 +716,12 @@
     "wins": 14,
     "podiums": 35,
     "top5": 49,
-    "top10": 76
+    "top10": 76,
+    "championships": 2,
+    "seasons": [
+      1972,
+      1974
+    ]
   },
   "mario_andretti": {
     "driver": {
@@ -672,7 +736,11 @@
     "wins": 12,
     "podiums": 19,
     "top5": 33,
-    "top10": 55
+    "top10": 55,
+    "championships": 1,
+    "seasons": [
+      1978
+    ]
   },
   "gethin": {
     "driver": {
@@ -777,7 +845,13 @@
     "wins": 25,
     "podiums": 54,
     "top5": 68,
-    "top10": 81
+    "top10": 81,
+    "championships": 3,
+    "seasons": [
+      1975,
+      1977,
+      1984
+    ]
   },
   "scheckter": {
     "driver": {
@@ -792,7 +866,11 @@
     "wins": 10,
     "podiums": 33,
     "top5": 49,
-    "top10": 68
+    "top10": 68,
+    "championships": 1,
+    "seasons": [
+      1979
+    ]
   },
   "pace": {
     "driver": {
@@ -837,7 +915,11 @@
     "wins": 10,
     "podiums": 23,
     "top5": 32,
-    "top10": 45
+    "top10": 45,
+    "championships": 1,
+    "seasons": [
+      1976
+    ]
   },
   "brambilla": {
     "driver": {
@@ -912,7 +994,11 @@
     "wins": 12,
     "podiums": 24,
     "top5": 37,
-    "top10": 54
+    "top10": 54,
+    "championships": 1,
+    "seasons": [
+      1980
+    ]
   },
   "depailler": {
     "driver": {
@@ -987,7 +1073,13 @@
     "wins": 23,
     "podiums": 60,
     "top5": 93,
-    "top10": 115
+    "top10": 115,
+    "championships": 3,
+    "seasons": [
+      1981,
+      1983,
+      1987
+    ]
   },
   "pironi": {
     "driver": {
@@ -1017,7 +1109,14 @@
     "wins": 51,
     "podiums": 106,
     "top5": 121,
-    "top10": 138
+    "top10": 138,
+    "championships": 4,
+    "seasons": [
+      1985,
+      1986,
+      1989,
+      1993
+    ]
   },
   "patrese": {
     "driver": {
@@ -1077,7 +1176,11 @@
     "wins": 5,
     "podiums": 17,
     "top5": 37,
-    "top10": 52
+    "top10": 52,
+    "championships": 1,
+    "seasons": [
+      1982
+    ]
   },
   "alboreto": {
     "driver": {
@@ -1107,7 +1210,13 @@
     "wins": 41,
     "podiums": 80,
     "top5": 93,
-    "top10": 104
+    "top10": 104,
+    "championships": 3,
+    "seasons": [
+      1988,
+      1990,
+      1991
+    ]
   },
   "mansell": {
     "driver": {
@@ -1122,7 +1231,11 @@
     "wins": 31,
     "podiums": 59,
     "top5": 73,
-    "top10": 90
+    "top10": 90,
+    "championships": 1,
+    "seasons": [
+      1992
+    ]
   },
   "berger": {
     "driver": {
@@ -1183,7 +1296,17 @@
     "wins": 91,
     "podiums": 155,
     "top5": 183,
-    "top10": 226
+    "top10": 226,
+    "championships": 7,
+    "seasons": [
+      1994,
+      1995,
+      2000,
+      2001,
+      2002,
+      2003,
+      2004
+    ]
   },
   "damon_hill": {
     "driver": {
@@ -1198,7 +1321,11 @@
     "wins": 22,
     "podiums": 42,
     "top5": 51,
-    "top10": 70
+    "top10": 70,
+    "championships": 1,
+    "seasons": [
+      1996
+    ]
   },
   "alesi": {
     "driver": {
@@ -1260,7 +1387,11 @@
     "wins": 11,
     "podiums": 23,
     "top5": 39,
-    "top10": 86
+    "top10": 86,
+    "championships": 1,
+    "seasons": [
+      1997
+    ]
   },
   "panis": {
     "driver": {
@@ -1305,7 +1436,12 @@
     "wins": 20,
     "podiums": 51,
     "top5": 74,
-    "top10": 96
+    "top10": 96,
+    "championships": 2,
+    "seasons": [
+      1998,
+      1999
+    ]
   },
   "irvine": {
     "driver": {
@@ -1385,7 +1521,11 @@
     "wins": 21,
     "podiums": 103,
     "top5": 156,
-    "top10": 231
+    "top10": 231,
+    "championships": 1,
+    "seasons": [
+      2007
+    ]
   },
   "fisichella": {
     "driver": {
@@ -1418,7 +1558,12 @@
     "wins": 32,
     "podiums": 106,
     "top5": 164,
-    "top10": 283
+    "top10": 283,
+    "championships": 2,
+    "seasons": [
+      2005,
+      2006
+    ]
   },
   "trulli": {
     "driver": {
@@ -1451,7 +1596,11 @@
     "wins": 15,
     "podiums": 50,
     "top5": 101,
-    "top10": 180
+    "top10": 180,
+    "championships": 1,
+    "seasons": [
+      2009
+    ]
   },
   "massa": {
     "driver": {
@@ -1485,7 +1634,17 @@
     "wins": 106,
     "podiums": 207,
     "top5": 277,
-    "top10": 345
+    "top10": 345,
+    "championships": 7,
+    "seasons": [
+      2008,
+      2014,
+      2015,
+      2017,
+      2018,
+      2019,
+      2020
+    ]
   },
   "kubica": {
     "driver": {
@@ -1535,7 +1694,14 @@
     "wins": 53,
     "podiums": 122,
     "top5": 177,
-    "top10": 220
+    "top10": 220,
+    "championships": 4,
+    "seasons": [
+      2010,
+      2011,
+      2012,
+      2013
+    ]
   },
   "webber": {
     "driver": {
@@ -1568,7 +1734,11 @@
     "wins": 23,
     "podiums": 57,
     "top5": 84,
-    "top10": 144
+    "top10": 144,
+    "championships": 1,
+    "seasons": [
+      2016
+    ]
   },
   "maldonado": {
     "driver": {
@@ -1619,7 +1789,14 @@
     "wins": 71,
     "podiums": 134,
     "top5": 173,
-    "top10": 206
+    "top10": 206,
+    "championships": 4,
+    "seasons": [
+      2021,
+      2022,
+      2023,
+      2024
+    ]
   },
   "bottas": {
     "driver": {
@@ -1755,7 +1932,11 @@
     "wins": 13,
     "podiums": 49,
     "top5": 76,
-    "top10": 132
+    "top10": 132,
+    "championships": 1,
+    "seasons": [
+      2025
+    ]
   },
   "piastri": {
     "driver": {
