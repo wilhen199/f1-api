@@ -1,0 +1,1606 @@
+{
+  "alfa": {
+    "constructor": {
+      "constructorId": "alfa",
+      "url": "https://en.wikipedia.org/wiki/Alfa_Romeo_in_Formula_One",
+      "name": "Alfa Romeo",
+      "nationality": "Swiss"
+    },
+    "points": 359.0,
+    "wins": 11,
+    "podiums": 28
+  },
+  "kurtis_kraft": {
+    "constructor": {
+      "constructorId": "kurtis_kraft",
+      "url": "https://en.wikipedia.org/wiki/Kurtis_Kraft",
+      "name": "Kurtis Kraft",
+      "nationality": "American"
+    },
+    "points": 127.0,
+    "wins": 5,
+    "podiums": 19
+  },
+  "ferrari": {
+    "constructor": {
+      "constructorId": "ferrari",
+      "url": "https://en.wikipedia.org/wiki/Scuderia_Ferrari",
+      "name": "Ferrari",
+      "nationality": "Italian"
+    },
+    "points": 11778.27,
+    "wins": 251,
+    "podiums": 857,
+    "championships": 16,
+    "seasons": [
+      1961,
+      1964,
+      1975,
+      1976,
+      1977,
+      1979,
+      1982,
+      1983,
+      1999,
+      2000,
+      2001,
+      2002,
+      2003,
+      2004,
+      2007,
+      2008
+    ]
+  },
+  "kuzma": {
+    "constructor": {
+      "constructorId": "kuzma",
+      "url": "https://en.wikipedia.org/wiki/Eddie_Kuzma",
+      "name": "Kuzma",
+      "nationality": "American"
+    },
+    "points": 21.0,
+    "wins": 1,
+    "podiums": 3
+  },
+  "maserati": {
+    "constructor": {
+      "constructorId": "maserati",
+      "url": "https://en.wikipedia.org/wiki/Maserati",
+      "name": "Maserati",
+      "nationality": "Italian"
+    },
+    "points": 311.14,
+    "wins": 9,
+    "podiums": 40
+  },
+  "mercedes": {
+    "constructor": {
+      "constructorId": "mercedes",
+      "url": "https://en.wikipedia.org/wiki/Mercedes-Benz_in_Formula_One",
+      "name": "Mercedes",
+      "nationality": "German"
+    },
+    "points": 8629.64,
+    "wins": 142,
+    "podiums": 330,
+    "championships": 8,
+    "seasons": [
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021
+    ]
+  },
+  "watson": {
+    "constructor": {
+      "constructorId": "watson",
+      "url": "https://en.wikipedia.org/wiki/A._J._Watson",
+      "name": "Watson",
+      "nationality": "American"
+    },
+    "points": 36.0,
+    "wins": 3,
+    "podiums": 5
+  },
+  "epperly": {
+    "constructor": {
+      "constructorId": "epperly",
+      "url": "https://en.wikipedia.org/wiki/Epperly",
+      "name": "Epperly",
+      "nationality": "American"
+    },
+    "points": 44.0,
+    "wins": 2,
+    "podiums": 5
+  },
+  "vanwall": {
+    "constructor": {
+      "constructorId": "vanwall",
+      "url": "https://en.wikipedia.org/wiki/Vanwall",
+      "name": "Vanwall",
+      "nationality": "British"
+    },
+    "points": 107.0,
+    "wins": 10,
+    "podiums": 14,
+    "championships": 1,
+    "seasons": [
+      1958
+    ]
+  },
+  "cooper": {
+    "constructor": {
+      "constructorId": "cooper",
+      "url": "https://en.wikipedia.org/wiki/Cooper_Car_Company",
+      "name": "Cooper",
+      "nationality": "British"
+    },
+    "points": 52.0,
+    "wins": 2,
+    "podiums": 6
+  },
+  "cooper-climax": {
+    "constructor": {
+      "constructorId": "cooper-climax",
+      "url": "https://en.wikipedia.org/wiki/Cooper_Car_Company",
+      "name": "Cooper-Climax",
+      "nationality": "British"
+    },
+    "points": 335.5,
+    "wins": 12,
+    "podiums": 44,
+    "championships": 2,
+    "seasons": [
+      1959,
+      1960
+    ]
+  },
+  "brm": {
+    "constructor": {
+      "constructorId": "brm",
+      "url": "https://en.wikipedia.org/wiki/British_Racing_Motors",
+      "name": "BRM",
+      "nationality": "British"
+    },
+    "points": 536.5,
+    "wins": 17,
+    "podiums": 61,
+    "championships": 1,
+    "seasons": [
+      1962
+    ]
+  },
+  "team_lotus": {
+    "constructor": {
+      "constructorId": "team_lotus",
+      "url": "https://en.wikipedia.org/wiki/Team_Lotus",
+      "name": "Team Lotus",
+      "nationality": "British"
+    },
+    "points": 995.0,
+    "wins": 45,
+    "podiums": 114,
+    "championships": 4,
+    "seasons": [
+      1970,
+      1972,
+      1973,
+      1978
+    ]
+  },
+  "lotus-climax": {
+    "constructor": {
+      "constructorId": "lotus-climax",
+      "url": "https://en.wikipedia.org/wiki/Team_Lotus",
+      "name": "Lotus-Climax",
+      "nationality": "British"
+    },
+    "points": 281.0,
+    "wins": 22,
+    "podiums": 31,
+    "championships": 2,
+    "seasons": [
+      1963,
+      1965
+    ]
+  },
+  "porsche": {
+    "constructor": {
+      "constructorId": "porsche",
+      "url": "https://en.wikipedia.org/wiki/Porsche_in_motorsport",
+      "name": "Porsche",
+      "nationality": "German"
+    },
+    "points": 50.0,
+    "wins": 1,
+    "podiums": 5
+  },
+  "brabham-climax": {
+    "constructor": {
+      "constructorId": "brabham-climax",
+      "url": "https://en.wikipedia.org/wiki/Brabham",
+      "name": "Brabham-Climax",
+      "nationality": "British"
+    },
+    "points": 78.0,
+    "wins": 2,
+    "podiums": 11
+  },
+  "honda": {
+    "constructor": {
+      "constructorId": "honda",
+      "url": "https://en.wikipedia.org/wiki/Honda_in_Formula_One",
+      "name": "Honda",
+      "nationality": "Japanese"
+    },
+    "points": 156.0,
+    "wins": 3,
+    "podiums": 9
+  },
+  "brabham-repco": {
+    "constructor": {
+      "constructorId": "brabham-repco",
+      "url": "https://en.wikipedia.org/wiki/Brabham",
+      "name": "Brabham-Repco",
+      "nationality": "British"
+    },
+    "points": 175.0,
+    "wins": 8,
+    "podiums": 25,
+    "championships": 2,
+    "seasons": [
+      1966,
+      1967
+    ]
+  },
+  "lotus-brm": {
+    "constructor": {
+      "constructorId": "lotus-brm",
+      "url": "https://en.wikipedia.org/wiki/Team_Lotus",
+      "name": "Lotus-BRM",
+      "nationality": "British"
+    },
+    "points": 29.0,
+    "wins": 1,
+    "podiums": 2
+  },
+  "cooper-maserati": {
+    "constructor": {
+      "constructorId": "cooper-maserati",
+      "url": "https://en.wikipedia.org/wiki/Cooper_Car_Company",
+      "name": "Cooper-Maserati",
+      "nationality": "British"
+    },
+    "points": 83.0,
+    "wins": 2,
+    "podiums": 7
+  },
+  "lotus-ford": {
+    "constructor": {
+      "constructorId": "lotus-ford",
+      "url": "https://en.wikipedia.org/wiki/Team_Lotus",
+      "name": "Lotus-Ford",
+      "nationality": "British"
+    },
+    "points": 209.0,
+    "wins": 11,
+    "podiums": 25,
+    "championships": 1,
+    "seasons": [
+      1968
+    ]
+  },
+  "eagle-weslake": {
+    "constructor": {
+      "constructorId": "eagle-weslake",
+      "url": "https://en.wikipedia.org/wiki/All_American_Racers",
+      "name": "Eagle-Weslake",
+      "nationality": "American"
+    },
+    "points": 13.0,
+    "wins": 1,
+    "podiums": 2
+  },
+  "mclaren-ford": {
+    "constructor": {
+      "constructorId": "mclaren-ford",
+      "url": "https://en.wikipedia.org/wiki/McLaren",
+      "name": "McLaren-Ford",
+      "nationality": "British"
+    },
+    "points": 143.0,
+    "wins": 4,
+    "podiums": 16
+  },
+  "matra-ford": {
+    "constructor": {
+      "constructorId": "matra-ford",
+      "url": "https://en.wikipedia.org/wiki/Matra",
+      "name": "Matra-Ford",
+      "nationality": "French"
+    },
+    "points": 130.0,
+    "wins": 9,
+    "podiums": 15,
+    "championships": 1,
+    "seasons": [
+      1969
+    ]
+  },
+  "brabham-ford": {
+    "constructor": {
+      "constructorId": "brabham-ford",
+      "url": "https://en.wikipedia.org/wiki/Brabham",
+      "name": "Brabham-Ford",
+      "nationality": "British"
+    },
+    "points": 68.0,
+    "wins": 2,
+    "podiums": 9
+  },
+  "brabham": {
+    "constructor": {
+      "constructorId": "brabham",
+      "url": "https://en.wikipedia.org/wiki/Brabham",
+      "name": "Brabham",
+      "nationality": "British"
+    },
+    "points": 631.0,
+    "wins": 23,
+    "podiums": 78
+  },
+  "march": {
+    "constructor": {
+      "constructorId": "march",
+      "url": "https://en.wikipedia.org/wiki/March_Engineering",
+      "name": "March",
+      "nationality": "British"
+    },
+    "points": 148.0,
+    "wins": 3,
+    "podiums": 16
+  },
+  "tyrrell": {
+    "constructor": {
+      "constructorId": "tyrrell",
+      "url": "https://en.wikipedia.org/wiki/Tyrrell_Racing",
+      "name": "Tyrrell",
+      "nationality": "British"
+    },
+    "points": 711.0,
+    "wins": 23,
+    "podiums": 77,
+    "championships": 1,
+    "seasons": [
+      1971
+    ]
+  },
+  "mclaren": {
+    "constructor": {
+      "constructorId": "mclaren",
+      "url": "https://en.wikipedia.org/wiki/McLaren",
+      "name": "McLaren",
+      "nationality": "British"
+    },
+    "points": 8050.5,
+    "wins": 201,
+    "podiums": 549,
+    "championships": 10,
+    "seasons": [
+      1974,
+      1984,
+      1985,
+      1988,
+      1989,
+      1990,
+      1991,
+      1998,
+      2024,
+      2025
+    ]
+  },
+  "hesketh": {
+    "constructor": {
+      "constructorId": "hesketh",
+      "url": "https://en.wikipedia.org/wiki/Hesketh_Racing",
+      "name": "Hesketh",
+      "nationality": "British"
+    },
+    "points": 48.0,
+    "wins": 1,
+    "podiums": 7
+  },
+  "penske": {
+    "constructor": {
+      "constructorId": "penske",
+      "url": "https://en.wikipedia.org/wiki/Team_Penske",
+      "name": "Penske",
+      "nationality": "American"
+    },
+    "points": 23.0,
+    "wins": 1,
+    "podiums": 3
+  },
+  "wolf": {
+    "constructor": {
+      "constructorId": "wolf",
+      "url": "https://en.wikipedia.org/wiki/Walter_Wolf_Racing",
+      "name": "Wolf",
+      "nationality": "Canadian"
+    },
+    "points": 79.0,
+    "wins": 3,
+    "podiums": 13
+  },
+  "ligier": {
+    "constructor": {
+      "constructorId": "ligier",
+      "url": "https://en.wikipedia.org/wiki/Ligier",
+      "name": "Ligier",
+      "nationality": "French"
+    },
+    "points": 388.0,
+    "wins": 9,
+    "podiums": 50
+  },
+  "shadow": {
+    "constructor": {
+      "constructorId": "shadow",
+      "url": "https://en.wikipedia.org/wiki/Shadow_Racing_Cars",
+      "name": "Shadow",
+      "nationality": "British"
+    },
+    "points": 59.0,
+    "wins": 1,
+    "podiums": 6
+  },
+  "renault": {
+    "constructor": {
+      "constructorId": "renault",
+      "url": "https://en.wikipedia.org/wiki/Renault_in_Formula_One",
+      "name": "Renault",
+      "nationality": "French"
+    },
+    "points": 1777.0,
+    "wins": 35,
+    "podiums": 103,
+    "championships": 2,
+    "seasons": [
+      2005,
+      2006
+    ]
+  },
+  "williams": {
+    "constructor": {
+      "constructorId": "williams",
+      "url": "https://en.wikipedia.org/wiki/Williams_Racing",
+      "name": "Williams",
+      "nationality": "British"
+    },
+    "points": 3777.0,
+    "wins": 114,
+    "podiums": 316,
+    "championships": 9,
+    "seasons": [
+      1980,
+      1981,
+      1986,
+      1987,
+      1992,
+      1993,
+      1994,
+      1996,
+      1997
+    ]
+  },
+  "benetton": {
+    "constructor": {
+      "constructorId": "benetton",
+      "url": "https://en.wikipedia.org/wiki/Benetton_Formula",
+      "name": "Benetton",
+      "nationality": "Italian"
+    },
+    "points": 861.5,
+    "wins": 27,
+    "podiums": 102,
+    "championships": 1,
+    "seasons": [
+      1995
+    ]
+  },
+  "jordan": {
+    "constructor": {
+      "constructorId": "jordan",
+      "url": "https://en.wikipedia.org/wiki/Jordan_Grand_Prix",
+      "name": "Jordan",
+      "nationality": "Irish"
+    },
+    "points": 291.0,
+    "wins": 4,
+    "podiums": 19
+  },
+  "stewart": {
+    "constructor": {
+      "constructorId": "stewart",
+      "url": "https://en.wikipedia.org/wiki/Stewart_Grand_Prix",
+      "name": "Stewart",
+      "nationality": "British"
+    },
+    "points": 47.0,
+    "wins": 1,
+    "podiums": 5
+  },
+  "bmw_sauber": {
+    "constructor": {
+      "constructorId": "bmw_sauber",
+      "url": "https://en.wikipedia.org/wiki/BMW_in_Formula_One",
+      "name": "BMW Sauber",
+      "nationality": "German"
+    },
+    "points": 308.0,
+    "wins": 1,
+    "podiums": 17
+  },
+  "toro_rosso": {
+    "constructor": {
+      "constructorId": "toro_rosso",
+      "url": "https://en.wikipedia.org/wiki/Scuderia_Toro_Rosso",
+      "name": "Toro Rosso",
+      "nationality": "Italian"
+    },
+    "points": 500.0,
+    "wins": 1,
+    "podiums": 3
+  },
+  "brawn": {
+    "constructor": {
+      "constructorId": "brawn",
+      "url": "https://en.wikipedia.org/wiki/Brawn_GP",
+      "name": "Brawn",
+      "nationality": "British"
+    },
+    "points": 172.0,
+    "wins": 8,
+    "podiums": 15,
+    "championships": 1,
+    "seasons": [
+      2009
+    ]
+  },
+  "red_bull": {
+    "constructor": {
+      "constructorId": "red_bull",
+      "url": "https://en.wikipedia.org/wiki/Red_Bull_Racing",
+      "name": "Red Bull",
+      "nationality": "Austrian"
+    },
+    "points": 8334.0,
+    "wins": 130,
+    "podiums": 306,
+    "championships": 6,
+    "seasons": [
+      2010,
+      2011,
+      2012,
+      2013,
+      2022,
+      2023
+    ]
+  },
+  "lotus_f1": {
+    "constructor": {
+      "constructorId": "lotus_f1",
+      "url": "https://en.wikipedia.org/wiki/Lotus_F1",
+      "name": "Lotus F1",
+      "nationality": "British"
+    },
+    "points": 706.0,
+    "wins": 2,
+    "podiums": 25
+  },
+  "alphatauri": {
+    "constructor": {
+      "constructorId": "alphatauri",
+      "url": "https://en.wikipedia.org/wiki/Scuderia_AlphaTauri",
+      "name": "AlphaTauri",
+      "nationality": "Italian"
+    },
+    "points": 306.0,
+    "wins": 1,
+    "podiums": 2
+  },
+  "racing_point": {
+    "constructor": {
+      "constructorId": "racing_point",
+      "url": "https://en.wikipedia.org/wiki/Racing_Point_F1_Team",
+      "name": "Racing Point",
+      "nationality": "British"
+    },
+    "points": 283.0,
+    "wins": 1,
+    "podiums": 4
+  },
+  "alpine": {
+    "constructor": {
+      "constructorId": "alpine",
+      "url": "https://en.wikipedia.org/wiki/Alpine_F1_Team",
+      "name": "Alpine F1 Team",
+      "nationality": "French"
+    },
+    "points": 584.0,
+    "wins": 1,
+    "podiums": 6
+  },
+  "deidt": {
+    "constructor": {
+      "constructorId": "deidt",
+      "url": "https://en.wikipedia.org/wiki/Emil_Diedt",
+      "name": "Deidt",
+      "nationality": "American"
+    },
+    "points": 10.0,
+    "wins": 0,
+    "podiums": 2
+  },
+  "lancia": {
+    "constructor": {
+      "constructorId": "lancia",
+      "url": "https://en.wikipedia.org/wiki/Scuderia_Lancia",
+      "name": "Lancia",
+      "nationality": "Italian"
+    },
+    "points": 8.0,
+    "wins": 0,
+    "podiums": 1
+  },
+  "lola": {
+    "constructor": {
+      "constructorId": "lola",
+      "url": "https://en.wikipedia.org/wiki/MasterCard_Lola",
+      "name": "Lola",
+      "nationality": "British"
+    },
+    "points": 27.0,
+    "wins": 0,
+    "podiums": 2
+  },
+  "matra": {
+    "constructor": {
+      "constructorId": "matra",
+      "url": "https://en.wikipedia.org/wiki/Matra",
+      "name": "Matra",
+      "nationality": "French"
+    },
+    "points": 54.0,
+    "wins": 0,
+    "podiums": 6
+  },
+  "march-ford": {
+    "constructor": {
+      "constructorId": "march-ford",
+      "url": "https://en.wikipedia.org/wiki/March_Engineering",
+      "name": "March-Ford",
+      "nationality": "British"
+    },
+    "points": 37.0,
+    "wins": 0,
+    "podiums": 5
+  },
+  "surtees": {
+    "constructor": {
+      "constructorId": "surtees",
+      "url": "https://en.wikipedia.org/wiki/Surtees",
+      "name": "Surtees",
+      "nationality": "British"
+    },
+    "points": 54.0,
+    "wins": 0,
+    "podiums": 2
+  },
+  "fittipaldi": {
+    "constructor": {
+      "constructorId": "fittipaldi",
+      "url": "https://en.wikipedia.org/wiki/Fittipaldi_Automotive",
+      "name": "Fittipaldi",
+      "nationality": "Brazilian"
+    },
+    "points": 44.0,
+    "wins": 0,
+    "podiums": 3
+  },
+  "arrows": {
+    "constructor": {
+      "constructorId": "arrows",
+      "url": "https://en.wikipedia.org/wiki/Arrows_Grand_Prix_International",
+      "name": "Arrows",
+      "nationality": "British"
+    },
+    "points": 142.0,
+    "wins": 0,
+    "podiums": 8
+  },
+  "toleman": {
+    "constructor": {
+      "constructorId": "toleman",
+      "url": "https://en.wikipedia.org/wiki/Toleman",
+      "name": "Toleman",
+      "nationality": "British"
+    },
+    "points": 26.0,
+    "wins": 0,
+    "podiums": 3
+  },
+  "leyton": {
+    "constructor": {
+      "constructorId": "leyton",
+      "url": "https://en.wikipedia.org/wiki/Leyton_House_Racing",
+      "name": "Leyton House",
+      "nationality": "British"
+    },
+    "points": 8.0,
+    "wins": 0,
+    "podiums": 1
+  },
+  "prost": {
+    "constructor": {
+      "constructorId": "prost",
+      "url": "https://en.wikipedia.org/wiki/Prost_Grand_Prix",
+      "name": "Prost",
+      "nationality": "French"
+    },
+    "points": 35.0,
+    "wins": 0,
+    "podiums": 3
+  },
+  "bar": {
+    "constructor": {
+      "constructorId": "bar",
+      "url": "https://en.wikipedia.org/wiki/British_American_Racing",
+      "name": "BAR",
+      "nationality": "British"
+    },
+    "points": 227.0,
+    "wins": 0,
+    "podiums": 15
+  },
+  "toyota": {
+    "constructor": {
+      "constructorId": "toyota",
+      "url": "https://en.wikipedia.org/wiki/Toyota_Racing",
+      "name": "Toyota",
+      "nationality": "Japanese"
+    },
+    "points": 278.5,
+    "wins": 0,
+    "podiums": 13
+  },
+  "force_india": {
+    "constructor": {
+      "constructorId": "force_india",
+      "url": "https://en.wikipedia.org/wiki/Racing_Point_Force_India",
+      "name": "Force India",
+      "nationality": "Indian"
+    },
+    "points": 1098.0,
+    "wins": 0,
+    "podiums": 6
+  },
+  "sauber": {
+    "constructor": {
+      "constructorId": "sauber",
+      "url": "https://en.wikipedia.org/wiki/Sauber_Motorsport",
+      "name": "Sauber",
+      "nationality": "Swiss"
+    },
+    "points": 631.0,
+    "wins": 0,
+    "podiums": 11
+  },
+  "aston_martin": {
+    "constructor": {
+      "constructorId": "aston_martin",
+      "url": "https://en.wikipedia.org/wiki/Aston_Martin_in_Formula_One",
+      "name": "Aston Martin",
+      "nationality": "British"
+    },
+    "points": 575.0,
+    "wins": 0,
+    "podiums": 9
+  },
+  "lago": {
+    "constructor": {
+      "constructorId": "lago",
+      "url": "https://en.wikipedia.org/wiki/Talbot-Lago",
+      "name": "Talbot-Lago",
+      "nationality": "French"
+    },
+    "points": 25.0,
+    "wins": 0,
+    "podiums": 2
+  },
+  "gordini": {
+    "constructor": {
+      "constructorId": "gordini",
+      "url": "https://en.wikipedia.org/wiki/Gordini",
+      "name": "Gordini",
+      "nationality": "French"
+    },
+    "points": 25.0,
+    "wins": 0,
+    "podiums": 2
+  },
+  "phillips": {
+    "constructor": {
+      "constructorId": "phillips",
+      "url": "https://en.wikipedia.org/wiki/Phillips_(constructor)",
+      "name": "Phillips",
+      "nationality": "American"
+    },
+    "points": 7.0,
+    "wins": 0,
+    "podiums": 1
+  },
+  "connaught": {
+    "constructor": {
+      "constructorId": "connaught",
+      "url": "https://en.wikipedia.org/wiki/Connaught_Engineering",
+      "name": "Connaught",
+      "nationality": "British"
+    },
+    "points": 17.0,
+    "wins": 0,
+    "podiums": 1
+  },
+  "lesovsky": {
+    "constructor": {
+      "constructorId": "lesovsky",
+      "url": "https://en.wikipedia.org/wiki/Lesovsky",
+      "name": "Lesovsky",
+      "nationality": "American"
+    },
+    "points": 10.0,
+    "wins": 0,
+    "podiums": 1
+  },
+  "brabham-brm": {
+    "constructor": {
+      "constructorId": "brabham-brm",
+      "url": "https://en.wikipedia.org/wiki/Brabham",
+      "name": "Brabham-BRM",
+      "nationality": "British"
+    },
+    "points": 13.0,
+    "wins": 0,
+    "podiums": 1
+  },
+  "cooper-brm": {
+    "constructor": {
+      "constructorId": "cooper-brm",
+      "url": "https://en.wikipedia.org/wiki/Cooper_Car_Company",
+      "name": "Cooper-BRM",
+      "nationality": "British"
+    },
+    "points": 20.0,
+    "wins": 0,
+    "podiums": 2
+  },
+  "shadow-ford": {
+    "constructor": {
+      "constructorId": "shadow-ford",
+      "url": "https://en.wikipedia.org/wiki/Shadow_Racing_Cars",
+      "name": "Shadow-Ford",
+      "nationality": "British"
+    },
+    "points": 9.5,
+    "wins": 0,
+    "podiums": 1
+  },
+  "dallara": {
+    "constructor": {
+      "constructorId": "dallara",
+      "url": "https://en.wikipedia.org/wiki/Dallara",
+      "name": "Dallara",
+      "nationality": "Italian"
+    },
+    "points": 15.0,
+    "wins": 0,
+    "podiums": 2
+  },
+  "onyx": {
+    "constructor": {
+      "constructorId": "onyx",
+      "url": "https://en.wikipedia.org/wiki/Onyx_Grand_Prix",
+      "name": "Onyx",
+      "nationality": "British"
+    },
+    "points": 6.0,
+    "wins": 0,
+    "podiums": 1
+  },
+  "larrousse": {
+    "constructor": {
+      "constructorId": "larrousse",
+      "url": "https://en.wikipedia.org/wiki/Larrousse",
+      "name": "Larrousse",
+      "nationality": "French"
+    },
+    "points": 22.0,
+    "wins": 0,
+    "podiums": 1
+  },
+  "footwork": {
+    "constructor": {
+      "constructorId": "footwork",
+      "url": "https://en.wikipedia.org/wiki/Footwork_Arrows",
+      "name": "Footwork",
+      "nationality": "British"
+    },
+    "points": 25.0,
+    "wins": 0,
+    "podiums": 1
+  },
+  "jaguar": {
+    "constructor": {
+      "constructorId": "jaguar",
+      "url": "https://en.wikipedia.org/wiki/Jaguar_Racing",
+      "name": "Jaguar",
+      "nationality": "British"
+    },
+    "points": 49.0,
+    "wins": 0,
+    "podiums": 2
+  },
+  "rb": {
+    "constructor": {
+      "constructorId": "rb",
+      "url": "https://en.wikipedia.org/wiki/Racing_Bulls",
+      "name": "RB F1 Team",
+      "nationality": "Italian"
+    },
+    "points": 207.0,
+    "wins": 0,
+    "podiums": 1
+  },
+  "simca": {
+    "constructor": {
+      "constructorId": "simca",
+      "url": "https://en.wikipedia.org/wiki/Simca",
+      "name": "Simca",
+      "nationality": "French"
+    },
+    "points": 5.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "sherman": {
+    "constructor": {
+      "constructorId": "sherman",
+      "url": "https://en.wikipedia.org/wiki/Roy_Sherman",
+      "name": "Sherman",
+      "nationality": "American"
+    },
+    "points": 3.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "frazer_nash": {
+    "constructor": {
+      "constructorId": "frazer_nash",
+      "url": "https://en.wikipedia.org/wiki/Frazer_Nash",
+      "name": "Frazer Nash",
+      "nationality": "British"
+    },
+    "points": 3.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "cooper-castellotti": {
+    "constructor": {
+      "constructorId": "cooper-castellotti",
+      "url": "https://en.wikipedia.org/wiki/Cooper_Car_Company",
+      "name": "Cooper-Castellotti",
+      "nationality": "British"
+    },
+    "points": 3.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "brp": {
+    "constructor": {
+      "constructorId": "brp",
+      "url": "https://en.wikipedia.org/wiki/British_Racing_Partnership",
+      "name": "BRP",
+      "nationality": "British"
+    },
+    "points": 11.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "mclaren-brm": {
+    "constructor": {
+      "constructorId": "mclaren-brm",
+      "url": "https://en.wikipedia.org/wiki/McLaren",
+      "name": "McLaren-BRM",
+      "nationality": "British"
+    },
+    "points": 6.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "iso_marlboro": {
+    "constructor": {
+      "constructorId": "iso_marlboro",
+      "url": "https://en.wikipedia.org/wiki/Frank_Williams_Racing_Cars",
+      "name": "Iso Marlboro",
+      "nationality": "British"
+    },
+    "points": 6.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "parnelli": {
+    "constructor": {
+      "constructorId": "parnelli",
+      "url": "https://en.wikipedia.org/wiki/Vel's_Parnelli_Jones_Racing",
+      "name": "Parnelli",
+      "nationality": "American"
+    },
+    "points": 6.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "brabham-alfa_romeo": {
+    "constructor": {
+      "constructorId": "brabham-alfa_romeo",
+      "url": "https://en.wikipedia.org/wiki/Brabham",
+      "name": "Brabham-Alfa Romeo",
+      "nationality": "British"
+    },
+    "points": 18.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "ensign": {
+    "constructor": {
+      "constructorId": "ensign",
+      "url": "https://en.wikipedia.org/wiki/Ensign_Racing",
+      "name": "Ensign",
+      "nationality": "British"
+    },
+    "points": 19.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "osella": {
+    "constructor": {
+      "constructorId": "osella",
+      "url": "https://en.wikipedia.org/wiki/Osella",
+      "name": "Osella",
+      "nationality": "Italian"
+    },
+    "points": 5.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "rial": {
+    "constructor": {
+      "constructorId": "rial",
+      "url": "https://en.wikipedia.org/wiki/Rial_Racing",
+      "name": "Rial",
+      "nationality": "German"
+    },
+    "points": 6.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "minardi": {
+    "constructor": {
+      "constructorId": "minardi",
+      "url": "https://en.wikipedia.org/wiki/Minardi",
+      "name": "Minardi",
+      "nationality": "Italian"
+    },
+    "points": 38.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "haas": {
+    "constructor": {
+      "constructorId": "haas",
+      "url": "https://en.wikipedia.org/wiki/Haas_F1_Team",
+      "name": "Haas F1 Team",
+      "nationality": "American"
+    },
+    "points": 392.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "schroeder": {
+    "constructor": {
+      "constructorId": "schroeder",
+      "url": "https://en.wikipedia.org/wiki/Gordon_Schroeder",
+      "name": "Schroeder",
+      "nationality": "American"
+    },
+    "points": 2.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "hwm": {
+    "constructor": {
+      "constructorId": "hwm",
+      "url": "https://en.wikipedia.org/wiki/Hersham_and_Walton_Motors",
+      "name": "HWM",
+      "nationality": "British"
+    },
+    "points": 2.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "eagle-climax": {
+    "constructor": {
+      "constructorId": "eagle-climax",
+      "url": "https://en.wikipedia.org/wiki/All_American_Racers",
+      "name": "Eagle-Climax",
+      "nationality": "American"
+    },
+    "points": 4.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "hill": {
+    "constructor": {
+      "constructorId": "hill",
+      "url": "https://en.wikipedia.org/wiki/Embassy_Hill",
+      "name": "Embassy Hill",
+      "nationality": "British"
+    },
+    "points": 3.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "ats": {
+    "constructor": {
+      "constructorId": "ats",
+      "url": "https://en.wikipedia.org/wiki/ATS_Wheels",
+      "name": "ATS",
+      "nationality": "Italian"
+    },
+    "points": 7.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "zakspeed": {
+    "constructor": {
+      "constructorId": "zakspeed",
+      "url": "https://en.wikipedia.org/wiki/Zakspeed",
+      "name": "Zakspeed",
+      "nationality": "German"
+    },
+    "points": 2.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "era": {
+    "constructor": {
+      "constructorId": "era",
+      "url": "https://en.wikipedia.org/wiki/English_Racing_Automobiles",
+      "name": "ERA",
+      "nationality": "British"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "moore": {
+    "constructor": {
+      "constructorId": "moore",
+      "url": "https://en.wikipedia.org/wiki/Lou_Moore",
+      "name": "Moore",
+      "nationality": "American"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "trevis": {
+    "constructor": {
+      "constructorId": "trevis",
+      "url": "https://en.wikipedia.org/wiki/Trevis",
+      "name": "Trevis",
+      "nationality": "American"
+    },
+    "points": 1.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "mclaren-seren": {
+    "constructor": {
+      "constructorId": "mclaren-seren",
+      "url": "https://en.wikipedia.org/wiki/McLaren",
+      "name": "McLaren-Serenissima",
+      "nationality": "British"
+    },
+    "points": 1.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "tecno": {
+    "constructor": {
+      "constructorId": "tecno",
+      "url": "https://en.wikipedia.org/wiki/Tecno",
+      "name": "Tecno",
+      "nationality": "Italian"
+    },
+    "points": 1.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "theodore": {
+    "constructor": {
+      "constructorId": "theodore",
+      "url": "https://en.wikipedia.org/wiki/Theodore_Racing",
+      "name": "Theodore",
+      "nationality": "Hong Kong"
+    },
+    "points": 2.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "ags": {
+    "constructor": {
+      "constructorId": "ags",
+      "url": "https://en.wikipedia.org/wiki/Automobiles_Gonfaronnaises_Sportives",
+      "name": "AGS",
+      "nationality": "French"
+    },
+    "points": 2.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "super_aguri": {
+    "constructor": {
+      "constructorId": "super_aguri",
+      "url": "https://en.wikipedia.org/wiki/Super_Aguri_F1",
+      "name": "Super Aguri",
+      "nationality": "Japanese"
+    },
+    "points": 4.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "veritas": {
+    "constructor": {
+      "constructorId": "veritas",
+      "url": "https://en.wikipedia.org/wiki/Veritas_(automobile)",
+      "name": "Veritas",
+      "nationality": "German"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "stebro": {
+    "constructor": {
+      "constructorId": "stebro",
+      "url": "https://en.wikipedia.org/wiki/Stebro",
+      "name": "Stebro",
+      "nationality": "Canadian"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "spirit": {
+    "constructor": {
+      "constructorId": "spirit",
+      "url": "https://en.wikipedia.org/wiki/Spirit_Racing",
+      "name": "Spirit",
+      "nationality": "British"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "lambo": {
+    "constructor": {
+      "constructorId": "lambo",
+      "url": "https://en.wikipedia.org/wiki/Modena_(racing_team)",
+      "name": "Lambo",
+      "nationality": "Italian"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "forti": {
+    "constructor": {
+      "constructorId": "forti",
+      "url": "https://en.wikipedia.org/wiki/Forti",
+      "name": "Forti",
+      "nationality": "Italian"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "stevens": {
+    "constructor": {
+      "constructorId": "stevens",
+      "url": "https://en.wikipedia.org/wiki/Myron_Stevens",
+      "name": "Stevens",
+      "nationality": "American"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "meskowski": {
+    "constructor": {
+      "constructorId": "meskowski",
+      "url": "https://en.wikipedia.org/wiki/Meskowski",
+      "name": "Meskowski",
+      "nationality": "American"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "scirocco": {
+    "constructor": {
+      "constructorId": "scirocco",
+      "url": "https://en.wikipedia.org/wiki/Scirocco-Powell",
+      "name": "Scirocco",
+      "nationality": "British"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "mclaren-alfa_romeo": {
+    "constructor": {
+      "constructorId": "mclaren-alfa_romeo",
+      "url": "https://en.wikipedia.org/wiki/McLaren",
+      "name": "McLaren-Alfa Romeo",
+      "nationality": "British"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "lotus-pw": {
+    "constructor": {
+      "constructorId": "lotus-pw",
+      "url": "https://en.wikipedia.org/wiki/Team_Lotus",
+      "name": "Lotus-Pratt &amp; Whitney",
+      "nationality": "British"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "boro": {
+    "constructor": {
+      "constructorId": "boro",
+      "url": "https://en.wikipedia.org/wiki/Boro_(Formula_One)",
+      "name": "Boro",
+      "nationality": "Dutch"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "ram": {
+    "constructor": {
+      "constructorId": "ram",
+      "url": "https://en.wikipedia.org/wiki/RAM_Racing",
+      "name": "RAM",
+      "nationality": "British"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "coloni": {
+    "constructor": {
+      "constructorId": "coloni",
+      "url": "https://en.wikipedia.org/wiki/Scuderia_Coloni",
+      "name": "Coloni",
+      "nationality": "Italian"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "pacific": {
+    "constructor": {
+      "constructorId": "pacific",
+      "url": "https://en.wikipedia.org/wiki/Pacific_Racing",
+      "name": "Pacific",
+      "nationality": "British"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "spyker": {
+    "constructor": {
+      "constructorId": "spyker",
+      "url": "https://en.wikipedia.org/wiki/Spyker_F1",
+      "name": "Spyker",
+      "nationality": "Dutch"
+    },
+    "points": 1.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "audi": {
+    "constructor": {
+      "constructorId": "audi",
+      "url": "https://en.wikipedia.org/wiki/Audi_in_Formula_One",
+      "name": "Audi",
+      "nationality": "German"
+    },
+    "points": 17.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "nichels": {
+    "constructor": {
+      "constructorId": "nichels",
+      "url": "https://en.wikipedia.org/wiki/Nichels",
+      "name": "Nichels",
+      "nationality": "American"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "alta": {
+    "constructor": {
+      "constructorId": "alta",
+      "url": "https://en.wikipedia.org/wiki/Alta_Car_and_Engineering_Company",
+      "name": "Alta",
+      "nationality": "British"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "osca": {
+    "constructor": {
+      "constructorId": "osca",
+      "url": "https://en.wikipedia.org/wiki/O.S.C.A.",
+      "name": "OSCA",
+      "nationality": "Italian"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "afm": {
+    "constructor": {
+      "constructorId": "afm",
+      "url": "https://en.wikipedia.org/wiki/Alex_von_Falkenhausen_Motorenbau",
+      "name": "AFM",
+      "nationality": "German"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "martini": {
+    "constructor": {
+      "constructorId": "martini",
+      "url": "https://en.wikipedia.org/wiki/Automobiles_Martini",
+      "name": "Martini",
+      "nationality": "French"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "simtek": {
+    "constructor": {
+      "constructorId": "simtek",
+      "url": "https://en.wikipedia.org/wiki/Simtek",
+      "name": "Simtek",
+      "nationality": "British"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "mf1": {
+    "constructor": {
+      "constructorId": "mf1",
+      "url": "https://en.wikipedia.org/wiki/Midland_F1_Racing",
+      "name": "MF1",
+      "nationality": "Russian"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "marussia": {
+    "constructor": {
+      "constructorId": "marussia",
+      "url": "https://en.wikipedia.org/wiki/Marussia_F1",
+      "name": "Marussia",
+      "nationality": "Russian"
+    },
+    "points": 2.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "cooper-borgward": {
+    "constructor": {
+      "constructorId": "cooper-borgward",
+      "url": "https://en.wikipedia.org/wiki/Cooper_Car_Company",
+      "name": "Cooper-Borgward",
+      "nationality": "British"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "behra-porsche": {
+    "constructor": {
+      "constructorId": "behra-porsche",
+      "url": "https://en.wikipedia.org/wiki/Behra-Porsche",
+      "name": "Behra-Porsche",
+      "nationality": "Italian"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "scarab": {
+    "constructor": {
+      "constructorId": "scarab",
+      "url": "https://en.wikipedia.org/wiki/Scarab_(constructor)",
+      "name": "Scarab",
+      "nationality": "American"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "trojan": {
+    "constructor": {
+      "constructorId": "trojan",
+      "url": "https://en.wikipedia.org/wiki/Trojan\u2013Tauranac_Racing",
+      "name": "Trojan",
+      "nationality": "British"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "fondmetal": {
+    "constructor": {
+      "constructorId": "fondmetal",
+      "url": "https://en.wikipedia.org/wiki/Fondmetal",
+      "name": "Fondmetal",
+      "nationality": "Italian"
+    },
+    "points": 0.0,
+    "wins": 0,
+    "podiums": 0
+  },
+  "manor": {
+    "constructor": {
+      "constructorId": "manor",
+      "url": "https://en.wikipedia.org/wiki/Manor_Motorsport",
+      "name": "Manor Marussia",
+      "nationality": "British"
+    },
+    "points": 1.0,
+    "wins": 0,
+    "podiums": 0
+  }
+}
