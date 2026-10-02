@@ -308,3 +308,20 @@ async def driver_top_n(season, ns):
                 if pos <= n:
                     result[n][driver_id] = result[n].get(driver_id, 0) + 1
     return result
+
+
+async def team_top_n(season, ns):
+    """Return a dict {constructorId: top_n_count} for the given season."""
+    races = await season_results(season)
+    result = {n: {} for n in ns}
+    for race in races:
+        for r in race.get("Results", []):
+            try:
+                pos = int(r.get("position"))
+            except (TypeError, ValueError):
+                continue
+            constructor_id = r["Constructor"]["constructorId"]
+            for n in ns:
+                if pos <= n:
+                    result[n][constructor_id] = result[n].get(constructor_id, 0) + 1
+    return result

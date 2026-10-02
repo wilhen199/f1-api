@@ -725,6 +725,9 @@ async function loadStandingsTeams(season) {
       <td><img class="flagimg" src="${escapeHtml(row.team.flag)}"></td>
       <td>${escapeHtml(row.points)}</td>
       <td>${escapeHtml(row.wins)}</td>
+      <td>${escapeHtml(row.podiums)}</td>
+      <td>${escapeHtml(row.top_5)}</td>
+      <td>${escapeHtml(row.top_10)}</td>
     </tr>`,
     )
     .join("");
@@ -740,6 +743,9 @@ async function loadStandingsTeams(season) {
             <th>NAT</th>
             <th>PTS</th>
             <th>WINS</th>
+            <th>PODIUMS</th>
+            <th>TOP 5</th>
+            <th>TOP 10</th>
           </tr>
         </thead>
         <tbody>

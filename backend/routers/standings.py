@@ -53,6 +53,10 @@ async def get_constructor_standings(
 ):
     """Return constructor championship standings for the given season."""
     standings = await f1_api.constructor_standings(season)
+    top_n = await f1_api.team_top_n(season, [3, 5, 10])
+    podiums = top_n[3]
+    top5 = top_n[5]
+    top10 = top_n[10]
     if not standings:
         return {
             "season": season,
@@ -66,6 +70,11 @@ async def get_constructor_standings(
             ),
             "points": s.get("points", "0"),
             "wins": s.get("wins", "0"),
+            "podiums": podiums.get(
+                (s.get("Constructor") or {}).get("constructorId"), 0
+            ),
+            "top_5": top5.get((s.get("Constructor") or {}).get("constructorId"), 0),
+            "top_10": top10.get((s.get("Constructor") or {}).get("constructorId"), 0),
             "team": helpers.team(s.get("Constructor") or {}),
         }
         for s in standings
