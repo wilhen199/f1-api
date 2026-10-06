@@ -35,6 +35,67 @@ This project is a personal learning build and is **actively in progress**.
 
 ---
 
+## 🏗️ Architecture Diagram
+
+```text
+┌─────────────────────────────────────────────────────────────────────┐
+│                        GitHub Repository                            │
+│                                                                     │
+│  PR → ci.yml                     push main → deploy.yml             │
+│  ├── docker compose build         ├── OIDC → AWS IAM Role           │
+│  ├── health check                 ├── terraform apply (ECR)         │
+│  └── pytest (inside container)    ├── docker build & push → ECR     │
+│                                   └── terraform apply (full infra)  │
+└───────────────────────────┬─────────────────────────────────────────┘
+                            │ Terraform (IaC)
+                            ▼
+┌───────────────────────────────────────────────────────────────────────┐
+│                          AWS (us-east-1)                              │
+│                                                                       │
+│  ┌──────────────────────────────────────────────────────────────┐     │
+│  │                    VPC  10.0.0.0/16                          │     │
+│  │                                                              │     │
+│  │   Public Subnets (us-east-1a / us-east-1b)                   │     │
+│  │   ┌─────────────────────────────────────────────────────┐    │     │
+│  │   │  Application Load Balancer  :80 (HTTP)              │    │     │
+│  │   └──────────────────────┬──────────────────────────────┘    │     │
+│  │                          │                                   │     │
+│  │   Private Subnets (us-east-1a / us-east-1b)                  │     │
+│  │   ┌───────────────────────────────────────────────────┐      │     │
+│  │   │  ECS Fargate (1 task)  :8000                      │      │     │
+│  │   │  ┌─────────────────────────────────────────────┐  │      │     │
+│  │   │  │  Docker Container (python:3.13-slim)        │  │      │     │
+│  │   │  │  uvicorn → FastAPI                          │  │      │     │
+│  │   │  │  ├── /api/seasons                           │  │      │     │
+│  │   │  │  ├── routers/standings.py                   │  │      │     │
+│  │   │  │  ├── routers/results.py                     │  │      │     │
+│  │   │  │  ├── routers/awards.py                      │  │      │     │
+│  │   │  │  └── StaticFiles → frontend/ (HTML/CSS/JS)  │  │      │     │
+│  │   │  └─────────────────────────────────────────────┘  │      │     │
+│  │   └───────────────────────────────────────────────────┘      │     │
+│  │          │ NAT GW                    │ SSM Parameter Store   │     │
+│  └──────────┼───────────────────────────┼───────────────────────┘     │
+│             │                           │                             │
+│   ┌─────────┴───────┐        ┌───────────┴────────────┐               │
+│   │  ECR Repository │        │  SSM Parameters        │               │
+│   │  (Docker image) │        │  /f1-api/F1COM_APIKEY  │               │
+│   └─────────────────┘        │  /f1-api/F1COM_BASE_URL│               │
+│                              └────────────────────────┘               │
+│   S3 (tfstate) + DynamoDB (state lock)   CloudWatch Logs (/ecs/f1-api)│
+└───────────────────────────────────────────────────────────────────────┘
+          │ outbound (via NAT GW)
+          ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                       External APIs                                 │
+│  Jolpica/Ergast API  ←→  f1_api._fetch() (TTL cache + async lock)   │
+│  Official F1 API     ←→  dotd / fastest pit stops (API key)         │
+│  Wikipedia REST API  ←→  images.PhotoService (disk cache)           │
+│  flagcdn.com         ←→  country flags                              │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 ## 📸 What it looks like
 
 ![F1 Stats App Standings Drivers](./docs/f1-standings-drivers.png)
@@ -45,11 +106,18 @@ This project is a personal learning build and is **actively in progress**.
 
 ![F1 Stats App Results Awards](./docs/f1-results-awards.png)
 
+![F1 Stats App Standings Hall of Fame](./docs/f1-standings-hof.png)
+
+![F1 Stats App Results Sprint](./docs/f1-results-sprint.png)
+
+![F1 Stats App Results Quali](./docs/f1-results-qualifying.png)
+
 ---
 
 ## 📋 What it does
 
 - **Driver & Constructor Standings** — championship tables for any season from 1950 to present.
+- **Hall of Fame** - standings for drivers and constructors championships, including points, wins, and podiums.
 - **Race Results** — full race, qualifying, and sprint results per round, with lap counts and finishing status.
 - **Race Detail** — single-round view combining results, qualifying grid, sprint, pole position, Driver of the Day, and fastest pit stop.
 - **Awards Summary** — per-race awards table: winner, pole, sprint winner, DOTD, and fastest pit stop for every round of a season.
