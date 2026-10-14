@@ -5,9 +5,6 @@ import pathlib
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-app = FastAPI()
-FRONTEND_DIR = pathlib.Path(__file__).resolve().parent.parent / "frontend"
-
 from backend import f1_api
 from backend.routers import awards, results, standings
 
